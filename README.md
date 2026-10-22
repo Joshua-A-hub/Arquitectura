@@ -1,133 +1,191 @@
+<div align="center">
+
 # Facturación Electrónica — ABC Software Corp
 
-Primera fase (**Spec-First**) del sistema de facturación electrónica del caso de examen de
-Arquitectura de Software: **reglas, contratos, validaciones y arquitectura definidos antes de la
-primera línea de negocio**.
+**Esqueleto de especificaciones técnicas** · Fase 1 del ciclo **Spec-First**
 
+![Fase](https://img.shields.io/badge/fase-1%20%C2%B7%20especificaci%C3%B3n-1F3A5F)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.3-6BA539)
+![UBL](https://img.shields.io/badge/UBL-2.1-orange)
+![Verificación](https://img.shields.io/badge/verificaci%C3%B3n-15%20%2B%2011%20%2B%208-brightgreen)
+
+*Arquitectura de Software · Universidad Nacional Agraria de la Selva · Examen de Medio Curso · Grupo "A"*
+
+</div>
+
+> [!IMPORTANT]
 > **Regla que ordena todo el diseño:** sin XML válido y firmado no existe comprobante. Ningún
 > comprobante se marca como emitido si no pasó la validación formal y el CDR.
 
-## Trazabilidad al enunciado (frase del examen → dónde está)
-
-| El examen pide… | Dónde está | Estado |
-|---|---|---|
-| *"El Modelo de Dominio y Contratos (DTOs / Schemas)"* | [specs/domain](specs/domain/modelo-dominio.md) · [specs/contracts/dto](specs/contracts/dto/) | ✅ |
-| *"Diagramas de Arquitectura MVC con visión a Hexagonal"* | [specs/architecture](specs/architecture/mvc-hexagonal.md) · [docs/arquitectura](docs/arquitectura/README.md) | ✅ |
-| *"Especificación de Endpoints / Servicios (Contratos API)"* | [facturacion-api.yaml](specs/contracts/facturacion-api.yaml) | ✅ |
-| *"Matriz de Trazabilidad Normativa con cruces entre datos SUNAT y datos UBL"* | [04-matriz](docs/arquitectura/04-matriz-trazabilidad-normativa.md) · [08-tabla de match](docs/arquitectura/08-tabla-match-sunat-ubl.md) | ✅ |
-| *"Legado y Migración de Datos … sin perder trazabilidad"* | [05-migracion-legado](docs/arquitectura/05-migracion-legado.md) · RN-21..RN-24 | ✅ |
-| *"Normativa Tributaria Peruana … el catálogo 8 de SUNAT"* | [catalogos](specs/contracts/catalogs/catalogos-sunat.md) · [marco normativo](specs/domain/marco-normativo.md) | ✅ |
-| *"monolítica limpia … MVC … Arquitectura Hexagonal o Clean Architecture"* | [mvc-hexagonal](specs/architecture/mvc-hexagonal.md) · [ADR-0001](specs/adr/0001-monolito-mvc-con-vision-hexagonal.md) | ✅ |
-| *"Windows … Android … instalador MSI … APK"* | [06-distribucion](docs/arquitectura/06-distribucion-msi-apk.md) · [ADR-0003](specs/adr/0003-estrategia-multiplataforma.md) | ✅ |
-| *"detalle los casos posibles … Nubefact"* | [casos de uso](specs/features/casos-de-uso.md) · [benchmark](docs/benchmark-facturacion.md) | ✅ |
+Este repositorio contiene la **primera fase** del proyecto: las reglas, contratos, validaciones y
+arquitectura definidos **antes** de escribir una línea de lógica de negocio. No incluye interfaz de
+usuario ni implementación; incluye lo que hace posible implementarlas sin reinterpretar el negocio.
 
 ---
 
-## Índice
+## Entregables
 
-| Documento | Contenido |
-|---|---|
-| **[MEMORIA-TECNICA.docx](MEMORIA-TECNICA.docx)** | **Documento consolidado para entregar/imprimir** (portada, figuras y evidencias) |
-| [VERIFICACION.md](VERIFICACION.md) | **Informe de verificación**: enunciado → evidencia, pruebas y límites |
-| [01-RESUMEN-EJECUTIVO.md](01-RESUMEN-EJECUTIVO.md) | **Empieza aquí**: qué se entrega y cómo se lee |
-| [00-caso.md](00-caso.md) | Transcripción del examen + requisitos REQ-01..REQ-12 |
-| [specs/domain/modelo-dominio.md](specs/domain/modelo-dominio.md) | **E1** — entidades, invariantes, DTOs |
-| [specs/domain/reglas-negocio.md](specs/domain/reglas-negocio.md) | **E1** — 24 reglas (impuestos, numeración, migración) |
-| [specs/domain/marco-normativo.md](specs/domain/marco-normativo.md) | Normas citadas (RS 097-2012, RS 234-2006) y su trazabilidad |
-| [specs/architecture/mvc-hexagonal.md](specs/architecture/mvc-hexagonal.md) | **E2** — 11 requisitos ASR de MVC → Hexagonal |
-| [specs/contracts/facturacion-api.yaml](specs/contracts/facturacion-api.yaml) | **E3** — contrato OpenAPI (9 rutas) |
-| [specs/contracts/dto/](specs/contracts/dto/) | **E1** — 7 JSON Schemas + ejemplo válido e inválido |
-| [specs/contracts/catalogs/catalogos-sunat.md](specs/contracts/catalogs/catalogos-sunat.md) | Catálogos 01, 02, 03, 05, 07, **08**, 09, 10, 51 |
-| [specs/contracts/ubl/perfil-invoice.md](specs/contracts/ubl/perfil-invoice.md) | Perfil UBL 2.1 Invoice con rutas y orden |
-| [specs/features/casos-de-uso.md](specs/features/casos-de-uso.md) | 10 casos de uso + 10 escenarios Gherkin |
-| [docs/arquitectura/README.md](docs/arquitectura/README.md) | **E2** — diagramas MVC y hexagonal |
-| [docs/arquitectura/04-matriz-trazabilidad-normativa.md](docs/arquitectura/04-matriz-trazabilidad-normativa.md) | **E4** — 59 cruces SUNAT ↔ UBL |
-| [docs/arquitectura/08-tabla-match-sunat-ubl.md](docs/arquitectura/08-tabla-match-sunat-ubl.md) | **Tabla de match**: campo SUNAT (`serie_numero`, …) ↔ UBL ↔ DTO |
-| [docs/arquitectura/05-migracion-legado.md](docs/arquitectura/05-migracion-legado.md) | Migración de fichas con trazabilidad |
-| [docs/arquitectura/06-distribucion-msi-apk.md](docs/arquitectura/06-distribucion-msi-apk.md) | Windows (MSI) y Android (APK) |
-| [docs/arquitectura/07-diagrama-clases.md](docs/arquitectura/07-diagrama-clases.md) | **E1** — diagrama de clases del dominio |
-| [docs/benchmark-facturacion.md](docs/benchmark-facturacion.md) | Dolores de usuarios → decisiones de diseño |
-| [specs/adr/](specs/adr/) | 3 decisiones de arquitectura justificadas |
-| [src/puertos.py](src/puertos.py) | Interfaces del dominio (el borde para la fase 2) |
-| [tests/mocks/mock_db.py](tests/mocks/mock_db.py) | Datos estáticos que simulan la persistencia |
-| [validacion/validar_contratos.py](validacion/validar_contratos.py) | Valida los contratos (sin dependencias) |
+| # | Entregable del enunciado | Dónde está | Evidencia |
+|:--:|---|---|---|
+| **E1** | Modelo de Dominio y Contratos (DTOs / Schemas) | [`specs/domain/`](specs/domain/modelo-dominio.md) · [`specs/contracts/dto/`](specs/contracts/dto/) | 7 JSON Schemas validados |
+| **E2** | Diagramas de Arquitectura MVC con visión a Hexagonal | [`specs/architecture/`](specs/architecture/mvc-hexagonal.md) · [`docs/arquitectura/`](docs/arquitectura/README.md) | 11 requisitos ASR + 10 RNF + 3 ADR |
+| **E3** | Especificación de Endpoints / Servicios (Contratos API) | [`facturacion-api.yaml`](specs/contracts/facturacion-api.yaml) | 9 rutas · 15 esquemas · JWT |
+| **E4** | Matriz de Trazabilidad Normativa SUNAT ↔ UBL | [`04-matriz`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) · [`08-tabla de match`](docs/arquitectura/08-tabla-match-sunat-ubl.md) | 59 cruces + 47 campos |
 
-## Verificar la entrega
+📄 **Documento consolidado para entregar:** [`MEMORIA-TECNICA.docx`](MEMORIA-TECNICA.docx) ·
+🔍 **Informe de verificación:** [`VERIFICACION.md`](VERIFICACION.md)
+
+---
+
+## Cómo se ve la arquitectura
+
+<div align="center">
+
+<img src="docs/arquitectura/01-mvc-capas.svg" width="49%" alt="Arquitectura MVC en capas">
+<img src="docs/arquitectura/02-hexagonal.svg" width="49%" alt="Visión hexagonal: puertos y adaptadores">
+
+*Izquierda: monolito MVC de hoy · Derecha: visión objetivo con puertos y adaptadores*
+
+<img src="docs/arquitectura/07-diagrama-clases.svg" width="72%" alt="Diagrama de clases del dominio">
+
+*Modelo de dominio: `Comprobante` es la raíz de agregado; `Totales`, `Cdr` y `Cuota` son objetos de valor*
+
+</div>
+
+---
+
+## Verificación
+
+Los contratos no son documentos muertos: hay tres validadores ejecutables.
 
 ```bash
 pip install -r requirements.txt
-python validacion/verificar_entrega.py     # todo en un comando: 7 comprobaciones
+python validacion/verificar_entrega.py     # todo en uno
 ```
 
-Salida esperada: **7/7 comprobaciones correctas**, código de salida `0`.
+| Script | Qué comprueba | Resultado |
+|---|---|---|
+| [`verificar_entrega.py`](validacion/verificar_entrega.py) | integral: contratos, XML, enlaces, cifras, artefactos | **8/8** |
+| [`validar_contratos.py`](validacion/validar_contratos.py) | 7 JSON Schemas, 3 ejemplos y el OpenAPI (parseo real) | **15/15** |
+| [`validar_xml_ubl.py`](validacion/validar_xml_ubl.py) | XML contra XSD, totales, RUC (módulo 11) | **11/11** |
 
-El script ejecuta los otros dos validadores y añade integridad del repositorio:
+Incluyen **controles negativos** que demuestran que las pruebas sirven: quitar `serie_numero` del
+ejemplo rompe la validación (código de salida 1); adulterar el IGV de cabecera rompe la reconciliación
+de totales.
 
-```bash
-python validacion/validar_contratos.py     # 13 comprobaciones (schemas + OpenAPI)
-python validacion/validar_xml_ubl.py       # 6 comprobaciones (XML contra XSD)
-```
+---
 
-## Estructura (alineada al molde de clase)
+## Estructura
+
+<details>
+<summary><b>Ver el árbol completo del repositorio</b></summary>
 
 ```text
 examen/
-├── .editorconfig
-├── .gitignore
-├── README.md
-├── MEMORIA-TECNICA.docx                documento consolidado (portada + figuras)
-├── 00-caso.md                          caso transcrito + requisitos
-├── 01-RESUMEN-EJECUTIVO.md             portada de la entrega
+├── MEMORIA-TECNICA.docx          documento consolidado (portada + figuras)
+├── VERIFICACION.md               informe: enunciado → evidencia → pruebas
+├── 00-caso.md                    caso transcrito + requisitos REQ-01..REQ-12
+├── 01-RESUMEN-EJECUTIVO.md       portada y mapa de entregables
 ├── docs/
-│   ├── SDD_WORKFLOW.md                 ciclo Spec-First (5 etapas)
-│   ├── benchmark-facturacion.md        dolores de usuarios → decisiones de diseño
+│   ├── SDD_WORKFLOW.md           ciclo Spec-First
+│   ├── benchmark-facturacion.md  dolores de usuarios → decisiones
 │   └── arquitectura/
-│       ├── README.md                   E2 — lectura de los diagramas
-│       ├── 01-mvc-capas.svg
-│       ├── 02-hexagonal.svg
+│       ├── README.md             lectura de los diagramas
+│       ├── 01-mvc-capas.svg/.png
+│       ├── 02-hexagonal.svg/.png
 │       ├── 03-secuencia-emision.md
-│       ├── 04-matriz-trazabilidad-normativa.md   E4
+│       ├── 04-matriz-trazabilidad-normativa.md    E4
 │       ├── 05-migracion-legado.md
 │       ├── 06-distribucion-msi-apk.md
-│       ├── 07-diagrama-clases.md + .svg          E1
-│       └── 08-tabla-match-sunat-ubl.md           match por campo SUNAT
+│       ├── 07-diagrama-clases.svg/.png            E1
+│       └── 08-tabla-match-sunat-ubl.md            match por campo
 ├── specs/
-│   ├── README.md                       reglas de la carpeta
-│   ├── adr/                            0001 MVC→Hexagonal · 0002 UBL/XSD · 0003 multiplataforma
-│   ├── architecture/                   mvc-hexagonal (requisitos ASR)
-│   ├── contracts/                      OpenAPI + dto/ + catalogs/ + ubl/
-│   ├── domain/                         modelo-dominio · reglas-negocio · marco-normativo
-│   ├── features/                       casos-de-uso (Gherkin)
-│   └── templates/                      plantillas de spec, ADR y contrato
-├── src/
-│   ├── puertos.py                      interfaces (fase 1: sin lógica)
-│   └── README.md                       estructura MVC de la fase 2
-├── tests/
-│   ├── README.md                       mapa de pruebas por nivel
-│   ├── acceptance/  integration/  unit/
-│   └── mocks/mock_db.py                datos estáticos del dominio
-└── validacion/
-    ├── verificar_entrega.py           8 comprobaciones (todo en uno)
-    ├── validar_contratos.py           esquemas + OpenAPI
-    └── validar_xml_ubl.py             XML contra XSD
+│   ├── README.md                 reglas de la carpeta
+│   ├── adr/                      0001 MVC→Hexagonal · 0002 UBL/XSD · 0003 multiplataforma
+│   ├── architecture/             mvc-hexagonal (ASR + RNF)
+│   ├── contracts/                OpenAPI + dto/ + catalogs/ + ubl/ (con XSD)
+│   ├── domain/                   modelo-dominio · reglas-negocio · marco-normativo
+│   ├── features/                 casos de uso (Gherkin)
+│   └── templates/                plantillas de spec, ADR y contrato
+├── src/                          puertos (interfaces) + README de la fase 2
+├── tests/                        mapa de pruebas + mock de datos
+└── validacion/                   los tres validadores
 ```
 
-## Alcance: qué es esta fase y qué sigue
+</details>
 
-El enunciado pide **no codificar sin especificar**: definir reglas, contratos y validaciones antes de
-la primera línea de negocio. Por eso esta entrega incluye:
+---
 
-| Sí incluye | No incluye (fase 2) |
+## Trazabilidad al enunciado
+
+<details>
+<summary><b>Ver cada exigencia del examen y dónde se cubre</b></summary>
+
+| El examen pide… | Dónde está |
+|---|---|
+| *"El Modelo de Dominio y Contratos (DTOs / Schemas)"* | [`specs/domain`](specs/domain/modelo-dominio.md) · [`specs/contracts/dto`](specs/contracts/dto/) |
+| *"Diagramas de Arquitectura MVC con visión a Hexagonal"* | [`specs/architecture`](specs/architecture/mvc-hexagonal.md) · [`docs/arquitectura`](docs/arquitectura/README.md) |
+| *"Especificación de Endpoints / Servicios (Contratos API)"* | [`facturacion-api.yaml`](specs/contracts/facturacion-api.yaml) |
+| *"Matriz de Trazabilidad Normativa con cruces entre datos SUNAT y datos UBL"* | [`04-matriz`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) · [`08-tabla de match`](docs/arquitectura/08-tabla-match-sunat-ubl.md) |
+| *"Legado y Migración de Datos … sin perder trazabilidad"* | [`05-migracion`](docs/arquitectura/05-migracion-legado.md) · RN-21..RN-24 |
+| *"Normativa Tributaria Peruana … el catálogo 8 de SUNAT"* | [`catalogos`](specs/contracts/catalogs/catalogos-sunat.md) · [`marco normativo`](specs/domain/marco-normativo.md) |
+| *"monolítica limpia … MVC … Arquitectura Hexagonal o Clean"* | [`mvc-hexagonal`](specs/architecture/mvc-hexagonal.md) · [ADR-0001](specs/adr/0001-monolito-mvc-con-vision-hexagonal.md) |
+| *"Windows … Android … instalador MSI … APK"* | [`06-distribucion`](docs/arquitectura/06-distribucion-msi-apk.md) · [ADR-0003](specs/adr/0003-estrategia-multiplataforma.md) |
+| *"detalle los casos posibles … Nubefact"* | [`casos de uso`](specs/features/casos-de-uso.md) · [`benchmark`](docs/benchmark-facturacion.md) |
+| *"estudiando el archivo UBL-Invoice-2.1.xsd"* | [`perfil UBL`](specs/contracts/ubl/perfil-invoice.md) · [`xsd/`](specs/contracts/ubl/xsd/) |
+
+</details>
+
+---
+
+## Alcance
+
+| ✅ Incluye | ❌ No incluye |
 |---|---|
 | Contratos, DTOs y catálogos | Implementación de los endpoints |
-| Reglas de negocio numeradas | Cálculo ejecutable de IGV/ISC/ICBPER |
+| 24 reglas de negocio numeradas | Cálculo ejecutable de IGV/ISC/ICBPER |
 | Diagramas MVC y hexagonal | Código de controladores y adaptadores |
 | Puertos (interfaces) en `src/` | Implementación de esos puertos |
-| Mock y mapa de pruebas | Tests ejecutados contra la app |
-| Matriz de trazabilidad y tabla de match | Integración real con OSE/SUNAT |
+| Mock y mapa de pruebas | Tests ejecutados contra la aplicación |
+| Matriz normativa y tabla de match | Integración real con OSE/SUNAT |
 | **Nada de interfaz de usuario** | Pantallas, wireframes o prototipos |
 
-> El alcance es **especificación técnica**: no se diseña interfaz de usuario. El contrato API es un
-> contrato de servicio, no una pantalla; la restricción MSI/APK se documenta, no se prototipa.
+> El alcance es **especificación técnica**. El contrato API es un contrato de servicio, no una
+> pantalla; la restricción MSI/APK se documenta como restricción arquitectónica.
 
-El borde ya está definido: la fase 2 implementa lo que aquí se especificó, sin cambiar los contratos.
+---
+
+## Decisiones que se pueden defender
+
+1. **El contrato manda.** El OpenAPI y los 7 JSON Schemas se escribieron antes que cualquier
+   implementación, y el validador comprueba que siguen siendo coherentes.
+2. **Un mock, una fuente.** Los datos de prueba viven solo en `tests/mocks/`; no hay copias en `src/`.
+3. **Antifraude en los datos.** El DTO de entrada no acepta `totales`, `id`, `estado` ni
+   `serie_numero`: el dominio los calcula y los asigna.
+4. **El dominio no conoce el framework.** Se verifica con `grep` sobre `src/dominio`; los 5 puertos de
+   salida son la frontera.
+5. **La validación formal va antes de guardar.** Si el XSD rechaza el XML, no se registra nada.
+
+---
+
+## Documentación
+
+| Documento | Para qué |
+|---|---|
+| [`00-caso.md`](00-caso.md) | Caso transcrito y requisitos REQ-01..REQ-12 |
+| [`01-RESUMEN-EJECUTIVO.md`](01-RESUMEN-EJECUTIVO.md) | Portada y mapa de la entrega |
+| [`VERIFICACION.md`](VERIFICACION.md) | Enunciado → evidencia, pruebas y límites |
+| [`MEMORIA-TECNICA.docx`](MEMORIA-TECNICA.docx) | Versión consolidada para imprimir |
+| [`docs/arquitectura/`](docs/arquitectura/README.md) | Figuras, matriz y documentos de diseño |
+| [`specs/`](specs/README.md) | Fuente de verdad: dominio, contratos y ADR |
+
+---
+
+<div align="center">
+
+**Trabajo académico** — Universidad Nacional Agraria de la Selva · Arquitectura de Software · 2026
+
+*Estado: entrega completa de la fase 1. Los límites conocidos están declarados en
+[`VERIFICACION.md §4`](VERIFICACION.md).*
+
+</div>
