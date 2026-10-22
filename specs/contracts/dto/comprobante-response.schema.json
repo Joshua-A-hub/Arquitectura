@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://abc-software.pe/schemas/comprobante-response.json",
+  "title": "ComprobanteResponse",
+  "description": "Respuesta de emisión/consulta. Los totales son calculados por el dominio y el XML se referencia, no se embebe.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "tipo",
+    "serie",
+    "correlativo",
+    "serie_numero",
+    "estado",
+    "fecha_emision",
+    "totales"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "tipo": {
+      "type": "string",
+      "enum": [
+        "01",
+        "03",
+        "07",
+        "08"
+      ]
+    },
+    "serie": {
+      "type": "string",
+      "pattern": "^[FB][0-9]{3}$"
+    },
+    "correlativo": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "serie_numero": {
+      "type": "string",
+      "pattern": "^[FB][0-9]{3}-[0-9]{8}$",
+      "description": "Identificador completo: serie + correlativo (nomenclatura SUNAT)"
+    },
+    "estado": {
+      "type": "string",
+      "enum": [
+        "BORRADOR",
+        "EMITIDO",
+        "ACEPTADO",
+        "RECHAZADO",
+        "BAJA",
+        "PENDIENTE_ENVIO"
+      ]
+    },
+    "fecha_emision": {
+      "type": "string",
+      "format": "date"
+    },
+    "hora_emision": {
+      "type": "string",
+      "pattern": "^[0-2][0-9]:[0-5][0-9]:[0-5][0-9]$"
+    },
+    "moneda": {
+      "type": "string",
+      "enum": [
+        "PEN",
+        "USD"
+      ]
+    },
+    "cliente": {
+      "type": "object",
+      "required": [
+        "tipo_documento",
+        "numero_documento",
+        "razon_social"
+      ],
+      "properties": {
+        "tipo_documento": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1",
+            "4",
+            "6",
+            "7",
+            "A"
+          ]
+        },
+        "numero_documento": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 15
+        },
+        "razon_social": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200
+        }
+      }
+    },
+    "totales": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "importe_total"
+      ],
+      "properties": {
+        "op_gravada": {
+          "type": "number",
+          "minimum": 0
+        },
+        "op_exonerada": {
+          "type": "number",
+          "minimum": 0
+        },
+        "op_inafecta": {
+          "type": "number",
+          "minimum": 0
+        },
+        "op_exportacion": {
+          "type": "number",
+          "minimum": 0
+        },
+        "total_igv": {
+          "type": "number",
+          "minimum": 0
+        },
+        "total_isc": {
+          "type": "number",
+          "minimum": 0
+        },
+        "total_icbper": {
+          "type": "number",
+          "minimum": 0
+        },
+        "importe_total": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "hash_xml": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "xml_url": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "cdr": {
+      "type": "object",
+      "required": [
+        "codigo"
+      ],
+      "properties": {
+        "codigo": {
+          "type": "string",
+          "example": "0"
+        },
+        "descripcion": {
+          "type": "string"
+        },
+        "fecha_recepcion": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

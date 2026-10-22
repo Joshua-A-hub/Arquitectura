@@ -1,0 +1,68 @@
+openapi: 3.1.0
+info:
+  title: API Contract Template
+  description: Specification-first schema for defining service endpoints, payloads, and error codes.
+  version: 0.1.0
+servers:
+  - url: /api/v1
+    description: Local / Base API server
+paths:
+  /resource:
+    get:
+      summary: Retrieve resource items
+      operationId: listResources
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceItem'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+components:
+  schemas:
+    ResourceItem:
+      type: object
+      required:
+        - id
+        - name
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+  responses:
+    BadRequestError:
+      description: Invalid query parameters or body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Perfil SUNAT de UBL 2.1 — Invoice (factura y boleta).
+  Esquema raíz contra el que se valida el XML antes de firmarlo y enviarlo.
+  Mantiene namespaces y secuencia del estándar; restringe el conjunto de campos
+  al perfil definido en specs/contracts/ubl/perfil-invoice.md.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+           xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+           targetNamespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+           elementFormDefault="qualified">
+
+  <xs:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+             schemaLocation="CommonBasicComponents-2.xsd"/>
+  <xs:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+             schemaLocation="CommonAggregateComponents-2.xsd"/>
+
+  <xs:element name="Invoice">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- Bloque de extensión UBL: aquí viaja la firma XMLDSig (ds:Signature) -->
+        <xs:any namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+                minOccurs="0" processContents="lax"/>
+        <xs:element ref="cbc:UBLVersionID"/>
+        <xs:element ref="cbc:CustomizationID"/>
+        <xs:element ref="cbc:ID"/>
+        <xs:element ref="cbc:IssueDate"/>
+        <xs:element ref="cbc:IssueTime" minOccurs="0"/>
+        <xs:element ref="cbc:InvoiceTypeCode"/>
+        <xs:element ref="cbc:Note" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="cbc:DocumentCurrencyCode"/>
+        <xs:element ref="cbc:LineCountNumeric" minOccurs="0"/>
+        <xs:element ref="cac:AccountingSupplierParty"/>
+        <xs:element ref="cac:AccountingCustomerParty"/>
+        <xs:element ref="cac:PaymentTerms" minOccurs="0"/>
+        <xs:element ref="cac:TaxTotal" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="cac:LegalMonetaryTotal"/>
+        <xs:element ref="cac:InvoiceLine" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="schemaVersion" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

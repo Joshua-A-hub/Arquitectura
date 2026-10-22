@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://abc-software.pe/schemas/cliente.json",
+  "title": "Cliente",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tipo_documento", "numero_documento", "razon_social"],
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "tipo_documento": {
+      "type": "string",
+      "enum": ["0", "1", "4", "6", "7", "A"],
+      "description": "Catálogo 8 — tipo de documento de identidad"
+    },
+    "numero_documento": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 15,
+      "description": "RUC 11, DNI 8, CE 9-12, pasaporte 8-12 (RN-02)"
+    },
+    "razon_social": { "type": "string", "minLength": 3, "maxLength": 200 },
+    "ubigeo": { "type": "string", "pattern": "^[0-9]{6}$" },
+    "direccion": { "type": "string", "maxLength": 200 },
+    "email": { "type": "string", "format": "email", "maxLength": 120 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "tipo_documento": { "const": "6" } } },
+      "then": {
+        "properties": {
+          "numero_documento": { "pattern": "^(10|15|17|20)[0-9]{9}$" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "tipo_documento": { "const": "1" } } },
+      "then": { "properties": { "numero_documento": { "pattern": "^[0-9]{8}$" } } }
+    }
+  ]
+}

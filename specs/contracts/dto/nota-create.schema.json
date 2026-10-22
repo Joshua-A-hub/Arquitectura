@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://abc-software.pe/schemas/nota-create.json",
+  "title": "NotaCreate",
+  "description": "Nota de crédito (07) o débito (08) sobre un comprobante aceptado (RN-16).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tipo", "motivo_codigo", "descripcion_motivo", "lineas"],
+  "properties": {
+    "tipo": {
+      "type": "string",
+      "enum": ["07", "08"],
+      "description": "07 = nota de crédito, 08 = nota de débito (catálogo 1)"
+    },
+    "motivo_codigo": {
+      "type": "string",
+      "pattern": "^[0-9]{2}$",
+      "description": "Catálogo 9 (NC) o catálogo 10 (ND)"
+    },
+    "descripcion_motivo": { "type": "string", "minLength": 3, "maxLength": 200 },
+    "lineas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["numero_linea", "descripcion", "cantidad", "precio_unitario", "afectacion_igv"],
+        "properties": {
+          "numero_linea": { "type": "integer", "minimum": 1 },
+          "producto_codigo": { "type": "string", "maxLength": 30 },
+          "descripcion": { "type": "string", "minLength": 3, "maxLength": 200 },
+          "unidad_medida": { "type": "string", "enum": ["NIU", "KGM", "BX", "LTR", "ZZ"] },
+          "cantidad": { "type": "number", "exclusiveMinimum": 0 },
+          "precio_unitario": { "type": "number", "minimum": 0 },
+          "afectacion_igv": { "type": "string", "enum": ["10", "11", "20", "21", "30", "31", "40"] }
+        }
+      }
+    }
+  }
+}

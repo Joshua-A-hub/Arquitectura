@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Perfil SUNAT de UBL 2.1 — CommonAggregateComponents (subconjunto).
+  El orden de InvoiceLine sigue el esquema UBL 2.1:
+  ID, InvoicedQuantity, LineExtensionAmount, PricingReference, AllowanceCharge,
+  TaxTotal, Item, Price.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+           xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+           targetNamespace="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+           elementFormDefault="qualified">
+
+  <xs:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+             schemaLocation="CommonBasicComponents-2.xsd"/>
+
+  <!-- Partes -->
+  <xs:complexType name="PartyIdentificationType">
+    <xs:sequence>
+      <xs:element ref="cbc:ID"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AddressType">
+    <xs:sequence>
+      <xs:element ref="cbc:ID"/>
+      <xs:element ref="cbc:StreetName" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PartyLegalEntityType">
+    <xs:sequence>
+      <xs:element ref="cbc:RegistrationName"/>
+      <xs:element name="RegistrationAddress" type="cac:AddressType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PartyType">
+    <xs:sequence>
+      <xs:element name="PartyIdentification" type="cac:PartyIdentificationType"/>
+      <xs:element name="PartyLegalEntity" type="cac:PartyLegalEntityType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SupplierPartyType">
+    <xs:sequence>
+      <xs:element name="Party" type="cac:PartyType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CustomerPartyType">
+    <xs:sequence>
+      <xs:element name="Party" type="cac:PartyType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Pago: cbc:ID = FormaPago, cbc:PaymentMeansID = Contado/Credito -->
+  <xs:complexType name="PaymentTermsType">
+    <xs:sequence>
+      <xs:element ref="cbc:ID"/>
+      <xs:element ref="cbc:PaymentMeansID" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Tributos: catálogo 05 en cbc:ID, con nombre y código internacional -->
+  <xs:complexType name="TaxSchemeType">
+    <xs:sequence>
+      <xs:element ref="cbc:ID"/>
+      <xs:element ref="cbc:Name" minOccurs="0"/>
+      <xs:element ref="cbc:TaxTypeCode" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TaxCategoryType">
+    <xs:sequence>
+      <xs:element ref="cbc:Percent" minOccurs="0"/>
+      <xs:element ref="cbc:TaxExemptionReasonCode" minOccurs="0"/>
+      <xs:element name="TaxScheme" type="cac:TaxSchemeType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TaxSubtotalType">
+    <xs:sequence>
+      <xs:element ref="cbc:TaxableAmount"/>
+      <xs:element ref="cbc:TaxAmount"/>
+      <xs:element name="TaxCategory" type="cac:TaxCategoryType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TaxTotalType">
+    <xs:sequence>
+      <xs:element ref="cbc:TaxAmount"/>
+      <xs:element name="TaxSubtotal" type="cac:TaxSubtotalType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Precios e ítems -->
+  <xs:complexType name="PriceType">
+    <xs:sequence>
+      <xs:element ref="cbc:PriceAmount"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AlternativeConditionPriceType">
+    <xs:sequence>
+      <xs:element ref="cbc:PriceAmount"/>
+      <xs:element ref="cbc:PriceTypeCode" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PricingReferenceType">
+    <xs:sequence>
+      <xs:element name="AlternativeConditionPrice" type="cac:AlternativeConditionPriceType"
+                  maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Descuento por ítem: ChargeIndicator + Amount (orden UBL) -->
+  <xs:complexType name="AllowanceChargeType">
+    <xs:sequence>
+      <xs:element name="ChargeIndicator" type="xs:boolean"/>
+      <xs:element ref="cbc:TaxAmount" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ItemIdentificationType">
+    <xs:sequence>
+      <xs:element ref="cbc:ID"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ItemType">
+    <xs:sequence>
+      <xs:element ref="cbc:Description"/>
+      <xs:element name="SellersItemIdentification" type="cac:ItemIdentificationType"
+                  minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="InvoiceLineType">
+    <xs:sequence>
+      <xs:element ref="cbc:ID"/>
+      <xs:element ref="cbc:InvoicedQuantity"/>
+      <xs:element ref="cbc:LineExtensionAmount"/>
+      <xs:element name="PricingReference" type="cac:PricingReferenceType" minOccurs="0"/>
+      <xs:element name="AllowanceCharge" type="cac:AllowanceChargeType" minOccurs="0"
+                  maxOccurs="unbounded"/>
+      <xs:element name="TaxTotal" type="cac:TaxTotalType" maxOccurs="unbounded"/>
+      <xs:element name="Item" type="cac:ItemType"/>
+      <xs:element name="Price" type="cac:PriceType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Totales -->
+  <xs:complexType name="LegalMonetaryTotalType">
+    <xs:sequence>
+      <xs:element ref="cbc:LineExtensionAmount"/>
+      <xs:element ref="cbc:TaxInclusiveAmount"/>
+      <xs:element ref="cbc:PayableAmount"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Elementos globales que el Invoice referencia (namespace cac) -->
+  <xs:element name="AccountingSupplierParty" type="cac:SupplierPartyType"/>
+  <xs:element name="AccountingCustomerParty" type="cac:CustomerPartyType"/>
+  <xs:element name="PaymentTerms" type="cac:PaymentTermsType"/>
+  <xs:element name="TaxTotal" type="cac:TaxTotalType"/>
+  <xs:element name="LegalMonetaryTotal" type="cac:LegalMonetaryTotalType"/>
+  <xs:element name="InvoiceLine" type="cac:InvoiceLineType"/>
+
+</xs:schema>

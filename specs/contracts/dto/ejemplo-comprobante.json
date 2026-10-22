@@ -1,0 +1,45 @@
+{
+  "tipo": "01",
+  "serie": "F001",
+  "fecha_emision": "2026-10-22",
+  "hora_emision": "09:15:00",
+  "moneda": "PEN",
+  "tipo_operacion": "0101",
+  "forma_pago": "CONTADO",
+  "cliente": {
+    "tipo_documento": "6",
+    "numero_documento": "20512345671",
+    "razon_social": "DISTRIBUIDORA SELVA SAC",
+    "ubigeo": "150101",
+    "direccion": "AV. ARGENTINA 123"
+  },
+  "detalle": [
+    {
+      "numero_linea": 1,
+      "producto_codigo": "ARR-50KG",
+      "descripcion": "SACO DE ARROZ 50KG",
+      "unidad_medida": "NIU",
+      "cantidad": 10,
+      "precio_unitario": 45.0,
+      "afectacion_igv": "10"
+    },
+    {
+      "numero_linea": 2,
+      "producto_codigo": "LEC-1L",
+      "descripcion": "CAJA DE LECHE 1L",
+      "unidad_medida": "BX",
+      "cantidad": 5,
+      "precio_unitario": 12.0,
+      "afectacion_igv": "20"
+    },
+    {
+      "numero_linea": 3,
+      "producto_codigo": "BOL-001",
+      "descripcion": "BOLSA PLASTICA RECICLABLE",
+      "unidad_medida": "NIU",
+      "cantidad": 20,
+      "precio_unitario": 0.5,
+      "afectacion_igv": "10"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Perfil SUNAT de UBL 2.1 — CommonBasicComponents (subconjunto).
+  Los tipos conservan los atributos del estándar (schemeID, currencyID, unitCode).
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+           targetNamespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+           elementFormDefault="qualified">
+
+  <xs:complexType name="IDType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="schemeID" type="xs:string" use="optional"/>
+        <xs:attribute name="schemeName" type="xs:string" use="optional"/>
+        <xs:attribute name="schemeAgencyName" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="AmountType">
+    <xs:simpleContent>
+      <xs:extension base="xs:decimal">
+        <xs:attribute name="currencyID" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="QuantityType">
+    <xs:simpleContent>
+      <xs:extension base="xs:decimal">
+        <xs:attribute name="unitCode" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="PercentType">
+    <xs:simpleContent>
+      <xs:extension base="xs:decimal">
+        <xs:attribute name="currencyID" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- El tipo de comprobante lleva el tipo de operación en @listID (catálogo 51) -->
+  <xs:complexType name="InvoiceTypeCodeType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="listID" type="xs:string" use="optional"/>
+        <xs:attribute name="listAgencyName" type="xs:string" use="optional"/>
+        <xs:attribute name="listName" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:element name="UBLVersionID" type="xs:string"/>
+  <xs:element name="CustomizationID" type="xs:string"/>
+  <xs:element name="ID" type="cbc:IDType"/>
+  <xs:element name="IssueDate" type="xs:date"/>
+  <xs:element name="IssueTime" type="xs:time"/>
+  <xs:element name="InvoiceTypeCode" type="cbc:InvoiceTypeCodeType"/>
+  <xs:element name="Note" type="xs:string"/>
+  <xs:element name="DocumentCurrencyCode" type="xs:string"/>
+  <xs:element name="LineCountNumeric" type="xs:integer"/>
+  <xs:element name="RegistrationName" type="xs:string"/>
+  <xs:element name="StreetName" type="xs:string"/>
+  <xs:element name="PaymentMeansID" type="xs:string"/>
+  <xs:element name="InvoicedQuantity" type="cbc:QuantityType"/>
+  <xs:element name="LineExtensionAmount" type="cbc:AmountType"/>
+  <xs:element name="PriceAmount" type="cbc:AmountType"/>
+  <xs:element name="PriceTypeCode" type="xs:string"/>
+  <xs:element name="TaxableAmount" type="cbc:AmountType"/>
+  <xs:element name="TaxAmount" type="cbc:AmountType"/>
+  <xs:element name="TaxInclusiveAmount" type="cbc:AmountType"/>
+  <xs:element name="PayableAmount" type="cbc:AmountType"/>
+  <xs:element name="Percent" type="cbc:PercentType"/>
+  <xs:element name="TaxExemptionReasonCode" type="xs:string"/>
+  <xs:element name="Name" type="xs:string"/>
+  <xs:element name="TaxTypeCode" type="xs:string"/>
+  <xs:element name="Description" type="xs:string"/>
+
+</xs:schema>

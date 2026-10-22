@@ -1,0 +1,8 @@
+# Dependencias de la validación ejecutable
+#
+# La entrega es de especificaciones; solo los scripts de `validacion/` necesitan
+# dependencias. `validar_contratos.py` usa la librería estándar; `validar_xml_ubl.py`
+# requiere lxml para validar el XML del perfil contra su XSD.
+
+lxml>=5.0.0
+pyyaml>=6.0.0

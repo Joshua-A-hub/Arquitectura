@@ -1,0 +1,33 @@
+{
+  "id": "33333333-3333-3333-3333-333333333333",
+  "tipo": "01",
+  "serie": "F001",
+  "correlativo": 123,
+  "serie_numero": "F001-00000123",
+  "estado": "ACEPTADO",
+  "fecha_emision": "2026-10-22",
+  "hora_emision": "09:15:00",
+  "moneda": "PEN",
+  "cliente": {
+    "tipo_documento": "6",
+    "numero_documento": "20512345671",
+    "razon_social": "DISTRIBUIDORA SELVA SAC"
+  },
+  "totales": {
+    "op_gravada": 389.83,
+    "op_exonerada": 60.0,
+    "op_inafecta": 0,
+    "op_exportacion": 0,
+    "total_igv": 70.17,
+    "total_isc": 0,
+    "total_icbper": 10.0,
+    "importe_total": 530.0
+  },
+  "hash_xml": "ca4844a03ca8da6d54233e04154da31ea36da73a62893c1ec85bebc234bc47d6",
+  "xml_url": "/api/v1/comprobantes/F001-00000123/xml",
+  "cdr": {
+    "codigo": "0",
+    "descripcion": "El comprobante fue registrado exitosamente",
+    "fecha_recepcion": "2026-10-22T09:15:03Z"
+  }
+}

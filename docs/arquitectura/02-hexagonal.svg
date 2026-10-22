@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 660" width="900" height="660" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .adapter { fill: #FEF3C7; stroke: #B45309; stroke-width: 2; }
+      .port { fill: #ECFDF5; stroke: #047857; stroke-width: 2; }
+      .domain { fill: #EEF2FF; stroke: #4338CA; stroke-width: 3; }
+      .actor { fill: #F3F4F6; stroke: #6B7280; stroke-width: 2; }
+      .lbl { font-size: 15.5px; font-weight: 600; fill: #111827; }
+      .sub { font-size: 12.5px; fill: #374151; }
+      .cap { font-size: 12px; fill: #6B7280; }
+      .side { font-size: 11.5px; fill: #9CA3AF; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="900" height="660" fill="#FFFFFF"/>
+  <text x="430" y="32" text-anchor="middle" class="lbl" font-size="21">Visión objetivo — Arquitectura Hexagonal (puertos y adaptadores)</text>
+  <text x="430" y="54" text-anchor="middle" class="cap">Las flechas indican quién llama a quién. Todo apunta hacia el dominio: afuera cambia, el núcleo no.</text>
+
+  <rect class="actor" x="250" y="80" width="360" height="52" rx="9"/>
+  <text x="430" y="103" text-anchor="middle" class="lbl">Actores</text>
+  <text x="430" y="121" text-anchor="middle" class="sub">Operador de almacén · Sistema contable</text>
+
+  <rect class="adapter" x="250" y="156" width="360" height="60" rx="9"/>
+  <text x="430" y="179" text-anchor="middle" class="lbl">Adaptadores de entrada</text>
+  <text x="430" y="199" text-anchor="middle" class="sub">Controlador REST · CLI / escritorio (MSI · APK)</text>
+
+  <rect class="port" x="250" y="240" width="360" height="60" rx="9"/>
+  <text x="430" y="263" text-anchor="middle" class="lbl">Puertos de entrada (interfaces)</text>
+  <text x="430" y="283" text-anchor="middle" class="sub">IEmisionService · INotaService · IMigracionService</text>
+
+  <rect class="domain" x="250" y="324" width="360" height="96" rx="12"/>
+  <text x="430" y="350" text-anchor="middle" class="lbl" font-size="17">DOMINIO</text>
+  <text x="430" y="372" text-anchor="middle" class="sub">Comprobante · LineaDetalle · Totales</text>
+  <text x="430" y="390" text-anchor="middle" class="sub">Reglas RN-01..RN-24 · cálculo IGV/ISC/ICBPER</text>
+  <text x="430" y="408" text-anchor="middle" class="sub" font-style="italic">sin dependencias de framework</text>
+
+  <rect class="port" x="250" y="444" width="360" height="60" rx="9"/>
+  <text x="430" y="467" text-anchor="middle" class="lbl">Puertos de salida (interfaces)</text>
+  <text x="430" y="487" text-anchor="middle" class="sub">IComprobanteRepository · IXmlBuilder · ISunatGateway</text>
+
+  <rect class="adapter" x="250" y="528" width="360" height="60" rx="9"/>
+  <text x="430" y="551" text-anchor="middle" class="lbl">Adaptadores de salida</text>
+  <text x="430" y="571" text-anchor="middle" class="sub">SQLite · XML + validación XSD · cliente OSE/SUNAT</text>
+
+  <!-- flechas descendentes -->
+  <line x1="430" y1="132" x2="430" y2="154" stroke="#374151" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="430" y1="216" x2="430" y2="238" stroke="#374151" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="430" y1="300" x2="430" y2="322" stroke="#374151" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="430" y1="420" x2="430" y2="442" stroke="#374151" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="430" y1="504" x2="430" y2="526" stroke="#374151" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- llaves laterales -->
+  <line x1="660" y1="156" x2="660" y2="300" stroke="#9CA3AF" stroke-width="1.5"/>
+  <line x1="655" y1="156" x2="665" y2="156" stroke="#9CA3AF" stroke-width="1.5"/>
+  <line x1="655" y1="300" x2="665" y2="300" stroke="#9CA3AF" stroke-width="1.5"/>
+  <text x="672" y="232" class="side">periferia de entrada</text>
+
+  <line x1="660" y1="444" x2="660" y2="588" stroke="#9CA3AF" stroke-width="1.5"/>
+  <line x1="655" y1="444" x2="665" y2="444" stroke="#9CA3AF" stroke-width="1.5"/>
+  <line x1="655" y1="588" x2="665" y2="588" stroke="#9CA3AF" stroke-width="1.5"/>
+  <text x="672" y="520" class="side">periferia de salida</text>
+
+  <line x1="200" y1="324" x2="200" y2="420" stroke="#9CA3AF" stroke-width="1.5"/>
+  <line x1="195" y1="324" x2="205" y2="324" stroke="#9CA3AF" stroke-width="1.5"/>
+  <line x1="195" y1="420" x2="205" y2="420" stroke="#9CA3AF" stroke-width="1.5"/>
+  <text x="14" y="376" class="side">núcleo: sin dependencias</text>
+
+  <!-- leyenda -->
+  <rect x="30" y="618" width="16" height="11" class="domain"/>
+  <text x="52" y="628" class="cap">Dominio</text>
+  <rect x="140" y="618" width="16" height="11" class="port"/>
+  <text x="162" y="628" class="cap">Puerto</text>
+  <rect x="240" y="618" width="16" height="11" class="adapter"/>
+  <text x="262" y="628" class="cap">Adaptador</text>
+  <rect x="360" y="618" width="16" height="11" class="actor"/>
+  <text x="382" y="628" class="cap">Actor</text>
+</svg>

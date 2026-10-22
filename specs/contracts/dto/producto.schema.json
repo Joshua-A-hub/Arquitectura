@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://abc-software.pe/schemas/producto.json",
+  "title": "Producto",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "codigo",
+    "descripcion",
+    "unidad_medida",
+    "precio_unitario",
+    "afectacion_igv",
+    "es_bolsa_plastica"
+  ],
+  "properties": {
+    "codigo": { "type": "string", "minLength": 1, "maxLength": 30 },
+    "descripcion": { "type": "string", "minLength": 3, "maxLength": 200 },
+    "unidad_medida": {
+      "type": "string",
+      "enum": ["NIU", "KGM", "BX", "LTR", "ZZ"],
+      "description": "Catálogo 3"
+    },
+    "precio_unitario": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Precio de venta al público (incluye IGV)"
+    },
+    "afectacion_igv": {
+      "type": "string",
+      "enum": ["10", "11", "20", "21", "30", "31", "40"],
+      "description": "Catálogo 7"
+    },
+    "tasa_isc": { "type": "number", "minimum": 0, "maximum": 50, "default": 0 },
+    "es_bolsa_plastica": { "type": "boolean" },
+    "stock_actual": { "type": "number", "minimum": 0 }
+  }
+}

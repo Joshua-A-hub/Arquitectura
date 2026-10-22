@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 660" width="900" height="660" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .box { fill: #EEF2FF; stroke: #4338CA; stroke-width: 2; }
+      .box2 { fill: #ECFDF5; stroke: #047857; stroke-width: 2; }
+      .box3 { fill: #FEF3C7; stroke: #B45309; stroke-width: 2; }
+      .lbl { font-size: 16px; font-weight: 600; fill: #111827; }
+      .sub { font-size: 12.5px; fill: #374151; }
+      .cap { font-size: 12px; fill: #6B7280; }
+      .ln { stroke: #374151; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="900" height="660" fill="#FFFFFF"/>
+  <text x="450" y="34" text-anchor="middle" class="lbl" font-size="21">Arquitectura MVC — monolito en capas (situación actual)</text>
+  <text x="450" y="56" text-anchor="middle" class="cap">Cada capa solo conoce a la siguiente · el dominio no conoce la UI ni la base de datos</text>
+
+  <!-- Cliente -->
+  <rect class="box3" x="330" y="80" width="240" height="58" rx="10"/>
+  <text x="450" y="105" text-anchor="middle" class="lbl">Cliente / Operador</text>
+  <text x="450" y="125" text-anchor="middle" class="sub">Windows (MSI) · Android (APK)</text>
+
+  <!-- Vista -->
+  <rect class="box" x="300" y="176" width="300" height="58" rx="10"/>
+  <text x="450" y="201" text-anchor="middle" class="lbl">VISTA (UI)</text>
+  <text x="450" y="221" text-anchor="middle" class="sub">formulario de emisión · pantalla de consulta</text>
+
+  <!-- Controlador -->
+  <rect class="box" x="245" y="272" width="410" height="58" rx="10"/>
+  <text x="450" y="297" text-anchor="middle" class="lbl">CONTROLADOR</text>
+  <text x="450" y="317" text-anchor="middle" class="sub">EmisionController · NotaController · MigracionController</text>
+
+  <!-- Modelo / dominio -->
+  <rect class="box" x="245" y="368" width="410" height="86" rx="10"/>
+  <text x="450" y="392" text-anchor="middle" class="lbl">MODELO / DOMINIO</text>
+  <text x="450" y="412" text-anchor="middle" class="sub">Comprobante · LineaDetalle · Totales · Reglas RN-01..RN-24</text>
+  <text x="450" y="432" text-anchor="middle" class="sub">cálculo IGV/ISC/ICBPER · numeración · validaciones</text>
+
+  <!-- Repositorio -->
+  <rect class="box2" x="85" y="492" width="255" height="58" rx="10"/>
+  <text x="212" y="517" text-anchor="middle" class="lbl">REPOSITORIO</text>
+  <text x="212" y="537" text-anchor="middle" class="sub">ComprobanteRepository (interfaz)</text>
+
+  <!-- Adaptador SUNAT -->
+  <rect class="box2" x="560" y="492" width="255" height="58" rx="10"/>
+  <text x="687" y="517" text-anchor="middle" class="lbl">ADAPTADOR SUNAT / OSE</text>
+  <text x="687" y="537" text-anchor="middle" class="sub">firma XML · envío · lectura de CDR</text>
+
+  <!-- Persistencia -->
+  <rect x="85" y="588" width="255" height="50" rx="10" fill="#F3F4F6" stroke="#6B7280" stroke-width="2"/>
+  <text x="212" y="618" text-anchor="middle" class="sub">SQLite · archivos XML firmados</text>
+
+  <rect x="560" y="588" width="255" height="50" rx="10" fill="#F3F4F6" stroke="#6B7280" stroke-width="2"/>
+  <text x="687" y="618" text-anchor="middle" class="sub">OSE / SUNAT (externo)</text>
+
+  <!-- flechas -->
+  <line class="ln" x1="450" y1="138" x2="450" y2="174"/>
+  <line class="ln" x1="450" y1="234" x2="450" y2="270"/>
+  <line class="ln" x1="450" y1="330" x2="450" y2="366"/>
+  <line class="ln" x1="380" y1="454" x2="240" y2="490"/>
+  <line class="ln" x1="520" y1="454" x2="660" y2="490"/>
+  <line class="ln" x1="212" y1="550" x2="212" y2="586"/>
+  <line class="ln" x1="687" y1="550" x2="687" y2="586"/>
+
+  <!-- notas laterales -->
+  <text x="30" y="250" class="cap">Entrada</text>
+  <text x="30" y="268" class="cap">del usuario</text>
+  <text x="760" y="250" class="cap">Salida hacia</text>
+  <text x="760" y="268" class="cap">servicios externos</text>
+</svg>

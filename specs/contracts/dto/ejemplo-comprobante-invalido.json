@@ -1,0 +1,24 @@
+{
+  "tipo": "02",
+  "serie": "F001",
+  "fecha_emision": "2026/10/22",
+  "hora_emision": "25:99:00",
+  "moneda": "PEN",
+  "forma_pago": "CONTADO",
+  "cliente": {
+    "tipo_documento": "1",
+    "numero_documento": "20512345671",
+    "razon_social": "X"
+  },
+  "detalle": [
+    {
+      "numero_linea": 1,
+      "producto_codigo": "ARR-50KG",
+      "descripcion": "SACO DE ARROZ 50KG",
+      "unidad_medida": "NIU",
+      "cantidad": 0,
+      "precio_unitario": 45.0,
+      "afectacion_igv": "10"
+    }
+  ]
+}

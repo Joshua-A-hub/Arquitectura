@@ -1,0 +1,20 @@
+﻿# Entornos y artefactos locales
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Entregables generados
+out/
+*.zip
+
+# Editores / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+.env
