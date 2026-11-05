@@ -130,7 +130,9 @@ examen/
 │       ├── 05-migracion-legado.md
 │       ├── 06-distribucion-msi-apk.md
 │       ├── 07-diagrama-clases.svg/.png            E1
-│       └── 08-tabla-match-sunat-ubl.md            match por campo
+│       ├── 08-tabla-match-sunat-ubl.md            match por campo
+│       ├── 09-libros-sunat.md                    libros 12.1 y 14.1
+│       └── 10-anexo2-ple.md                      campos del Anexo 2 del PLE
 ├── specs/
 │   ├── README.md                 reglas de la carpeta
 │   ├── adr/                      0001 MVC→Hexagonal · 0002 UBL/XSD · 0003 multiplataforma · 0004 IXmlBuilder · 0005 Decimal · 0006 outbox

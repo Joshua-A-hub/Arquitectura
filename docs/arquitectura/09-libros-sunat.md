@@ -11,6 +11,8 @@ pero tienen estructura propia.
 > El proyecto anterior solo mencionaba un "kardex" de pasada. Sin estos dos libros, el sistema no
 > cierra: el 12.1 justifica el stock y el 14.1 declaración el ingreso.
 
+> Mapeo campo a campo al **Anexo 2** del PLE: [10-anexo2-ple.md](10-anexo2-ple.md).
+
 ---
 
 ## 1. Libro 12.1 — Inventario permanente en unidades físicas

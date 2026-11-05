@@ -121,6 +121,9 @@ Cada fila cruza el **dato exigido por SUNAT** con su **elemento UBL 2.1**, el **
 
 ## J. Libros SUNAT (12.1 y 14.1)
 
+> Estructura de negocio en [`09-libros-sunat.md`](09-libros-sunat.md) y mapeo campo a campo al
+> **Anexo 2** del PLE en [`10-anexo2-ple.md`](10-anexo2-ple.md).
+
 | N° | Dato SUNAT | Norma / Catálogo | Origen (UBL o dominio) | Card. | Campo DTO | Regla / validación | Prueba |
 |---|---|---|---|---|---|---|---|
 | 60 | Establecimiento y tipo de existencia (libro 12.1) | **Tabla 5** SUNAT | no viaja en el XML: se deriva de la línea y del almacén | 1 | `movimiento.establecimiento` + `tipo_existencia` | `docs/arquitectura/09-libros-sunat.md` | QA-25 |

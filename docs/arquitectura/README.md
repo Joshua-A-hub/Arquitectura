@@ -16,6 +16,7 @@ ambas. Los `.svg` abren en cualquier navegador, se insertan en Word y se imprime
 | Distribución MSI/APK | [`06-distribucion-msi-apk.md`](06-distribucion-msi-apk.md) | ¿Cómo corre en Windows y Android? |
 | Diagrama de clases (E1) | [`07-diagrama-clases.md`](07-diagrama-clases.md) · [SVG](07-diagrama-clases.svg) · [PNG](07-diagrama-clases.png) | ¿Cómo se relacionan las entidades? |
 | **Libros SUNAT 12.1 y 14.1** | [`09-libros-sunat.md`](09-libros-sunat.md) | ¿Cómo se generan el inventario permanente y el registro de ventas? |
+| **Anexo 2 del PLE** | [`10-anexo2-ple.md`](10-anexo2-ple.md) | ¿Qué campo de SUNAT corresponde a cada dato del dominio? |
 | **Conformidad UBL 2.1** | [`../../specs/contracts/ubl/informe-xsd-oficial.md`](../../specs/contracts/ubl/informe-xsd-oficial.md) | ¿El XML cumple el esquema oficial de OASIS? |
 | Benchmark de usuarios | [`../benchmark-facturacion.md`](../benchmark-facturacion.md) | ¿Qué dolores reales resuelve el diseño? |
 
