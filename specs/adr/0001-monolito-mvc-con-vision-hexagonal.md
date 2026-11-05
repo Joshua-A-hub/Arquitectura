@@ -29,7 +29,7 @@ dominio que **no importan el framework web**.
 **Positivas**
 - Se entrega rápido, con MVC reconocible para el equipo.
 - La migración a hexagonal es cambiar implementaciones, no reescribir reglas.
-- Las reglas RN-01..RN-24 se prueban sin levantar servidor ni base de datos.
+- Las reglas RN-01..RN-25 se prueban sin levantar servidor ni base de datos.
 
 **Negativas**
 - Hay un costo inicial de interfaces que en un MVC "puro" no existirían.

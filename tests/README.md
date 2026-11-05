@@ -7,7 +7,7 @@ tests/
 ├── unit/
 │   ├── generacion_xml/     Taller 2: generación del XML UBL (lo que se evalúa)
 │   │   ├── fabrica.py      escenarios del dominio (sin HTTP ni base de datos)
-│   │   ├── test_*.py       98 pruebas de generación
+│   │   ├── test_*.py       115 pruebas de generación
 │   │   └── esperados/      XML de referencia ("golden files")
 │   └── test_dominio.py     44 pruebas de cálculo y reglas
 ├── acceptance/             escenarios Gherkin de specs/features/ (fase 2)
@@ -20,7 +20,7 @@ tests/
 
 | Nivel | Estado |
 |---|---|
-| `unit/generacion_xml` | **implementado**: 98 pruebas de generación + conformidad con el XSD oficial |
+| `unit/generacion_xml` | **implementado**: 115 pruebas de generación + conformidad con el XSD oficial |
 | `unit/test_dominio.py` | **implementado**: 44 pruebas (RUC, serie, IGV, ISC, ICBPER, letras, cuotas) |
 | `acceptance` | especificado (Gherkin), se implementa cuando exista la API |
 | `integration` | especificado, requiere repositorio y OSE |

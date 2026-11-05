@@ -34,7 +34,7 @@ ambas. Los `.svg` abren en cualquier navegador, se insertan en Word y se imprime
 |---|---|---|
 | **Vista** | Formularios, pantallas, validación de UI | Reglas tributarias, SQL |
 | **Controlador** | Recibir la petición, orquestar, decidir códigos HTTP | Cálculo de IGV, acceso a datos |
-| **Modelo / Dominio** | Entidades, reglas RN-01..RN-24, cálculo de tributos, numeración | Referencias a la UI o al framework web |
+| **Modelo / Dominio** | Entidades, reglas RN-01..RN-25, cálculo de tributos, numeración | Referencias a la UI o al framework web |
 | **Repositorio** | Interfaz de persistencia | Reglas de negocio |
 | **Adaptador SUNAT** | Firma, envío y lectura de CDR | Cálculo de totales |
 

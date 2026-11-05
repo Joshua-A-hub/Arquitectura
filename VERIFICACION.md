@@ -40,7 +40,7 @@ oficiales de OASIS**.
 | # | Prueba | Comando | Resultado |
 |---|---|---|---|
 | 1 | Contratos: 9 schemas, 3 ejemplos y OpenAPI | `validar_contratos.py` | **17/17**, 0 fallos |
-| 2 | XML contra el esquema oficial + totales + RUC | `validar_xml_ubl.py` | **13/13**, 0 fallos |
+| 2 | XML contra el esquema oficial + totales + RUC | `validar_xml_ubl.py` | **12/12**, 0 fallos |
 | 3 | Verificación integral (enlaces, BOM, cifras, reglas, artefactos) | `verificar_entrega.py` | **8/8**, código 0 |
 | 4 | Enlaces internos de 30 documentos | incluido en 3 | 0 roto |
 | 5 | Esquemas oficiales de OASIS | `informe-xsd-oficial.md` | 16 archivos, compila, **XML válido** |
@@ -126,9 +126,9 @@ Los 32 puntos que descontó la rúbrica tienen corrección y prueba. Lo que qued
 | Comprobación | Resultado |
 |---|---|
 | Clases generadas desde los XSD oficiales (xsdata) | 15 módulos, 3.1 MB, regenerables con scripts/generar_clases_ubl.ps1 |
-| Pruebas unitarias de generación | **98** (cabecera, partes, líneas, tributos, totales, conformidad, regresión) |
+| Pruebas unitarias de generación | **115** (cabecera, partes, líneas, tributos, totales, conformidad, regresión) |
 | Pruebas unitarias de dominio | **44** (RUC, serie, IGV, ISC 01/02/03, ICBPER, letras, cuotas) |
-| **Total de la suite** | **142 pruebas, 0 fallos** |
+| **Total de la suite** | **159 pruebas, 0 fallos** |
 | Conformidad | los **8 escenarios** validan contra UBL-Invoice-2.1.xsd (NC/ND contra sus XSD) |
 | Prueba de mutación | romper versión UBL, numeración de líneas o tasa de IGV hace fallar **21 pruebas** |
 | CLI (segundo adaptador de entrada) | python -m src.cli generar-xml genera, valida y escribe el XML |

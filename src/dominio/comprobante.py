@@ -209,6 +209,10 @@ class Comprobante:
             raise ErrorReglaNegocio("RN-16", "una nota no puede referenciar otra nota")
         if not self.tipo.es_nota and self.motivo is not None:
             raise ErrorReglaNegocio("RN-16", "solo las notas llevan motivo de catálogo 09/10")
+        # RN-25: toda factura y boleta declara forma de pago (RS 193-2020).
+        # Si no se indica, se asume CONTADO; las notas no la exigen.
+        if not self.tipo.es_nota and self.forma_pago is None:
+            object.__setattr__(self, "forma_pago", FormaPago(TipoFormaPago.CONTADO))
         # RN-16: si hay cuotas, deben sumar exactamente el importe total
         if self.forma_pago is not None and self.forma_pago.cuotas:
             suma = sum((cuota.monto for cuota in self.forma_pago.cuotas), CERO)

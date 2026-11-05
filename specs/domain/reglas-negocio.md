@@ -274,6 +274,20 @@ Fichas con fecha futura o sin fecha → `OBSERVADA`. No se inventan datos.
 
 ---
 
+### RN-25 — Forma de pago obligatoria en factura y boleta
+
+Toda **factura (`01`) y boleta (`03`)** declara `cac:PaymentTerms` con `cbc:ID = FormaPago` y
+`cbc:PaymentMeansID` = `Contado` o `Credito` (RS 193-2020). Si el dominio no recibe la forma de
+pago, se asume **CONTADO**: nunca se omite.
+
+- Al crédito, cada cuota viaja como `PaymentTerms` con `PaymentMeansID = Cuota001…` y
+  `PaymentDueDate`; la suma de cuotas debe coincidir con el importe total (RN-16).
+- Las **notas de crédito y débito** no exigen forma de pago.
+- **Origen:** RS 193-2020. **Aplica en:** `Comprobante.forma_pago`.
+- **Prueba:** `tests/unit/reglas/test_rn25_forma_pago.py`.
+
+---
+
 ## Resumen de reglas
 
 | Grupo | Reglas | Cantidad |
@@ -284,4 +298,5 @@ Fichas con fecha futura o sin fecha → `OBSERVADA`. No se inventan datos.
 | Emisión | RN-13 a RN-17 | 5 |
 | SUNAT | RN-18 a RN-20 | 3 |
 | Migración | RN-21 a RN-24 | 4 |
-| **Total** | | **24** |
+| Forma de pago | RN-25 | 1 |
+| **Total** | | **25** |

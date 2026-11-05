@@ -33,7 +33,7 @@ from src.adaptadores.salida.ubl.generated.maindoc.ubl_debit_note_2_1 import Debi
 from src.adaptadores.salida.ubl.generated.maindoc.ubl_invoice_2_1 import Invoice
 from src.dominio.catalogos import TipoComprobante, Tributo
 from src.dominio.comprobante import Comprobante, Linea
-from src.dominio.tributos import CERO
+from src.dominio.tributos import CERO, porcentaje_efectivo
 
 _DOS_DECIMALES = Decimal("0.01")
 _SEIS_DECIMALES = Decimal("0.000001")
@@ -293,7 +293,17 @@ class GeneradorUblXsdata:
                 )
             )
         if t.total_isc:
-            subtotales.append(self._subtotal(Tributo.ISC, moneda, t.base_isc, t.total_isc))
+            # Regla 3108: base × Percent / 100 = monto. El % se deriva cuando el sistema
+            # no tiene tasa propia (02 y 03).
+            subtotales.append(
+                self._subtotal(
+                    Tributo.ISC,
+                    moneda,
+                    t.base_isc,
+                    t.total_isc,
+                    porcentaje=porcentaje_efectivo(t.total_isc, t.base_isc),
+                )
+            )
         for monto, tributo in (
             (t.op_exonerada, Tributo.EXONERADO),
             (t.op_inafecta, Tributo.INAFECTO),
@@ -302,7 +312,19 @@ class GeneradorUblXsdata:
             if monto:
                 subtotales.append(self._subtotal(tributo, moneda, monto, CERO))
         if t.total_icbper:
-            subtotales.append(self._subtotal(Tributo.ICBPER, moneda, None, t.total_icbper))
+            # ICBPER es un monto por unidad (RN-07): el XML declara el monto unitario
+            # y la cantidad total de bolsas, también en el resumen del documento.
+            bolsas = sum((ln.cantidad for ln in c.lineas if ln.aplica_icbper), Decimal("0"))
+            subtotales.append(
+                self._subtotal(
+                    Tributo.ICBPER,
+                    moneda,
+                    None,
+                    t.total_icbper,
+                    per_unit=Decimal("0.50"),
+                    base_medida=(bolsas, "NIU"),
+                )
+            )
 
         return [
             cac.TaxTotal(tax_amount=cbc.TaxAmount(value=t.total_impuestos, currency_id=moneda), tax_subtotal=subtotales)
@@ -387,9 +409,9 @@ class GeneradorUblXsdata:
                 self._subtotal(
                     Tributo.ISC,
                     moneda,
-                    t.valor_venta,
+                    t.base_isc,
                     t.isc,
-                    porcentaje=ln.isc.tasa_porcentual,
+                    porcentaje=ln.isc.porcentaje(monto=t.isc, base=t.base_isc),
                     tier_range=ln.isc.sistema.value,
                     per_unit=ln.isc.monto_fijo,
                 )

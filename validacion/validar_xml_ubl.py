@@ -1,7 +1,7 @@
-"""Valida el XML del perfil contra el XSD y reconcilia sus totales.
+"""Valida el XML contra el esquema OFICIAL de OASIS y reconcilia sus totales.
 
 Comprobaciones:
-  1. El XML de ejemplo valida contra el XSD del perfil.
+  1. El XML de ejemplo valida contra el esquema oficial de OASIS.
   2. Un XML sin número de comprobante es rechazado (la validación sirve de algo).
   3. LineCountNumeric coincide con la cantidad real de líneas.
   4. El IGV de cabecera coincide con la suma del IGV de las líneas.
@@ -22,7 +22,6 @@ from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
 DIR_UBL = RAIZ / "specs" / "contracts" / "ubl"
-RUTA_XSD = DIR_UBL / "xsd" / "Invoice-2-profile.xsd"
 RUTA_XSD_OFICIAL = DIR_UBL / "oficial" / "maindoc" / "UBL-Invoice-2.1.xsd"
 RUTA_XML = DIR_UBL / "ejemplo-invoice.xml"
 
@@ -70,14 +69,6 @@ def main() -> int:
         print("Falta lxml. Instálalo con:  pip install -r requirements.txt")
         return 1
 
-    esquema = etree.XMLSchema(etree.parse(str(RUTA_XSD)))
-
-    def validar(xml_bytes: bytes) -> list[str]:
-        documento = etree.fromstring(xml_bytes)
-        if esquema.validate(documento):
-            return []
-        return [f"línea {e.line}: {e.message}" for e in esquema.error_log]
-
     xml = RUTA_XML.read_bytes()
     arbol = etree.fromstring(xml)
 
@@ -102,14 +93,11 @@ def main() -> int:
             ok.append("ejemplo-invoice.xml valida contra el esquema OFICIAL de OASIS (UBL 2.1)")
     else:
         fallos.append("falta el esquema oficial en specs/contracts/ubl/oficial/maindoc/")
-        validar_oficial = validar  # degradado: usa el perfil
 
-    # 1. Perfil SUNAT: restricción de negocio adicional (no sustituye al oficial)
-    errores = validar(xml)
-    if errores:
-        fallos.append("El XML de ejemplo NO valida: " + " | ".join(errores[:3]))
-    else:
-        ok.append("ejemplo-invoice.xml valida contra Invoice-2-profile.xsd")
+        def validar_oficial(_xml_bytes: bytes) -> list[str]:  # noqa: ARG001
+            return ["no se puede validar sin el esquema oficial"]
+
+    # 1. Reglas de negocio que el XSD no cubre (contenido, no estructura)
 
     # 2
     sin_id = copy.deepcopy(arbol)

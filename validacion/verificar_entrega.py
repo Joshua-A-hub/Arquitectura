@@ -94,7 +94,7 @@ def verificar_cifras() -> None:
     esperado = {
         "cruces de la matriz": (RAIZ / "docs/arquitectura/04-matriz-trazabilidad-normativa.md", r"^\|\s*\d+\s*\|", 63),
         "campos de la tabla de match": (RAIZ / "docs/arquitectura/08-tabla-match-sunat-ubl.md", r"^\|\s*\d+\s*\|", 47),
-        "reglas de negocio": (RAIZ / "specs/domain/reglas-negocio.md", r"^### RN-\d+", 24),
+        "reglas de negocio": (RAIZ / "specs/domain/reglas-negocio.md", r"^### RN-\d+", 25),
         "escenarios Gherkin": (RAIZ / "specs/features/casos-de-uso.md", r"```gherkin", 10),
         "catálogos SUNAT": (RAIZ / "specs/contracts/catalogs/catalogos-sunat.md", r"^## Catálogo", 10),
     }

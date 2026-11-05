@@ -35,7 +35,7 @@ El examen enumera cuatro artefactos. Esta entrega los cubre uno a uno, con la mi
 1. Este resumen
 2. 00-caso.md                       ← qué pidió el examen y qué requisitos se derivaron
 3. specs/domain/modelo-dominio.md   ← las entidades y sus reglas
-4. specs/domain/reglas-negocio.md   ← las 24 reglas numeradas (RN-01..RN-24)
+4. specs/domain/reglas-negocio.md   ← las 25 reglas numeradas (RN-01..RN-25)
 5. docs/arquitectura/README.md      ← los dos diagramas y el plan de migración
 6. specs/contracts/facturacion-api.yaml  ← el contrato de servicios
 7. docs/arquitectura/04-matriz...   ← el cruce normativo (el corazón de la entrega)
@@ -77,7 +77,7 @@ validar_contratos.py → 13 comprobaciones correctas, 0 fallos
   OK  OpenAPI: 12 rutas declaradas
 
 validar_xml_ubl.py → 6 comprobaciones correctas, 0 fallos
-  OK  ejemplo-invoice.xml valida contra Invoice-2-profile.xsd
+  OK  ejemplo-invoice.xml valida contra el esquema OFICIAL de OASIS (UBL 2.1)
   OK  un XML sin cbc:ID es rechazado por el XSD
   OK  suma de líneas = 449.83 coincide con el total
   OK  TaxInclusiveAmount = 530.00 incluye IGV e ICBPER
@@ -90,7 +90,7 @@ validar_xml_ubl.py → 6 comprobaciones correctas, 0 fallos
 | Restricción del examen | Cómo se cumple | Archivo |
 |---|---|---|
 | Migración del legado sin perder trazabilidad | mapeo campo a campo + estado `OBSERVADA` con motivo | [`docs/arquitectura/05`](docs/arquitectura/05-migracion-legado.md) |
-| Normativa tributaria peruana | 24 reglas + 10 catálogos + matriz de 63 cruces | [`docs/arquitectura/04`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) |
+| Normativa tributaria peruana | 25 reglas + 10 catálogos + matriz de 63 cruces | [`docs/arquitectura/04`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) |
 | **Normas citadas (RS 097-2012, RS 234-2006)** | qué regula cada norma y dónde se implementa | [`marco-normativo`](specs/domain/marco-normativo.md) |
 | Catálogo 06 como punto clave | tabla completa + reglas de combinación por comprobante | [`catalogs`](specs/contracts/catalogs/catalogos-sunat.md) |
 | Monolito MVC con visión hexagonal **en los specs** | 11 requisitos ASR verificables + 2 diagramas + plan de migración | [`specs/architecture`](specs/architecture/mvc-hexagonal.md) |
@@ -108,7 +108,7 @@ que la fase 2 escriba código sin reinterpretar el negocio.
 | Ya definido en esta fase | Se implementa en la fase 2 |
 |---|---|
 | Puertos e interfaces (`src/puertos.py`) | Controladores, servicios de dominio y adaptadores |
-| Reglas RN-01..RN-24 | Cálculo ejecutable de IGV, ISC e ICBPER |
+| Reglas RN-01..RN-25 | Cálculo ejecutable de IGV, ISC e ICBPER |
 | Contrato OpenAPI + DTOs (JSON Schema) | Endpoints funcionando contra el contrato |
 | Mock (`tests/mocks/mock_db.py`) y mapa de pruebas | Tests ejecutados contra la aplicación |
 | Flujo de firma, validación XSD y envío | Firma XMLDSig real y cliente OSE |

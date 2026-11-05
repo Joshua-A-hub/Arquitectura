@@ -240,23 +240,22 @@ como emitido.
 
 ### 7.5 Estado de la validación
 
-**Materializado y verificado.** El perfil está escrito como XSD en
-[`xsd/`](xsd/) (`Invoice-2-profile.xsd` + los dos componentes) y el XML de ejemplo
-([`ejemplo-invoice.xml`](ejemplo-invoice.xml)) se valida contra él:
+**Validado contra el esquema oficial.** El perfil no se materializa como XSD propio: la
+autoridad es el esquema de OASIS. El XML de ejemplo lo **genera** el adaptador del Taller 2 y se
+valida contra ese esquema:
 
 ```bash
 python validacion/validar_xml_ubl.py
 ```
 
-Resultado: **6 comprobaciones, 0 fallos** — el XML valida, un XML sin `cbc:ID` es rechazado y la
-aritmética de totales cuadra.
+Resultado: **12 comprobaciones, 0 fallos** — valida contra OASIS, un XML sin `cbc:ID` es rechazado y
+la aritmética de totales cuadra.
 
 | Archivo | Contenido |
 |---|---|
-| `xsd/Invoice-2-profile.xsd` | raíz `Invoice`, orden obligatorio de elementos |
-| `xsd/CommonBasicComponents-2.xsd` | componentes simples (`cbc:`) con sus atributos |
-| `xsd/CommonAggregateComponents-2.xsd` | agregados (`cac:`) y elementos globales |
-| `ejemplo-invoice.xml` | el mismo comprobante que el DTO JSON, en UBL |
+| `oficial/maindoc/UBL-Invoice-2.1.xsd` | esquema oficial (autoridad de validación) |
+| `oficial/common/*.xsd` | los 13 componentes que importa |
+| `ejemplo-invoice.xml` | el comprobante del DTO JSON, **generado** por el adaptador |
 
 > **Hallazgo del ejercicio:** una cantidad negativa **pasa** el XSD (porque `xs:decimal` lo admite)
 > pero la rechaza la regla RN-14. Eso demuestra por qué el diseño tiene **dos capas de validación**:

@@ -20,7 +20,7 @@ Cada fila cruza el **dato exigido por SUNAT** con su **elemento UBL 2.1**, el **
 |---|---|---|---|---|---|---|---|
 | 1 | Versión UBL | Perfil SUNAT 2.1 | `/cbc:UBLVersionID` | 1 | — (fijo) | valor `2.1` | QA-01 |
 | 2 | CustomizationID | Perfil SUNAT | `/cbc:CustomizationID` | 1 | — (fijo) | valor del perfil (`2.0`) | QA-01 |
-| 3 | **`serie_numero`** (identificador del comprobante) | Catálogo 1 + serie/correlativo | `/cbc:ID` = `SERIE-CORRELATIVO` | 1 | `serie_numero` (serie + correlativo asignado) | RN-10, RN-11, RN-12 | QA-02 |
+| 3 | **`serie_numero`** (identificador del comprobante) | Catálogo 1 + serie/correlativo | `/cbc:ID` = `SERIE-CORRELATIVO` | 1 | `serie_numero` (serie + correlativo asignado) | RN-10, RN-11, RN-25, RN-12 | QA-02 |
 | 4 | Tipo de comprobante | **Catálogo 1** (01, 03, 07, 08) | `/cbc:InvoiceTypeCode` | 1 | `tipo` | enum cerrado | QA-03 |
 | 5 | Tipo de operación | **Catálogo 51** | `/cbc:InvoiceTypeCode/@listID` | 1 | `tipo_operacion` | patrón 4 dígitos, por defecto `0101` | QA-03 |
 | 6 | Fecha de emisión | Norma de emisión | `/cbc:IssueDate` | 1 | `fecha_emision` | RN-13 (no futura) | QA-04 |
@@ -144,7 +144,7 @@ Cada fila cruza el **dato exigido por SUNAT** con su **elemento UBL 2.1**, el **
 | Firma y envío | 4 | XMLDSig + CDR |
 | Migración | 5 | Trazabilidad REQ-01 |
 | **Libros SUNAT** | **4** | Tablas 5, 6 y 10 + formato 14.1 |
-| **Total** | **63** | 10 catálogos + 24 reglas + 2 libros |
+| **Total** | **63** | 10 catálogos + 25 reglas + 2 libros |
 
 ## Casos de prueba referenciados
 

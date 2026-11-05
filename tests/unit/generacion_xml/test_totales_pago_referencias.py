@@ -64,9 +64,10 @@ def test_forma_de_pago_al_credito_con_cuotas() -> None:
     assert f.texto(xml, "cac:PaymentTerms[1]/cbc:Amount") == "210.00"
 
 
-def test_sin_forma_de_pago_no_se_emite_payment_terms() -> None:
+def test_toda_factura_declara_forma_de_pago() -> None:
+    """RN-25: aunque el dominio no la reciba, se asume CONTADO (RS 193-2020)."""
     xml = f.arbol(f.factura_contado())
-    assert not xml.xpath("cac:PaymentTerms", namespaces=f.NS)
+    assert f.todos(xml, "cac:PaymentTerms/cbc:PaymentMeansID") == ["Contado"]
 
 
 @pytest.mark.parametrize(

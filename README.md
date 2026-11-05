@@ -69,7 +69,7 @@ python validacion/verificar_entrega.py     # todo en uno
 |---|---|---|
 | [`verificar_entrega.py`](validacion/verificar_entrega.py) | integral: contratos, XML, enlaces, cifras, artefactos | **8/8** |
 | [`validar_contratos.py`](validacion/validar_contratos.py) | 9 JSON Schemas, 3 ejemplos y el OpenAPI (parseo real) | **17/17** |
-| [`validar_xml_ubl.py`](validacion/validar_xml_ubl.py) | XML contra XSD, totales, RUC (módulo 11) | **13/13** |
+| [`validar_xml_ubl.py`](validacion/validar_xml_ubl.py) | XML contra XSD, totales, RUC (módulo 11) | **12/12** |
 
 Incluyen **controles negativos** que demuestran que las pruebas sirven: quitar `serie_numero` del
 ejemplo rompe la validación (código de salida 1); adulterar el IGV de cabecera rompe la reconciliación
@@ -85,7 +85,7 @@ dominio y evaluada con **pruebas unitarias de generación**. Detalle completo en
 
 ```bash
 pip install -r requirements-dev.txt
-pytest tests/unit -q                 # 142 pruebas (98 de generación + 44 de dominio)
+pytest tests/unit -q                 # 159 pruebas (115 de generación + 44 de dominio)
 python -m src.cli generar-xml specs/ejemplos/emision-cli.json --salida out
 ```
 
@@ -142,7 +142,7 @@ examen/
 │   ├── cli.py                    segundo adaptador de entrada (generar-xml)
 │   └── puertos.py                interfaces del hexágono
 ├── tests/
-│   ├── unit/generacion_xml/      98 pruebas de generación + esperados/*.xml
+│   ├── unit/generacion_xml/      115 pruebas de generación + esperados/*.xml
 │   ├── unit/test_dominio.py      44 pruebas de dominio
 │   └── mocks/mock_db.py          datos de prueba
 ├── scripts/                      regeneración de las clases desde el XSD
@@ -170,7 +170,7 @@ examen/
 | *"monolítica limpia … MVC … Arquitectura Hexagonal o Clean"* | [`mvc-hexagonal`](specs/architecture/mvc-hexagonal.md) · [ADR-0001](specs/adr/0001-monolito-mvc-con-vision-hexagonal.md) |
 | *"Windows … Android … instalador MSI … APK"* | [`06-distribucion`](docs/arquitectura/06-distribucion-msi-apk.md) · [ADR-0003](specs/adr/0003-estrategia-multiplataforma.md) |
 | *"detalle los casos posibles … Nubefact"* | [`casos de uso`](specs/features/casos-de-uso.md) · [`benchmark`](docs/benchmark-facturacion.md) |
-| *"estudiando el archivo UBL-Invoice-2.1.xsd"* | [`perfil UBL`](specs/contracts/ubl/perfil-invoice.md) · [`xsd/`](specs/contracts/ubl/xsd/) |
+| *"estudiando el archivo UBL-Invoice-2.1.xsd"* | [`perfil UBL`](specs/contracts/ubl/perfil-invoice.md) · [`xsd/`](specs/contracts/ubl/) |
 
 </details>
 
@@ -181,7 +181,7 @@ examen/
 | ✅ Incluye | ❌ No incluye |
 |---|---|
 | Contratos, DTOs y catálogos | Implementación de los endpoints |
-| 24 reglas de negocio numeradas | Cálculo ejecutable de IGV/ISC/ICBPER |
+| 25 reglas de negocio numeradas | Cálculo ejecutable de IGV/ISC/ICBPER |
 | Diagramas MVC y hexagonal | Código de controladores y adaptadores |
 | Puertos (interfaces) en `src/` | Implementación de esos puertos |
 | Mock y mapa de pruebas | Tests ejecutados contra la aplicación |

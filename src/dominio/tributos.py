@@ -20,15 +20,29 @@ TASA_IGV = Decimal("0.18")  # 18 % vigente
 TASA_ICBPER = Decimal("0.50")  # S/ 0.50 por bolsa plástica
 
 
+def porcentaje_efectivo(monto: Decimal, base: Decimal) -> Decimal:
+    """Tasa equivalente en % para que `base × tasa / 100 = monto` (regla SUNAT 3108).
+
+    Se usa cuando el sistema del catálogo 08 no declara una tasa propia
+    (sistema 02 específico y sistema 03 al valor).
+    """
+    if base == 0:
+        return CERO
+    return redondear(monto / base * Decimal("100"))
+
+
 @dataclass(frozen=True)
 class ConfiguracionISC:
     """ISC de una línea según el **catálogo 08** (sistema de cálculo).
 
-    | Sistema | Dato obligatorio | Fórmula |
-    |---|---|---|
-    | `01` ad valorem | `tasa` | valor de venta × tasa |
-    | `02` específico | `monto_fijo` | monto fijo por unidad × cantidad |
-    | `03` al valor | `precio_venta_publico` | (PVP − valor unitario) × cantidad |
+    | Sistema | Dato obligatorio | Fórmula | Base declarada |
+    |---|---|---|---|
+    | `01` ad valorem | `tasa` | valor de venta × tasa | valor de venta |
+    | `02` específico | `monto_fijo` | monto fijo por unidad × cantidad | valor de venta |
+    | `03` al valor | `precio_venta_publico` | (PVP − valor unitario) × cantidad | PVP × cantidad |
+
+    **Regla SUNAT 3108:** en el XML, `base × Percent / 100` debe dar el monto del ISC.
+    Por eso el porcentaje se **deriva** cuando el sistema no tiene una tasa propia.
     """
 
     sistema: SistemaISC
@@ -44,13 +58,6 @@ class ConfiguracionISC:
         if self.sistema is SistemaISC.PRECIO_VENTA_PUBLICO and self.precio_venta_publico is None:
             raise ErrorReglaNegocio("RN-06", "el sistema 03 (al valor) exige el precio de venta al público")
 
-    @property
-    def tasa_porcentual(self) -> Decimal | None:
-        """Tasa en porcentaje; en el sistema 02 se informa la equivalente (regla SUNAT 3108)."""
-        if self.tasa is not None:
-            return self.tasa * 100
-        return None
-
     def monto(self, *, valor_venta: Decimal, cantidad: Decimal, valor_unitario: Decimal) -> Decimal:
         """ISC de la línea según el sistema del catálogo 08."""
         if self.sistema is SistemaISC.AD_VALOR:
@@ -59,6 +66,18 @@ class ConfiguracionISC:
             return redondear(a_decimal(self.monto_fijo) * cantidad)
         pvp = a_decimal(self.precio_venta_publico)
         return redondear((pvp - valor_unitario) * cantidad)
+
+    def base_impuesto(self, *, valor_venta: Decimal, cantidad: Decimal) -> Decimal:
+        """Base sobre la que se declara el ISC en el XML."""
+        if self.sistema is SistemaISC.PRECIO_VENTA_PUBLICO:
+            return redondear(a_decimal(self.precio_venta_publico) * cantidad)
+        return redondear(valor_venta)
+
+    def porcentaje(self, *, monto: Decimal, base: Decimal) -> Decimal:
+        """Porcentaje a declarar para que `base × porcentaje / 100 = monto` (regla 3108)."""
+        if self.sistema is SistemaISC.AD_VALOR and self.tasa is not None:
+            return (self.tasa * 100).quantize(Decimal("0.01"))
+        return porcentaje_efectivo(monto, base)
 
 
 @dataclass(frozen=True)
@@ -70,6 +89,7 @@ class TributosLinea:
     igv: Decimal
     isc: Decimal
     icbper: Decimal
+    base_isc: Decimal = CERO
 
     @property
     def total(self) -> Decimal:
@@ -106,8 +126,10 @@ def calcular_linea(
         raise ErrorReglaNegocio("RN-15", "el descuento no puede superar el valor de la línea")
 
     monto_isc = CERO
+    base_isc = CERO
     if isc is not None:
         monto_isc = isc.monto(valor_venta=valor_exacto, cantidad=cantidad, valor_unitario=unitario)
+        base_isc = isc.base_impuesto(valor_venta=valor_exacto, cantidad=cantidad)
 
     # RN-08: el impuesto se calcula sobre la base exacta y se redondea **al final**.
     # Redondear la base antes de multiplicar desvía el IGV un céntimo (1.52 en vez de 1.53).
@@ -116,7 +138,14 @@ def calcular_linea(
     igv = redondear(base_igv_exacta * TASA_IGV) if afectacion.es_gravada else CERO
     icbper = redondear(TASA_ICBPER * cantidad) if aplica_icbper else CERO
 
-    return TributosLinea(valor_venta=valor_venta, base_igv=base_igv, igv=igv, isc=monto_isc, icbper=icbper)
+    return TributosLinea(
+        valor_venta=valor_venta,
+        base_igv=base_igv,
+        igv=igv,
+        isc=monto_isc,
+        icbper=icbper,
+        base_isc=base_isc,
+    )
 
 
 @dataclass(frozen=True)
@@ -159,7 +188,9 @@ def calcular_totales(lineas: list[tuple[AfectacionIGV, TributosLinea]]) -> Total
         total_igv += tributos.igv
         total_isc += tributos.isc
         total_icbper += tributos.icbper
-        base_isc += tributos.valor_venta
+        # J-2: la base global del ISC solo suma las líneas que pagan ISC.
+        if tributos.isc > 0:
+            base_isc += tributos.base_isc
 
     importe = op["gravada"] + op["exonerada"] + op["inafecta"] + op["exportacion"]
     importe = importe + total_igv + total_isc + total_icbper

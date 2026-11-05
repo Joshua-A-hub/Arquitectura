@@ -5,12 +5,12 @@
 
 **Respuesta en una línea.** Las clases Python se **generan desde los XSD oficiales con `xsdata`**; un
 adaptador traduce el agregado del dominio (`Comprobante`, `Linea`, `Totales`, `FormaPago`…) a esas
-clases y las serializa; **142 pruebas unitarias** verifican cada bloque del XML, su conformidad con el
+clases y las serializa; **159 pruebas unitarias** verifican cada bloque del XML, su conformidad con el
 esquema oficial y la regresión contra XML de referencia.
 
 ```powershell
 pip install -r requirements-dev.txt
-pytest tests/unit -q           # 142 pruebas (98 de generación + 44 de dominio)
+pytest tests/unit -q           # 159 pruebas (115 de generación + 44 de dominio)
 ```
 
 ---

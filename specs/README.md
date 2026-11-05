@@ -31,7 +31,7 @@ specs/
 |---|---|---|
 | `architecture/` | `mvc-hexagonal.md` | 11 requisitos ASR de MVC a Hexagonal |
 | `domain/` | `modelo-dominio.md` | 6 entidades, invariantes, máquina de estados, DTOs |
-| `domain/` | `reglas-negocio.md` | 24 reglas RN-01..RN-24 (impuestos, numeración, migración) |
+| `domain/` | `reglas-negocio.md` | 25 reglas RN-01..RN-25 (impuestos, numeración, migración) |
 | `domain/` | `marco-normativo.md` | normas citadas y su trazabilidad a las reglas |
 | `contracts/` | `facturacion-api.yaml` | contrato OpenAPI de 12 rutas + seguridad |
 | `contracts/dto/` | `*.schema.json` | 9 JSON Schemas (petición y respuesta) + ejemplos |

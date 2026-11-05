@@ -1,5 +1,9 @@
 # Informe de validación con esquemas oficiales OASIS UBL 2.1
 
+> **Actualización (05/11/2026).** El perfil escrito a mano (`xsd/Invoice-2-profile.xsd`)
+> se retiró del repositorio: la única autoridad de validación es el esquema oficial de
+> OASIS. Las secciones que comparan ambos esquemas se conservan como registro del análisis.
+
 **Proyecto:** facturación electrónica SUNAT / UBL 2.1
 **Fecha de ejecución:** 2026-11-04 (America/Lima)
 **Alcance:** descargar los esquemas oficiales de OASIS, compilarlos con lxml y validar
