@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 NS = f.NS
 
@@ -26,8 +26,8 @@ def _texto(nodo, ruta: str) -> str:
 
 
 def test_la_linea_de_bolsa_declara_monto_unitario_y_cantidad() -> None:
-    xml = f.arbol(f.factura_completa())  # línea 5: 3 bolsas
-    linea = xml.xpath("cac:InvoiceLine[5]", namespaces=NS)[0]
+    xml = f.arbol(f.factura_con_isc_de_tres_sistemas())  # línea 5: 3 bolsas
+    linea = xml.xpath("cac:InvoiceLine[4]", namespaces=NS)[0]
     subtotal = _subtotal_icbper(linea)
     assert _texto(subtotal, "cac:TaxCategory/cbc:PerUnitAmount") == "0.50"
     assert Decimal(_texto(subtotal, "cbc:BaseUnitMeasure")) == Decimal("3")
@@ -35,7 +35,7 @@ def test_la_linea_de_bolsa_declara_monto_unitario_y_cantidad() -> None:
 
 
 def test_el_documento_declara_el_icbper_con_su_unidad() -> None:
-    xml = f.arbol(f.factura_completa())
+    xml = f.arbol(f.factura_con_isc_de_tres_sistemas())
     subtotal = _subtotal_icbper(xml)
     assert _texto(subtotal, "cac:TaxCategory/cbc:PerUnitAmount") == "0.50"
     assert Decimal(_texto(subtotal, "cbc:BaseUnitMeasure")) == Decimal("3")
@@ -43,6 +43,6 @@ def test_el_documento_declara_el_icbper_con_su_unidad() -> None:
 
 
 def test_el_importe_es_cincuenta_centimos_por_bolsa() -> None:
-    comprobante = f.factura_completa()
+    comprobante = f.factura_con_isc_de_tres_sistemas()
     bolsas = sum(linea.cantidad for linea in comprobante.lineas if linea.aplica_icbper)
     assert comprobante.totales.total_icbper == Decimal("0.50") * bolsas

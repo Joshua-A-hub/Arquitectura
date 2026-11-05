@@ -17,7 +17,7 @@ from pathlib import Path
 
 import pytest
 
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 ESPERADOS = Path(__file__).parent / "esperados"
 
@@ -39,5 +39,5 @@ def test_regresion_contra_el_xml_de_referencia(escenario: str) -> None:
 def test_dos_instancias_del_generador_producen_el_mismo_xml() -> None:
     from src.adaptadores.salida.ubl.generador import GeneradorUblXsdata
 
-    comprobante = f.factura_completa()
+    comprobante = f.factura_con_isc_de_tres_sistemas()
     assert GeneradorUblXsdata().generar(comprobante) == GeneradorUblXsdata().generar(comprobante)

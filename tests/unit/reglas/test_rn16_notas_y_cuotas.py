@@ -14,22 +14,22 @@ import pytest
 from src.dominio.catalogos import MotivoNotaCredito, MotivoNotaDebito, TipoComprobante, TipoFormaPago
 from src.dominio.comprobante import Cuota, FormaPago
 from src.dominio.errores import ErrorReglaNegocio
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 
 def test_nota_de_credito_lleva_discrepancia_y_referencia() -> None:
-    xml = f.arbol(f.nota_credito())
-    assert f.texto(xml, "cac:DiscrepancyResponse/cbc:ReferenceID") == "F001-00000001"
+    xml = f.arbol(f.nota_credito_por_devolucion())
+    assert f.texto(xml, "cac:DiscrepancyResponse/cbc:ReferenceID") == "F001-00000123"
     assert f.texto(xml, "cac:DiscrepancyResponse/cbc:ResponseCode") == (
         MotivoNotaCredito.DEVOLUCION_ITEM.value
     )
     assert f.texto(xml, "cac:DiscrepancyResponse/cbc:ResponseCode/@listURI").endswith("catalogo09")
-    assert f.texto(xml, "cac:BillingReference/cac:InvoiceDocumentReference/cbc:ID") == "F001-00000001"
+    assert f.texto(xml, "cac:BillingReference/cac:InvoiceDocumentReference/cbc:ID") == "F001-00000123"
     assert f.texto(xml, "cac:BillingReference/cac:InvoiceDocumentReference/cbc:DocumentTypeCode") == "01"
 
 
 def test_nota_de_debito_usa_catalogo_10_y_requested_monetary_total() -> None:
-    xml = f.arbol(f.nota_debito())
+    xml = f.arbol(f.nota_debito_por_intereses())
     assert f.texto(xml, "cac:DiscrepancyResponse/cbc:ResponseCode") == (
         MotivoNotaDebito.INTERESES_MORA.value
     )
@@ -39,14 +39,14 @@ def test_nota_de_debito_usa_catalogo_10_y_requested_monetary_total() -> None:
 
 
 def test_el_sustento_de_la_nota_se_declara() -> None:
-    xml = f.arbol(f.nota_credito())
+    xml = f.arbol(f.nota_credito_por_devolucion())
     assert f.texto(xml, "cac:DiscrepancyResponse/cbc:Description") == "Sustento de la nota"
 
 
 def test_la_nota_de_credito_cuadra_sus_totales() -> None:
-    comprobante = f.nota_credito()
+    comprobante = f.nota_credito_por_devolucion()
     xml = f.arbol(comprobante)
-    assert f.texto(xml, "cac:LegalMonetaryTotal/cbc:LineExtensionAmount") == "35.59"
+    assert f.texto(xml, "cac:LegalMonetaryTotal/cbc:LineExtensionAmount") == "381.36"
     assert f.texto(xml, "cac:LegalMonetaryTotal/cbc:PayableAmount") == (
         f"{comprobante.totales.importe_total:.2f}"
     )
@@ -68,7 +68,7 @@ def test_una_nota_no_puede_referenciar_otra_nota() -> None:
             TipoComprobante.NOTA_CREDITO,
             "FC01",
             (f.linea(1),),
-            referencia=f.nota_credito(),
+            referencia=f.nota_credito_por_devolucion(),
             motivo=MotivoNotaCredito.DEVOLUCION_ITEM,
         )
 
@@ -99,8 +99,8 @@ def test_las_cuotas_deben_sumar_el_importe_total() -> None:
 
 def test_cuotas_que_suman_el_total_se_aceptan() -> None:
     cuotas = (
-        Cuota(D("105.00"), dt.date(2026, 11, 21)),
-        Cuota(D("105.00"), dt.date(2026, 12, 21)),
+        Cuota(D("225.00"), dt.date(2026, 11, 21)),
+        Cuota(D("225.00"), dt.date(2026, 12, 21)),
     )
     assert f.armar(
         TipoComprobante.FACTURA,
@@ -111,12 +111,12 @@ def test_cuotas_que_suman_el_total_se_aceptan() -> None:
 
 
 def test_la_nota_de_credito_usa_cantidad_acreditada() -> None:
-    xml = f.arbol(f.nota_credito())
+    xml = f.arbol(f.nota_credito_por_devolucion())
     assert xml.xpath("cac:CreditNoteLine", namespaces=f.NS)
     assert f.texto(xml, "cac:CreditNoteLine/cbc:CreditedQuantity") == "10"
 
 
 def test_la_nota_de_debito_usa_cantidad_debitada() -> None:
-    xml = f.arbol(f.nota_debito())
+    xml = f.arbol(f.nota_debito_por_intereses())
     assert xml.xpath("cac:DebitNoteLine", namespaces=f.NS)
     assert f.texto(xml, "cac:DebitNoteLine/cbc:DebitedQuantity") == "1"

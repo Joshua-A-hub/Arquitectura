@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 from lxml import etree
 
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 RAIZ = Path(__file__).resolve().parents[3]
 XSD = {
@@ -44,8 +44,16 @@ def test_caracteres_especiales_producen_xml_valido() -> None:
 
 
 def test_el_ampersand_se_escapa_en_el_xml() -> None:
-    xml_bytes = f.generar(f.factura_contado())
+    from src.dominio.comprobante import Cliente
+    from src.dominio.valores import DocumentoIdentidad
+
+    cliente = Cliente(
+        DocumentoIdentidad(f.TipoDocumentoIdentidad.RUC, "20512345671"),
+        "DISTRIBUIDORA EL SOL & CIA S.A.C.",
+    )
+    comprobante = f.armar(f.TipoComprobante.FACTURA, "F001", (f.linea(1),), cliente=cliente)
+    xml_bytes = f.generar(comprobante)
     assert b"EL SOL & CIA" not in xml_bytes
-    xml = f.arbol(f.factura_contado())
-    cliente = "cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity"
-    assert f.texto(xml, f"{cliente}/cbc:RegistrationName") == "DISTRIBUIDORA EL SOL & CIA S.A.C."
+    xml = f.arbol(comprobante)
+    ruta = "cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity"
+    assert f.texto(xml, f"{ruta}/cbc:RegistrationName") == "DISTRIBUIDORA EL SOL & CIA S.A.C."

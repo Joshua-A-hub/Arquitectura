@@ -1,7 +1,14 @@
-"""Fábrica de comprobantes del dominio para las pruebas de generación.
+"""Fábrica de comprobantes del dominio para las pruebas.
 
-Las pruebas parten SIEMPRE de objetos del dominio (`Comprobante`), nunca de JSON ni de HTTP:
-así se verifica la traducción «lenguaje del dominio → UBL 2.1» de forma aislada.
+Los escenarios salen de **nuestros** artefactos de la fase 1:
+
+* la factura del contrato `F001-00000123` (S/ 530.00) de
+  `specs/contracts/dto/ejemplo-comprobante.json` y `specs/ejemplos/emision-cli.json`;
+* los productos del maestro de `tests/mocks/mock_db.py` (ISC de los tres sistemas);
+* los casos de uso de `specs/features/casos-de-uso.md` (boleta, nota de crédito, migración).
+
+Las pruebas parten SIEMPRE de objetos del dominio, nunca de JSON ni de HTTP: así se verifica la
+traducción «lenguaje del dominio → UBL 2.1» de forma aislada.
 """
 
 from __future__ import annotations
@@ -29,8 +36,9 @@ from src.dominio.comprobante import Cliente, Comprobante, Cuota, Emisor, FormaPa
 from src.dominio.tributos import ConfiguracionISC
 from src.dominio.valores import RUC, Correlativo, DocumentoIdentidad, Serie
 
+# Datos del caso: fecha y hora del contrato de ejemplo.
 HOY = dt.date(2026, 10, 22)
-HORA = dt.time(10, 30, 0)
+HORA = dt.time(9, 15, 0)
 
 NS = {clave: valor for clave, valor in NAMESPACES.items() if clave in ("cac", "cbc")}
 
@@ -44,10 +52,11 @@ EMISOR = Emisor(
 
 CLIENTE_RUC = Cliente(
     DocumentoIdentidad(TipoDocumentoIdentidad.RUC, "20512345671"),
-    "DISTRIBUIDORA EL SOL & CIA S.A.C.",
-    direccion="JR. COMERCIO 123, LIMA",
+    "DISTRIBUIDORA SELVA SAC",
+    direccion="AV. ARGENTINA 123",
+    ubigeo="150101",
 )
-CLIENTE_DNI = Cliente(DocumentoIdentidad(TipoDocumentoIdentidad.DNI, "45678912"), "MARÍA QUISPE HUAMÁN")
+CLIENTE_DNI = Cliente(DocumentoIdentidad(TipoDocumentoIdentidad.DNI, "45678912"), "JUAN PEREZ GOMEZ")
 CLIENTE_EXTERIOR = Cliente(
     DocumentoIdentidad(TipoDocumentoIdentidad.NO_DOMICILIADO, "US-99887766"), "GROCERY IMPORTS LLC"
 )
@@ -57,9 +66,9 @@ def linea(
     numero: int,
     descripcion: str = "SACO DE ARROZ 50KG",
     *,
-    cantidad: str = "50",
-    precio: str = "4.20",
-    unidad: UnidadMedida = UnidadMedida.KILOGRAMO,
+    cantidad: str = "10",
+    precio: str = "45.00",
+    unidad: UnidadMedida = UnidadMedida.UNIDAD,
     afectacion: AfectacionIGV = AfectacionIGV.GRAVADO_ONEROSA,
     codigo: str | None = "ARR-50KG",
     isc: ConfiguracionISC | None = None,
@@ -111,76 +120,89 @@ def armar(
     )
 
 
-# ---------------------------------------------------------------- escenarios
-def factura_contado() -> Comprobante:
-    return armar(TipoComprobante.FACTURA, "F001", (linea(1),))
-
-
-def factura_credito() -> Comprobante:
-    # 50 kg x 4.20 (precio con IGV) = 210.00, en dos cuotas de 105.00.
-    cuotas = (Cuota(D("105.00"), dt.date(2026, 11, 21)), Cuota(D("105.00"), dt.date(2026, 12, 21)))
+# ------------------------------------------------------------------ escenarios del contrato
+def factura_del_contrato() -> Comprobante:
+    """La factura del contrato: F001-00000123, S/ 530.00 (valor 449.83 + IGV 70.17 + ICBPER 10.00)."""
     return armar(
         TipoComprobante.FACTURA,
         "F001",
-        (linea(1),),
-        forma_pago=FormaPago(TipoFormaPago.CREDITO, cuotas),
+        (
+            linea(1, "SACO DE ARROZ 50KG", cantidad="10", precio="45.00", codigo="ARR-50KG"),
+            linea(
+                2,
+                "CAJA DE LECHE 1L",
+                cantidad="5",
+                precio="12.00",
+                unidad=UnidadMedida.CAJA,
+                codigo="LEC-1L",
+                afectacion=AfectacionIGV.EXONERADO_ONEROSA,
+            ),
+            linea(
+                3,
+                "BOLSA PLASTICA RECICLABLE",
+                cantidad="20",
+                precio="0.50",
+                codigo="BOL-001",
+                icbper=True,
+            ),
+        ),
+        correlativo=123,
     )
 
 
-def factura_completa() -> Comprobante:
-    """Una línea por cada caso tributario: gravado, ISC 01/02/03, ICBPER, exonerado e inafecto."""
+def factura_con_isc_de_tres_sistemas() -> Comprobante:
+    """ISC del catálogo 08 (01, 02 y 03) con productos del maestro del caso."""
     return armar(
         TipoComprobante.FACTURA,
         "FA01",
         (
-            linea(1),
+            # Sistema 02: pisco, S/ 1.35 por unidad.
             linea(
-                2,
+                1,
                 "PISCO QUEBRANTA 750 ML",
                 cantidad="6",
                 precio="53.10",
-                unidad=UnidadMedida.UNIDAD,
                 codigo="PIS-750ML",
                 isc=ConfiguracionISC(SistemaISC.MONTO_FIJO, monto_fijo=D("1.35")),
             ),
+            # Sistema 01: cerveza al 25 %.
             linea(
-                3,
+                2,
                 "CERVEZA BOTELLA 620 ML",
                 cantidad="12",
                 precio="8.00",
-                unidad=UnidadMedida.UNIDAD,
                 codigo="CER-620ML",
                 isc=ConfiguracionISC(SistemaISC.AD_VALOR, tasa=D("0.25")),
             ),
+            # Sistema 03: gaseosa, precio de venta al público S/ 12.50.
             linea(
-                4,
+                3,
                 "GASEOSA 3 L",
                 cantidad="4",
                 precio="10.62",
-                unidad=UnidadMedida.UNIDAD,
                 codigo="GAS-3L",
-                isc=ConfiguracionISC(SistemaISC.PRECIO_VENTA_PUBLICO, tasa=D("0.17"), precio_venta_publico=D("12.50")),
+                isc=ConfiguracionISC(
+                    SistemaISC.PRECIO_VENTA_PUBLICO, tasa=D("0.17"), precio_venta_publico=D("12.50")
+                ),
             ),
             linea(
-                5,
+                4,
                 "BOLSA PLASTICA RECICLABLE",
                 cantidad="3",
                 precio="0.50",
-                unidad=UnidadMedida.UNIDAD,
                 codigo="BOL-001",
                 icbper=True,
             ),
             linea(
-                6,
+                5,
                 "LIBRO ESCOLAR",
                 cantidad="2",
                 precio="30.00",
-                unidad=UnidadMedida.UNIDAD,
                 codigo=None,
                 afectacion=AfectacionIGV.EXONERADO_ONEROSA,
             ),
             linea(
-                7,
+                6,
                 "FLETE INTERNO",
                 cantidad="1",
                 precio="15.00",
@@ -192,7 +214,8 @@ def factura_completa() -> Comprobante:
     )
 
 
-def factura_exportacion_usd() -> Comprobante:
+def factura_de_exportacion() -> Comprobante:
+    """Exportación en USD a cliente no domiciliado (catálogo 06 = 0)."""
     return armar(
         TipoComprobante.FACTURA,
         "F002",
@@ -213,16 +236,8 @@ def factura_exportacion_usd() -> Comprobante:
     )
 
 
-def factura_de_vale() -> Comprobante:
-    return armar(
-        TipoComprobante.FACTURA,
-        "F001",
-        (linea(1, "AZUCAR RUBIA", cantidad="250", precio="3.80", codigo="AZU-001"),),
-        documentos_legado=("VALE-SALIDA-0042",),
-    )
-
-
-def boleta() -> Comprobante:
+def boleta_con_dni() -> Comprobante:
+    """Boleta a cliente con DNI (caso de uso de venta al detalle)."""
     return armar(
         TipoComprobante.BOLETA,
         "B001",
@@ -232,7 +247,6 @@ def boleta() -> Comprobante:
                 "ACEITE VEGETAL BOTELLA 1 L",
                 cantidad="2",
                 precio="8.50",
-                unidad=UnidadMedida.UNIDAD,
                 codigo="ACE-001",
             ),
         ),
@@ -240,39 +254,74 @@ def boleta() -> Comprobante:
     )
 
 
-def nota_credito() -> Comprobante:
+def nota_credito_por_devolucion() -> Comprobante:
+    """Nota de crédito que devuelve el ítem completo de la factura del contrato (CU de notas)."""
     return armar(
         TipoComprobante.NOTA_CREDITO,
         "FC01",
-        (linea(1, cantidad="10"),),
-        referencia=factura_contado(),
+        (linea(1, "SACO DE ARROZ 50KG", cantidad="10", precio="45.00", codigo="ARR-50KG"),),
+        referencia=factura_del_contrato(),
         motivo=MotivoNotaCredito.DEVOLUCION_ITEM,
     )
 
 
-def nota_debito() -> Comprobante:
+def factura_migrada_con_vale() -> Comprobante:
+    """Factura que conserva el vale informal del legado como documento relacionado (RN-23)."""
+    return armar(
+        TipoComprobante.FACTURA,
+        "F003",
+        (linea(1, "AZUCAR RUBIA", cantidad="250", precio="3.80", codigo="AZU-001"),),
+        documentos_legado=("VALE-SALIDA-0042",),
+    )
+
+
+# ------------------------------------------------------------------ escenarios auxiliares
+def factura_al_credito() -> Comprobante:
+    """Factura del contrato pagada en dos cuotas (RS 193-2020)."""
+    cuotas = (Cuota(D("265.00"), dt.date(2026, 11, 21)), Cuota(D("265.00"), dt.date(2026, 12, 21)))
+    base = factura_del_contrato()
+    return armar(
+        TipoComprobante.FACTURA,
+        base.serie.valor,
+        base.lineas,
+        correlativo=124,
+        forma_pago=FormaPago(TipoFormaPago.CREDITO, cuotas),
+    )
+
+
+def nota_debito_por_intereses() -> Comprobante:
+    """Nota de débito por intereses moratorios (catálogo 10)."""
     return armar(
         TipoComprobante.NOTA_DEBITO,
         "FD01",
-        (linea(1, "INTERESES MORATORIOS", cantidad="1", precio="15.00", unidad=UnidadMedida.SERVICIO, codigo=None),),
-        referencia=factura_contado(),
+        (
+            linea(
+                1,
+                "INTERESES MORATORIOS",
+                cantidad="1",
+                precio="15.00",
+                unidad=UnidadMedida.SERVICIO,
+                codigo=None,
+                afectacion=AfectacionIGV.GRAVADO_ONEROSA,
+            ),
+        ),
+        referencia=factura_del_contrato(),
         motivo=MotivoNotaDebito.INTERESES_MORA,
     )
 
 
+#: Escenarios con XML de referencia en `esperados/`: los cinco del caso más la exportación.
 ESCENARIOS = {
-    "factura-contado": factura_contado,
-    "factura-credito": factura_credito,
-    "factura-completa": factura_completa,
-    "factura-exportacion-usd": factura_exportacion_usd,
-    "factura-de-vale": factura_de_vale,
-    "boleta": boleta,
-    "nota-credito": nota_credito,
-    "nota-debito": nota_debito,
+    "factura-contrato": factura_del_contrato,
+    "factura-isc-tres-sistemas": factura_con_isc_de_tres_sistemas,
+    "factura-exportacion": factura_de_exportacion,
+    "boleta-dni": boleta_con_dni,
+    "nota-credito-devolucion": nota_credito_por_devolucion,
+    "factura-migrada-vale": factura_migrada_con_vale,
 }
 
 
-# ---------------------------------------------------------------- utilidades
+# ------------------------------------------------------------------ utilidades
 def generar(c: Comprobante) -> bytes:
     return GeneradorUblXsdata().generar(c)
 

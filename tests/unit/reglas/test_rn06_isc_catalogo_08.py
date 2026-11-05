@@ -14,7 +14,7 @@ from decimal import Decimal
 
 import pytest
 
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 NS = f.NS
 LINEA = "cac:InvoiceLine[{n}]"
@@ -38,19 +38,19 @@ def _path(nodo, ruta: str) -> str:
 
 @pytest.mark.parametrize(
     ("linea", "sistema"),
-    [(2, "02"), (3, "01"), (4, "03")],
+    [(1, "02"), (2, "01"), (3, "03")],
 )
 def test_el_isc_declara_tier_range_del_catalogo_08(linea: int, sistema: str) -> None:
-    xml = f.arbol(f.factura_completa())
+    xml = f.arbol(f.factura_con_isc_de_tres_sistemas())
     subtotal = _subtotal_isc(xml, linea)
     assert _path(subtotal, "cac:TaxCategory/cbc:TierRange") == sistema
     assert _path(subtotal, "cac:TaxCategory/cac:TaxScheme/cbc:ID") == "2000"
 
 
-@pytest.mark.parametrize("linea", [2, 3, 4])
+@pytest.mark.parametrize("linea", [1, 2, 3])
 def test_la_base_por_la_tasa_da_el_monto_del_isc(linea: int) -> None:
     """Regla SUNAT 3108: base × Percent / 100 = TaxAmount (J-1 y J-3)."""
-    xml = f.arbol(f.factura_completa())
+    xml = f.arbol(f.factura_con_isc_de_tres_sistemas())
     subtotal = _subtotal_isc(xml, linea)
     base = Decimal(_path(subtotal, "cbc:TaxableAmount"))
     porcentaje = Decimal(_path(subtotal, "cac:TaxCategory/cbc:Percent"))
@@ -61,8 +61,8 @@ def test_la_base_por_la_tasa_da_el_monto_del_isc(linea: int) -> None:
 
 def test_el_sistema_02_informa_la_tasa_equivalente() -> None:
     """J-1: el pisco es monto fijo; el XML debe llevar un Percent que cuadre."""
-    xml = f.arbol(f.factura_completa())
-    subtotal = _subtotal_isc(xml, 2)
+    xml = f.arbol(f.factura_con_isc_de_tres_sistemas())
+    subtotal = _subtotal_isc(xml, 1)
     base = Decimal(_path(subtotal, "cbc:TaxableAmount"))  # 270.00
     monto = Decimal(_path(subtotal, "cbc:TaxAmount"))  # 8.10
     porcentaje = Decimal(_path(subtotal, "cac:TaxCategory/cbc:Percent"))
@@ -72,8 +72,8 @@ def test_el_sistema_02_informa_la_tasa_equivalente() -> None:
 
 def test_el_sistema_03_declara_como_base_el_precio_de_venta_al_publico() -> None:
     """J-3: gaseosa — 4 unidades × PVP 12.50 = base 50.00 (no el valor de venta 36.00)."""
-    xml = f.arbol(f.factura_completa())
-    subtotal = _subtotal_isc(xml, 4)
+    xml = f.arbol(f.factura_con_isc_de_tres_sistemas())
+    subtotal = _subtotal_isc(xml, 3)
     assert Decimal(_path(subtotal, "cbc:TaxableAmount")) == Decimal("50.00")
 
 
@@ -84,7 +84,7 @@ def test_la_base_global_del_isc_solo_suma_lineas_con_isc() -> None:
     PVP × cantidad (sistema 03). La base global es la suma de esas bases, no el valor
     de venta de todo el comprobante (que incluía líneas sin ISC).
     """
-    comprobante = f.factura_completa()
+    comprobante = f.factura_con_isc_de_tres_sistemas()
     xml = f.arbol(comprobante)
 
     doc = xml.xpath(

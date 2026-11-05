@@ -11,7 +11,7 @@ from src.dominio.catalogos import TipoComprobante, UnidadMedida
 from src.dominio.comprobante import Comprobante, Linea
 from src.dominio.errores import ErrorReglaNegocio
 from src.dominio.valores import Correlativo, Serie
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 
 def test_un_comprobante_sin_lineas_se_rechaza() -> None:
@@ -52,7 +52,7 @@ def test_la_descripcion_de_la_linea_es_obligatoria() -> None:
 
 
 def test_line_count_numeric_coincide_con_las_lineas() -> None:
-    for escenario in ("factura-contado", "factura-completa", "nota-credito"):
+    for escenario in ("factura-contrato", "factura-isc-tres-sistemas", "nota-credito-devolucion"):
         xml = f.arbol(f.ESCENARIOS[escenario]())
         numero = int(f.texto(xml, "cbc:LineCountNumeric"))
         cantidad = len(
@@ -62,12 +62,12 @@ def test_line_count_numeric_coincide_con_las_lineas() -> None:
 
 
 def test_cada_linea_del_dominio_genera_su_linea_en_el_xml() -> None:
-    xml = f.arbol(f.factura_completa())
-    assert len(xml.xpath("cac:InvoiceLine", namespaces=f.NS)) == 7
-    assert f.todos(xml, "cac:InvoiceLine/cbc:ID") == ["1", "2", "3", "4", "5", "6", "7"]
+    xml = f.arbol(f.factura_con_isc_de_tres_sistemas())
+    assert len(xml.xpath("cac:InvoiceLine", namespaces=f.NS)) == 6
+    assert f.todos(xml, "cac:InvoiceLine/cbc:ID") == ["1", "2", "3", "4", "5", "6"]
 
 
 def test_la_descripcion_y_el_codigo_llegan_al_xml() -> None:
-    xml = f.arbol(f.factura_contado())
+    xml = f.arbol(f.factura_del_contrato())
     assert f.texto(xml, "cac:InvoiceLine/cac:Item/cbc:Description") == "SACO DE ARROZ 50KG"
     assert f.texto(xml, "cac:InvoiceLine/cac:Item/cac:SellersItemIdentification/cbc:ID") == "ARR-50KG"

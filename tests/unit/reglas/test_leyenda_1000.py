@@ -12,7 +12,7 @@ import pytest
 
 from src.dominio.catalogos import Moneda
 from src.dominio.letras import monto_en_letras
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 
 @pytest.mark.parametrize(
@@ -33,13 +33,13 @@ def test_importe_en_letras(importe: str, letras: str) -> None:
 
 
 def test_el_xml_lleva_la_leyenda_1000_con_el_importe_en_letras() -> None:
-    xml = f.arbol(f.factura_contado())
+    xml = f.arbol(f.factura_del_contrato())
     assert f.texto(xml, "cbc:Note[@languageLocaleID='1000']") == (
-        "DOSCIENTOS DIEZ CON 00/100 SOLES"
+        "QUINIENTOS TREINTA CON 00/100 SOLES"
     )
 
 
 def test_la_leyenda_usa_la_moneda_del_comprobante() -> None:
-    xml = f.arbol(f.factura_exportacion_usd())
+    xml = f.arbol(f.factura_de_exportacion())
     assert f.texto(xml, "cbc:Note[@languageLocaleID='1000']").endswith("DÓLARES AMERICANOS")
     assert monto_en_letras(Decimal("1.00"), Moneda.USD).endswith("DÓLARES AMERICANOS")

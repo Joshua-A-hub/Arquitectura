@@ -10,7 +10,7 @@ from decimal import Decimal
 
 from src.dominio.catalogos import AfectacionIGV
 from src.dominio.tributos import calcular_linea, redondear
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 
 def test_redondeo_half_up() -> None:
@@ -30,7 +30,7 @@ def test_el_igv_se_calcula_sobre_la_base_exacta() -> None:
 
 
 def test_todos_los_importes_del_xml_llevan_dos_decimales() -> None:
-    xml = f.arbol(f.factura_completa())
+    xml = f.arbol(f.factura_con_isc_de_tres_sistemas())
     importes = f.todos(xml, "//cbc:TaxAmount") + f.todos(xml, "//cbc:TaxableAmount")
     assert importes
     for importe in importes:
@@ -38,7 +38,7 @@ def test_todos_los_importes_del_xml_llevan_dos_decimales() -> None:
 
 
 def test_los_totales_incluyen_todos_los_impuestos() -> None:
-    xml = f.arbol(f.factura_completa())
+    xml = f.arbol(f.factura_con_isc_de_tres_sistemas())
     con_impuestos = Decimal(f.texto(xml, "cac:LegalMonetaryTotal/cbc:TaxInclusiveAmount"))
     valor = Decimal(f.texto(xml, "cac:LegalMonetaryTotal/cbc:LineExtensionAmount"))
     impuestos = Decimal(f.texto(xml, "cac:TaxTotal/cbc:TaxAmount"))

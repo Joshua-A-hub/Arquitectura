@@ -12,7 +12,7 @@ from src.dominio.catalogos import TipoComprobante, TipoDocumentoIdentidad, TipoO
 from src.dominio.comprobante import Cliente
 from src.dominio.errores import ErrorReglaNegocio
 from src.dominio.valores import DocumentoIdentidad
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 
 def test_factura_exige_ruc_del_receptor() -> None:
@@ -36,7 +36,7 @@ def test_boleta_admite_consumidor_final() -> None:
 
 
 def test_la_exportacion_admite_no_domiciliado() -> None:
-    assert f.factura_exportacion_usd()
+    assert f.factura_de_exportacion()
 
 
 def test_la_exportacion_sigue_exigiendo_no_domiciliado() -> None:
@@ -57,7 +57,7 @@ def test_el_dni_debe_tener_ocho_digitos() -> None:
 
 @pytest.mark.parametrize(
     ("escenario", "scheme"),
-    [("factura-contado", "6"), ("boleta", "1"), ("factura-exportacion-usd", "0")],
+    [("factura-contrato", "6"), ("boleta-dni", "1"), ("factura-exportacion", "0")],
 )
 def test_el_scheme_id_del_receptor_sale_del_catalogo_06(escenario: str, scheme: str) -> None:
     xml = f.arbol(f.ESCENARIOS[escenario]())

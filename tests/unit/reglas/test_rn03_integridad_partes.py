@@ -12,7 +12,7 @@ from src.dominio.comprobante import Cliente as ClienteDominio
 from src.dominio.comprobante import Emisor
 from src.dominio.errores import ErrorReglaNegocio
 from src.dominio.valores import RUC, DocumentoIdentidad
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 EMISOR = "cac:AccountingSupplierParty/cac:Party"
 CLIENTE = "cac:AccountingCustomerParty/cac:Party"
@@ -29,7 +29,7 @@ def test_el_ubigeo_del_emisor_debe_tener_seis_digitos() -> None:
 
 
 def test_el_xml_lleva_razon_social_ubigeo_y_direccion_del_emisor() -> None:
-    xml = f.arbol(f.factura_contado())
+    xml = f.arbol(f.factura_del_contrato())
     legal = f"{EMISOR}/cac:PartyLegalEntity"
     assert f.texto(xml, f"{legal}/cbc:RegistrationName") == "ABC SOFTWARE CORP SAC"
     assert f.texto(xml, f"{legal}/cac:RegistrationAddress/cbc:ID") == "150101"
@@ -37,7 +37,7 @@ def test_el_xml_lleva_razon_social_ubigeo_y_direccion_del_emisor() -> None:
 
 
 def test_el_codigo_de_establecimiento_del_emisor_se_declara() -> None:
-    xml = f.arbol(f.factura_contado())
+    xml = f.arbol(f.factura_del_contrato())
     direccion = f"{EMISOR}/cac:PartyLegalEntity/cac:RegistrationAddress"
     assert f.texto(xml, f"{direccion}/cbc:AddressTypeCode") == "0000"
     assert f.texto(xml, f"{direccion}/cbc:AddressTypeCode/@listName") == "Establecimientos anexos"
@@ -56,7 +56,7 @@ def test_el_ubigeo_del_cliente_se_declara_cuando_existe() -> None:
 
 
 def test_el_cliente_sin_direccion_no_genera_bloque_de_direccion() -> None:
-    xml = f.arbol(f.boleta())
+    xml = f.arbol(f.boleta_con_dni())
     assert not xml.xpath(
         f"{CLIENTE}/cac:PartyLegalEntity/cac:RegistrationAddress", namespaces=f.NS
     )

@@ -13,13 +13,13 @@ from src.dominio.catalogos import TipoComprobante
 from src.dominio.comprobante import Comprobante
 from src.dominio.errores import ErrorReglaNegocio
 from src.dominio.valores import Correlativo, Serie
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 
 def test_el_xml_declara_fecha_y_hora_de_emision() -> None:
-    xml = f.arbol(f.factura_contado())
+    xml = f.arbol(f.factura_del_contrato())
     assert f.texto(xml, "cbc:IssueDate") == "2026-10-22"
-    assert f.texto(xml, "cbc:IssueTime") == "10:30:00"
+    assert f.texto(xml, "cbc:IssueTime") == "09:15:00"
 
 
 def test_una_fecha_futura_se_rechaza() -> None:

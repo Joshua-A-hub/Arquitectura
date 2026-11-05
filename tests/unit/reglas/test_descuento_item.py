@@ -7,7 +7,7 @@ Trazabilidad: matriz fila 32 (`/cac:InvoiceLine/cac:AllowanceCharge/cbc:Amount`)
 from __future__ import annotations
 
 from src.dominio.comprobante import Linea
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 LINEA = "cac:InvoiceLine"
 
@@ -36,5 +36,5 @@ def test_el_descuento_se_declara_con_allowance_charge() -> None:
 
 
 def test_una_linea_sin_descuento_no_declara_allowance_charge() -> None:
-    xml = f.arbol(f.factura_contado())
+    xml = f.arbol(f.factura_del_contrato())
     assert not xml.xpath(f"{LINEA}/cac:AllowanceCharge", namespaces=f.NS)

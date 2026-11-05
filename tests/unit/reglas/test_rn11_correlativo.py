@@ -10,7 +10,7 @@ import pytest
 
 from src.dominio.errores import ErrorReglaNegocio
 from src.dominio.valores import Correlativo
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 
 def test_el_correlativo_se_formatea_a_ocho_digitos() -> None:
@@ -30,4 +30,4 @@ def test_el_xml_refleja_el_correlativo() -> None:
 
 
 def test_el_ejemplo_del_contrato_usa_su_correlativo() -> None:
-    assert f.factura_contado().serie_numero == "F001-00000001"
+    assert f.factura_del_contrato().serie_numero == "F001-00000123"

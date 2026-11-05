@@ -85,7 +85,7 @@ dominio y evaluada con **pruebas unitarias de generación**. Detalle completo en
 
 ```bash
 pip install -r requirements-dev.txt
-pytest tests/unit -q                 # 151 pruebas (121 por regla + 30 de estructura y regresión)
+pytest tests/unit -q                 # 147 pruebas (119 por regla + 28 de estructura y regresión)
 python -m src.cli generar-xml specs/ejemplos/emision-cli.json --salida out
 ```
 
@@ -98,9 +98,10 @@ python -m src.cli generar-xml specs/ejemplos/emision-cli.json --salida out
 | Pruebas de generación + XML de referencia | [`tests/unit/generacion_xml/`](tests/unit/generacion_xml/) |
 | Regenerar clases | `scripts/generar_clases_ubl.ps1` |
 
-Los 8 escenarios (factura al contado, al crédito, completa con ISC 01/02/03 + ICBPER, exportación en
-USD, factura de un vale, boleta, nota de crédito y nota de débito) **validan contra los esquemas
-oficiales** de OASIS.
+Los **6 escenarios propios** —factura del contrato (F001-00000123, S/ 530.00), factura con ISC de
+los tres sistemas, exportación en USD, boleta con DNI, nota de crédito por devolución y factura
+migrada con vale— nacen de nuestros contratos y del maestro del caso, y **validan contra los
+esquemas oficiales** de OASIS.
 
 ---
 

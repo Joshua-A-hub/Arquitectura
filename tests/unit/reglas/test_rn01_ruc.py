@@ -10,7 +10,7 @@ import pytest
 
 from src.dominio.errores import ErrorReglaNegocio
 from src.dominio.valores import RUC
-from tests.unit.generacion_xml import fabrica as f
+from tests.unit.generacion_xml import escenarios as f
 
 
 @pytest.mark.parametrize("ruc", ["20123456786", "20512345671", "10000000006"])
@@ -30,7 +30,7 @@ def test_construir_un_ruc_invalido_lanza_regla_de_negocio() -> None:
 
 
 def test_el_ruc_del_emisor_llega_al_xml_con_scheme_id_del_catalogo_06() -> None:
-    xml = f.arbol(f.factura_contado())
+    xml = f.arbol(f.factura_del_contrato())
     emisor = "cac:AccountingSupplierParty/cac:Party"
     assert f.texto(xml, f"{emisor}/cac:PartyIdentification/cbc:ID") == "20123456786"
     assert f.texto(xml, f"{emisor}/cac:PartyIdentification/cbc:ID/@schemeID") == "6"
