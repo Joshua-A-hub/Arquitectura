@@ -23,6 +23,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[1]
 DIR_UBL = RAIZ / "specs" / "contracts" / "ubl"
 RUTA_XSD = DIR_UBL / "xsd" / "Invoice-2-profile.xsd"
+RUTA_XSD_OFICIAL = DIR_UBL / "oficial" / "maindoc" / "UBL-Invoice-2.1.xsd"
 RUTA_XML = DIR_UBL / "ejemplo-invoice.xml"
 
 NS = {
@@ -80,7 +81,32 @@ def main() -> int:
     xml = RUTA_XML.read_bytes()
     arbol = etree.fromstring(xml)
 
-    # 1
+    # 0. Esquema OFICIAL de OASIS: compila y valida el ejemplo
+    if RUTA_XSD_OFICIAL.exists():
+        esquema_oficial = etree.XMLSchema(etree.parse(str(RUTA_XSD_OFICIAL)))
+
+        def validar_oficial(xml_bytes: bytes) -> list[str]:
+            doc = etree.fromstring(xml_bytes)
+            if esquema_oficial.validate(doc):
+                return []
+            return [f"línea {e.line}: {e.message}" for e in esquema_oficial.error_log]
+
+        if len(esquema_oficial.error_log) == 0:
+            ok.append("el esquema oficial UBL-Invoice-2.1.xsd compila sin errores")
+        else:
+            fallos.append("el esquema oficial no compila")
+        errores_oficial = validar_oficial(xml)
+        if errores_oficial:
+            fallos.append(
+                "el XML NO valida contra el esquema oficial: " + " | ".join(errores_oficial[:3])
+            )
+        else:
+            ok.append("ejemplo-invoice.xml valida contra el esquema OFICIAL de OASIS (UBL 2.1)")
+    else:
+        fallos.append("falta el esquema oficial en specs/contracts/ubl/oficial/maindoc/")
+        validar_oficial = validar  # degradado: usa el perfil
+
+    # 1. Perfil SUNAT: restricción de negocio adicional (no sustituye al oficial)
     errores = validar(xml)
     if errores:
         fallos.append("El XML de ejemplo NO valida: " + " | ".join(errores[:3]))
@@ -91,11 +117,11 @@ def main() -> int:
     sin_id = copy.deepcopy(arbol)
     for hijo in sin_id.findall("cbc:ID", NS):
         sin_id.remove(hijo)
-    errores_id = validar(etree.tostring(sin_id))
+    errores_id = validar_oficial(etree.tostring(sin_id))
     if errores_id:
-        ok.append(f"un XML sin cbc:ID es rechazado por el XSD ({len(errores_id)} error/es)")
+        ok.append(f"un XML sin cbc:ID es rechazado por el esquema oficial ({len(errores_id)} error/es)")
     else:
-        fallos.append("el XSD aceptó un XML sin número de comprobante")
+        fallos.append("el esquema aceptó un XML sin número de comprobante")
 
     # 3
     lineas = arbol.findall("cac:InvoiceLine", NS)

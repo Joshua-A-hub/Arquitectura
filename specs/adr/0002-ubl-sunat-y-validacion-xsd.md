@@ -1,54 +1,79 @@
-# ADR-0002: UBL 2.1 como contrato, validación contra XSD antes de enviar
+# ADR-0002: Esquemas oficiales de UBL 2.1, clases generadas y validación antes de firmar
 
-- **Estado:** Aceptada
-- **Fecha:** 2026-10-22
+- **Estado:** Aceptada (sustituye la decisión anterior de "perfil propio")
+- **Fecha:** 2026-10-22 · **Revisada:** 2026-11-04
 - **Decisores:** Líder de arquitectura, área tributaria
 
 ## Contexto
 
-SUNAT exige comprobantes estructurados bajo **UBL 2.1** (`UBL-Invoice-2.1.xsd`). El sistema anterior
-no genera XML, no firma y no se comunica con una OSE. Un XML inválido enviado a SUNAT genera rechazo
-y, en el peor caso, observaciones tributarias.
+SUNAT exige comprobantes estructurados bajo **UBL 2.1**. El sistema anterior no genera XML, no firma y
+no se comunica con una OSE. Un XML inválido genera rechazo y observaciones tributarias.
+
+La versión anterior de este ADR decidió validar contra un **perfil propio** (tres XSD escritos a mano,
+de 2–6 KB) en lugar del esquema oficial. Eso **no demuestra conformidad con UBL 2.1**: valida contra
+una copia del error. El esquema oficial de `Invoice` son ~60 KB más ~2.6 MB de componentes comunes.
 
 ## Opciones consideradas
 
-1. Generar el XML a mano con plantillas de texto.
-2. Usar una librería UBL de terceros.
-3. Definir un **perfil propio** derivado del XSD de UBL 2.1 y validar formalmente antes de enviar.
+| Opción | Qué implica | Veredicto |
+|---|---|---|
+| 1. Plantillas de texto | XML armado a mano; sin garantía de estructura | **Descartada** |
+| 2. Librería UBL de terceros | dependencia opaca, difícil de auditar | Descartada |
+| 3. Perfil propio (decisión anterior) | XSD hecho a medida; valida contra sí mismo | **Descartada** |
+| **4. Esquemas oficiales + clases generadas** | XSD de OASIS en el repo; clases generadas con `xsdata`; validación antes de firmar | **Elegida** |
 
 ## Decisión
 
-Se elige la **opción 3**: el contrato de datos del dominio se documenta como **perfil SUNAT** con las
-rutas exactas del XSD (`specs/contracts/ubl/perfil-invoice.md`), y **ningún XML sale del sistema sin
-validar contra el XSD**.
+1. **Los esquemas oficiales viven en el repositorio**: `specs/contracts/ubl/oficial/maindoc/`
+   (`UBL-Invoice-2.1.xsd`, `UBL-CreditNote-2.1.xsd`, `UBL-DebitNote-2.1.xsd`) y
+   `specs/contracts/ubl/oficial/common/` (todos sus imports, incluidos XMLDSig y XAdES).
+2. **El XML no se escribe a mano**: se generan clases desde el XSD oficial con **`xsdata`** (el
+   proyecto ya usa Python) y se serializa con ellas. Comando de referencia:
 
-Orden obligatorio del flujo de emisión:
+   ```bash
+   xsdata generate specs/contracts/ubl/oficial/maindoc/UBL-Invoice-2.1.xsd \
+       --package src.ubl.invoice
+   ```
+
+   El perfil SUNAT (`specs/contracts/ubl/perfil-invoice.md`) sigue existiendo, pero como **restricción
+   de negocio adicional** (qué campos son obligatorios para SUNAT), **nunca** como sustituto del
+   esquema oficial.
+3. **Se valida antes de firmar** y se vuelve a verificar la estructura después de firmar.
+
+## Orden obligatorio del flujo
 
 ```text
-validar DTO → validar reglas de negocio → calcular totales →
-generar XML → firmar (XMLDSig) → validar contra XSD → enviar a OSE → guardar CDR
+validar DTO → validar reglas de negocio → calcular (IGV, ISC por sistema, ICBPER) →
+generar XML → VALIDAR contra el esquema oficial → firmar (XMLDSig) →
+verificar que la firma no alteró la estructura → enviar a OSE → guardar CDR
 ```
+
+**Por qué antes de firmar:** si la validación obliga a corregir el documento, la firma previa queda
+invalidada y habría que firmar de nuevo. Firmar un XML que no cumple el esquema es trabajo perdido.
 
 ## Consecuencias
 
 **Positivas**
-- El error se detecta en casa, no en SUNAT.
-- La matriz de trazabilidad se puede auditar campo por campo.
-- El perfil es estable: si SUNAT cambia de versión, cambia un solo artefacto.
+- La conformidad con UBL 2.1 se demuestra contra el estándar, no contra una copia.
+- Las clases generadas eliminan el error humano de orden y de nombres de elemento.
+- El error se detecta en casa, antes de firmar y antes de SUNAT.
 
 **Negativas**
-- Mantener el perfil es trabajo continuo.
-- La firma digital requiere un certificado y gestión de claves (fuera del alcance de esta fase).
+- El repositorio crece ~2.7 MB (esquemas oficiales) y se regenera si OASIS publica versión nueva.
+- `xsdata` añade una dependencia de generación (no de ejecución).
+- El perfil SUNAT hay que mantenerlo como documento de reglas, no como esquema.
 
 ## Decisión complementaria: el certificado no vive en el cliente
 
-La firma se realiza **en el servicio**, nunca en la app de escritorio o móvil. El certificado es un
-secreto de la empresa: si viaja al dispositivo, se puede extraer.
+La firma se realiza **en el servicio**. El certificado es un secreto de la empresa: si viaja al
+dispositivo, se puede extraer.
 
 ## Verificación
 
 | Verificación | Criterio |
 |---|---|
-| Perfil documentado | cada campo del comprobante tiene ruta UBL en la matriz |
-| Validación formal | un XML inválido es rechazado y no se registra |
+| Esquema oficial presente | `maindoc/UBL-Invoice-2.1.xsd` + `common/` compilan con lxml |
+| Conformidad | el XML de ejemplo valida contra el esquema oficial (ver `informe-xsd-oficial.md`) |
+| Orden del flujo | la secuencia y RN-18 colocan la validación **antes** de la firma |
+| Generación | el comando de `xsdata` está documentado y las clases son reproducibles |
 | Firma | el XML contiene `ds:Signature` y el hash se guarda |

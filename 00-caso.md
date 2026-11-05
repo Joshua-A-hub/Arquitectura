@@ -27,6 +27,10 @@ con la SUNAT.
 > contratos de interfaz **antes de escribir una sola línea de lógica de negocio**, estudiando el
 > archivo `UBL-Invoice-2.1.xsd`, pero deberás estudiar todas las reglas antes, apoyándote de IA.
 
+> **Nota de numeración:** el enunciado menciona *"el catálogo 8"*. En la numeración oficial del
+> SEE, el **tipo de documento de identidad es el catálogo 06** y el **08 es el sistema de cálculo
+> del ISC**. Se modelan **ambos** (ver specs/contracts/catalogs/catalogos-sunat.md).
+
 ## 2. Alcance técnico y restricciones arquitectónicas (transcripción)
 
 - **Legado y migración de datos:** toda la información histórica del software básico (fecha,

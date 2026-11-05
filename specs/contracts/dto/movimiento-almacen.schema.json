@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://abc-software.pe/schemas/movimiento-almacen.json",
+  "title": "MovimientoAlmacen",
+  "description": "Movimiento de almacén que alimenta el Registro de Inventario Permanente en Unidades Físicas (Formato 12.1) y el kardex.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "fecha",
+    "tipo_movimiento",
+    "establecimiento",
+    "tipo_existencia",
+    "tipo_operacion",
+    "documento_soporte",
+    "producto_codigo",
+    "unidad_medida",
+    "cantidad",
+    "saldo_cantidad",
+    "saldo_valor"
+  ],
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "fecha": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "tipo_movimiento": { "type": "string", "enum": ["INGRESO", "SALIDA"] },
+    "establecimiento": {
+      "type": "string",
+      "pattern": "^[0-9]{4}$",
+      "description": "Código del establecimiento anexo (0000 = casa matriz)"
+    },
+    "tipo_existencia": {
+      "type": "string",
+      "pattern": "^[0-9]{2}$",
+      "description": "Tabla 5 SUNAT: 01 mercadería, 02 materia prima, 03 envases, 04 suministros, 05 repuestos…"
+    },
+    "tipo_operacion": {
+      "type": "string",
+      "pattern": "^[0-9]{2}$",
+      "description": "Tabla 12 SUNAT: 01 compra, 02 venta, 03 devolución, 04 inventario inicial, 05 ajuste…"
+    },
+    "documento_soporte": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tipo", "serie_numero", "fecha"],
+      "properties": {
+        "tipo": {
+          "type": "string",
+          "description": "Tabla 10 SUNAT (01 factura, 03 boleta, 09 guía, 00 inventario…)",
+          "pattern": "^[0-9]{2}$"
+        },
+        "serie_numero": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{4}-[0-9]{1,8}$",
+          "example": "F001-00000123"
+        },
+        "fecha": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+      }
+    },
+    "producto_codigo": { "type": "string", "minLength": 1, "maxLength": 30 },
+    "unidad_medida": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{2,3}$",
+      "description": "Tabla 6 SUNAT; equivale al catálogo 03 (NIU, KGM, BX, LTR, ZZ, BG, SA…)"
+    },
+    "cantidad": { "type": "number", "exclusiveMinimum": 0 },
+    "costo_unitario": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d{1,10})?$",
+      "description": "Obligatorio en ingresos"
+    },
+    "saldo_cantidad": { "type": "number", "minimum": 0 },
+    "saldo_valor": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d{1,10})?$",
+      "description": "Saldo valorizado (kardex)"
+    },
+    "origen_ficha_id": {
+      "type": "string",
+      "maxLength": 50,
+      "description": "Obligatorio si el movimiento proviene de la migración (RN-21)"
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "tipo_movimiento": { "const": "INGRESO" } } },
+      "then": { "required": ["costo_unitario"] }
+    }
+  ]
+}

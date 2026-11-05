@@ -36,7 +36,7 @@ Cada fila cruza el **dato exigido por SUNAT** con su **elemento UBL 2.1**, el **
 
 | N° | Dato SUNAT | Norma / Catálogo | Elemento UBL (ruta) | Card. | Campo DTO | Regla / validación | Prueba |
 |---|---|---|---|---|---|---|---|
-| 14 | RUC del emisor | RUC + **Catálogo 8** | `/cac:AccountingSupplierParty/cac:Party/cac:PartyIdentification/cbc:ID` (`@schemeID=6`) | 1 | contexto (no en el DTO) | RN-01 (dígito verificador) | QA-08 |
+| 14 | RUC del emisor | RUC + **Catálogo 06** | `/cac:AccountingSupplierParty/cac:Party/cac:PartyIdentification/cbc:ID` (`@schemeID=6`) | 1 | contexto (no en el DTO) | RN-01 (dígito verificador) | QA-08 |
 | 15 | Razón social del emisor | Norma SUNAT | `.../cac:PartyLegalEntity/cbc:RegistrationName` | 1 | contexto | no vacío | QA-08 |
 | 16 | Nombre comercial | Norma SUNAT | `.../cac:PartyName/cbc:Name` | 0..1 | contexto | opcional | QA-08 |
 | 17 | Domicilio fiscal (ubigeo) | Norma SUNAT | `.../cac:PartyLegalEntity/cac:RegistrationAddress/cbc:ID` | 1 | contexto | 6 dígitos | QA-09 |
@@ -46,7 +46,7 @@ Cada fila cruza el **dato exigido por SUNAT** con su **elemento UBL 2.1**, el **
 
 | N° | Dato SUNAT | Norma / Catálogo | Elemento UBL (ruta) | Card. | Campo DTO | Regla / validación | Prueba |
 |---|---|---|---|---|---|---|---|
-| 19 | Tipo de documento del receptor | **Catálogo 8** | `/cac:AccountingCustomerParty/cac:Party/cac:PartyIdentification/cbc:ID` (`@schemeID`) | 1 | `cliente.tipo_documento` | RN-02 | QA-10 |
+| 19 | Tipo de documento del receptor | **Catálogo 06** | `/cac:AccountingCustomerParty/cac:Party/cac:PartyIdentification/cbc:ID` (`@schemeID`) | 1 | `cliente.tipo_documento` | RN-02 | QA-10 |
 | 20 | Número de documento | RUC / DNI | mismo `cbc:ID` | 1 | `cliente.numero_documento` | RN-02 (11 RUC / 8 DNI) | QA-10 |
 | 21 | Nombre o razón social | Norma SUNAT | `.../cac:PartyLegalEntity/cbc:RegistrationName` | 1 | `cliente.razon_social` | mínimo 3 caracteres | QA-11 |
 | 22 | Ubigeo del receptor | Norma SUNAT | `.../cac:RegistrationAddress/cbc:ID` | 0..1 | `cliente.ubigeo` | obligatorio si receptor es RUC | QA-11 |
@@ -75,7 +75,8 @@ Cada fila cruza el **dato exigido por SUNAT** con su **elemento UBL 2.1**, el **
 | 35 | Tasa del IGV | Norma IGV (18%) | `.../cac:TaxCategory/cbc:Percent` | 1 | — (18 o 0) | 18 solo si afectación gravada | QA-17 |
 | 36 | Base imponible | Norma SUNAT | `.../cac:TaxSubtotal/cbc:TaxableAmount` | 1 | — (calculado) | RN-05 | QA-17 |
 | 37 | Monto del IGV | Norma SUNAT | `.../cac:TaxSubtotal/cbc:TaxAmount` | 1 | — (calculado) | RN-05, redondeo RN-08 | QA-17 |
-| 38 | Monto del ISC | Norma ISC | `/cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal` (TaxScheme `2000`) | 0..1 | `detalle[].tasa_isc` | RN-06 | QA-18 |
+| 38 | Sistema de cálculo del ISC | **Catálogo 08** (01 ad valorem, 02 específico, 03 al valor) | `/cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cbc:TierRange` (TaxScheme `2000`, `cbc:Name` = ISC, `cbc:TaxTypeCode` = EXC) | 0..1 | `detalle[].sistema_isc` | RN-06: cada sistema exige su dato (`tasa_isc`, `monto_fijo_isc`, `precio_venta_publico`) | QA-18 |
+| 38b | Monto del ISC | Norma ISC | `/cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal/cbc:TaxAmount` (TaxScheme `2000`) | 0..1 | `detalle[].isc_linea` | RN-06 (tres fórmulas) | QA-18 |
 | 39 | Monto del ICBPER | Ley de bolsas plásticas | `.../cac:TaxSubtotal` (TaxScheme `7152`) | 0..1 | `producto.es_bolsa_plastica` | RN-07: S/ 0.50 × bolsa | QA-18 |
 
 ## F. Totales del comprobante
@@ -118,6 +119,15 @@ Cada fila cruza el **dato exigido por SUNAT** con su **elemento UBL 2.1**, el **
 | 58 | `nro_documento` | **no se convierte** en número de comprobante | `FichaLegada.nro_documento` | RN-23 | QA-24 |
 | 59 | (sin dato) | identificador de origen | `FichaLegada.id_ficha` + `origen_archivo` | RN-22 | QA-24 |
 
+## J. Libros SUNAT (12.1 y 14.1)
+
+| N° | Dato SUNAT | Norma / Catálogo | Origen (UBL o dominio) | Card. | Campo DTO | Regla / validación | Prueba |
+|---|---|---|---|---|---|---|---|
+| 60 | Establecimiento y tipo de existencia (libro 12.1) | **Tabla 5** SUNAT | no viaja en el XML: se deriva de la línea y del almacén | 1 | `movimiento.establecimiento` + `tipo_existencia` | `docs/arquitectura/09-libros-sunat.md` | QA-25 |
+| 61 | Unidad de medida del inventario | **Tabla 6** SUNAT ↔ **catálogo 03** | `cbc:InvoicedQuantity/@unitCode` | 1 | `movimiento.unidad_medida` | equivalencia tabla 6 ↔ catálogo 03 | QA-25 |
+| 62 | Documento de soporte del movimiento | **Tabla 10** SUNAT | `cbc:ID` del comprobante (`serie_numero`) | 1 | `movimiento.documento_soporte` | RN-23: el `nro_documento` legado no sustituye un comprobante | QA-25 |
+| 63 | Registro de ventas del período | **Formato 14.1** | `cbc:ID`, `cac:TaxTotal/cbc:TaxAmount`, `cac:LegalMonetaryTotal/cbc:PayableAmount` | 1 | `registro_venta.*` | INV-10: un registro por comprobante aceptado | QA-26 |
+
 ---
 
 ## Resumen de cobertura
@@ -125,15 +135,16 @@ Cada fila cruza el **dato exigido por SUNAT** con su **elemento UBL 2.1**, el **
 | Bloque normativo | Filas | Cobertura |
 |---|---|---|
 | Encabezado | 13 | Catálogo 1, 2, 51 |
-| Emisor | 5 | RUC + catálogo 8 |
-| Receptor | 5 | **Catálogo 8** (punto clave del examen) |
+| Emisor | 5 | RUC + catálogo 06 |
+| Receptor | 5 | **Catálogo 06** |
 | Detalle | 9 | Catálogo 3 |
-| Tributos | 7 | Catálogos 5 y 7; IGV, ISC, ICBPER |
+| Tributos | 8 | Catálogos 5, 07 y **08 (ISC)**; IGV, ISC e ICBPER |
 | Totales | 6 | IGV + redondeo |
 | Notas | 5 | Catálogos 9 y 10 |
 | Firma y envío | 4 | XMLDSig + CDR |
 | Migración | 5 | Trazabilidad REQ-01 |
-| **Total** | **59** | 9 catálogos + 24 reglas |
+| **Libros SUNAT** | **4** | Tablas 5, 6 y 10 + formato 14.1 |
+| **Total** | **63** | 10 catálogos + 24 reglas + 2 libros |
 
 ## Casos de prueba referenciados
 
@@ -148,7 +159,7 @@ Cada fila cruza el **dato exigido por SUNAT** con su **elemento UBL 2.1**, el **
 | QA-07 | Forma de pago y cuotas coherentes |
 | QA-08 | RUC del emisor con dígito verificador |
 | QA-09 | Ubigeo y dirección del emisor |
-| QA-10 | Documento del receptor según catálogo 8 |
+| QA-10 | Documento del receptor según **catálogo 06** |
 | QA-11 | Razón social y domicilio del receptor |
 | QA-12 | Integridad de la línea |
 | QA-13 | Unidad de medida y cantidad |
@@ -163,3 +174,5 @@ Cada fila cruza el **dato exigido por SUNAT** con su **elemento UBL 2.1**, el **
 | QA-22 | CDR y transición de estado |
 | QA-23 | Migración de una ficha completa |
 | QA-24 | Ficha sin datos suficientes queda OBSERVADA |
+| QA-25 | Libro 12.1: movimiento con establecimiento, tipo de existencia, documento de soporte y saldos |
+| QA-26 | Libro 14.1: el comprobante aceptado genera su registro de venta |

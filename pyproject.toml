@@ -1,0 +1,18 @@
+[tool.pytest.ini_options]
+# Permite `import src...` y `import tests...` desde la raíz del proyecto.
+pythonpath = ["."]
+testpaths = ["tests", "validacion"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+ignore = [
+    "RUF001", "RUF002", "RUF003",  # tildes y signos del español en textos y comentarios
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["src", "tests"]

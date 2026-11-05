@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://abc-software.pe/schemas/registro-venta.json",
+  "title": "RegistroVenta",
+  "description": "Línea del Registro de Ventas e Ingresos (Formato 14.1). Se deriva del comprobante aceptado; no se edita a mano.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "fecha_emision",
+    "tipo_comprobante",
+    "serie_numero",
+    "cliente_documento",
+    "cliente_razon_social",
+    "base_gravada",
+    "igv",
+    "importe_total",
+    "moneda",
+    "estado",
+    "comprobante_id"
+  ],
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "fecha_emision": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "tipo_comprobante": {
+      "type": "string",
+      "enum": ["01", "03", "07", "08"],
+      "description": "Catálogo 01"
+    },
+    "serie_numero": {
+      "type": "string",
+      "pattern": "^[FB][A-Z0-9]{3}-[0-9]{1,8}$",
+      "example": "F001-00000123"
+    },
+    "cliente_documento": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tipo", "numero"],
+      "properties": {
+        "tipo": {
+          "type": "string",
+          "enum": ["0", "1", "4", "6", "7", "A"],
+          "description": "Catálogo 06"
+        },
+        "numero": { "type": "string", "minLength": 1, "maxLength": 15 }
+      }
+    },
+    "cliente_razon_social": { "type": "string", "minLength": 3, "maxLength": 200 },
+    "base_gravada": { "type": "string", "pattern": "^\\d+(\\.\\d{1,10})?$" },
+    "base_exonerada": { "type": "string", "pattern": "^\\d+(\\.\\d{1,10})?$" },
+    "base_inafecta": { "type": "string", "pattern": "^\\d+(\\.\\d{1,10})?$" },
+    "base_exportacion": { "type": "string", "pattern": "^\\d+(\\.\\d{1,10})?$" },
+    "igv": { "type": "string", "pattern": "^\\d+(\\.\\d{1,10})?$" },
+    "isc": { "type": "string", "pattern": "^\\d+(\\.\\d{1,10})?$" },
+    "icbper": { "type": "string", "pattern": "^\\d+(\\.\\d{1,10})?$" },
+    "importe_total": { "type": "string", "pattern": "^\\d+(\\.\\d{1,10})?$" },
+    "moneda": { "type": "string", "enum": ["PEN", "USD"] },
+    "tipo_cambio": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d{1,6})?$",
+      "description": "Obligatorio si la moneda no es PEN"
+    },
+    "estado": { "type": "string", "enum": ["REGISTRADO", "ANULADO"] },
+    "comprobante_id": { "type": "string", "format": "uuid" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "moneda": { "const": "USD" } } },
+      "then": { "required": ["tipo_cambio"] }
+    }
+  ]
+}

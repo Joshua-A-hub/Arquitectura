@@ -2,14 +2,16 @@
 
 # Facturación Electrónica — ABC Software Corp
 
-**Esqueleto de especificaciones técnicas** · Fase 1 del ciclo **Spec-First**
+**Especificaciones técnicas (Spec-First) + Taller 2: generación del XML UBL 2.1**
 
 ![Fase](https://img.shields.io/badge/fase-1%20%C2%B7%20especificaci%C3%B3n-1F3A5F)
 ![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.3-6BA539)
 ![UBL](https://img.shields.io/badge/UBL-2.1-orange)
-![Verificación](https://img.shields.io/badge/verificaci%C3%B3n-15%20%2B%2011%20%2B%208-brightgreen)
+![Pruebas](https://img.shields.io/badge/pruebas-142%20pasando-brightgreen)
 
-*Arquitectura de Software · Universidad Nacional Agraria de la Selva · Examen de Medio Curso · Grupo "A"*
+*Arquitectura de Software · Universidad Nacional Agraria de la Selva · Grupo "A"*
+
+**Alvarado Ichpas Benny Joshua**
 
 </div>
 
@@ -27,10 +29,10 @@ usuario ni implementación; incluye lo que hace posible implementarlas sin reint
 
 | # | Entregable del enunciado | Dónde está | Evidencia |
 |:--:|---|---|---|
-| **E1** | Modelo de Dominio y Contratos (DTOs / Schemas) | [`specs/domain/`](specs/domain/modelo-dominio.md) · [`specs/contracts/dto/`](specs/contracts/dto/) | 7 JSON Schemas validados |
+| **E1** | Modelo de Dominio y Contratos (DTOs / Schemas) | [`specs/domain/`](specs/domain/modelo-dominio.md) · [`specs/contracts/dto/`](specs/contracts/dto/) | 9 JSON Schemas validados |
 | **E2** | Diagramas de Arquitectura MVC con visión a Hexagonal | [`specs/architecture/`](specs/architecture/mvc-hexagonal.md) · [`docs/arquitectura/`](docs/arquitectura/README.md) | 11 requisitos ASR + 10 RNF + 3 ADR |
-| **E3** | Especificación de Endpoints / Servicios (Contratos API) | [`facturacion-api.yaml`](specs/contracts/facturacion-api.yaml) | 9 rutas · 15 esquemas · JWT |
-| **E4** | Matriz de Trazabilidad Normativa SUNAT ↔ UBL | [`04-matriz`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) · [`08-tabla de match`](docs/arquitectura/08-tabla-match-sunat-ubl.md) | 59 cruces + 47 campos |
+| **E3** | Especificación de Endpoints / Servicios (Contratos API) | [`facturacion-api.yaml`](specs/contracts/facturacion-api.yaml) | 12 rutas · 18 esquemas · JWT |
+| **E4** | Matriz de Trazabilidad Normativa SUNAT ↔ UBL | [`04-matriz`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) · [`08-tabla de match`](docs/arquitectura/08-tabla-match-sunat-ubl.md) | 63 cruces + 47 campos |
 
 📄 **Documento consolidado para entregar:** [`MEMORIA-TECNICA.docx`](MEMORIA-TECNICA.docx) ·
 🔍 **Informe de verificación:** [`VERIFICACION.md`](VERIFICACION.md)
@@ -66,12 +68,39 @@ python validacion/verificar_entrega.py     # todo en uno
 | Script | Qué comprueba | Resultado |
 |---|---|---|
 | [`verificar_entrega.py`](validacion/verificar_entrega.py) | integral: contratos, XML, enlaces, cifras, artefactos | **8/8** |
-| [`validar_contratos.py`](validacion/validar_contratos.py) | 7 JSON Schemas, 3 ejemplos y el OpenAPI (parseo real) | **15/15** |
-| [`validar_xml_ubl.py`](validacion/validar_xml_ubl.py) | XML contra XSD, totales, RUC (módulo 11) | **11/11** |
+| [`validar_contratos.py`](validacion/validar_contratos.py) | 9 JSON Schemas, 3 ejemplos y el OpenAPI (parseo real) | **17/17** |
+| [`validar_xml_ubl.py`](validacion/validar_xml_ubl.py) | XML contra XSD, totales, RUC (módulo 11) | **13/13** |
 
 Incluyen **controles negativos** que demuestran que las pruebas sirven: quitar `serie_numero` del
 ejemplo rompe la validación (código de salida 1); adulterar el IGV de cabecera rompe la reconciliación
 de totales.
+
+---
+
+## Taller 2 (2.º parcial): generación del XML
+
+Implementación de la **generación de XML a partir de `UBL-Invoice-2.1.xsd`**, en el lenguaje del
+dominio y evaluada con **pruebas unitarias de generación**. Detalle completo en
+[`docs/taller-2-generacion-xml.md`](docs/taller-2-generacion-xml.md).
+
+```bash
+pip install -r requirements-dev.txt
+pytest tests/unit -q                 # 142 pruebas (98 de generación + 44 de dominio)
+python -m src.cli generar-xml specs/ejemplos/emision-cli.json --salida out
+```
+
+| Pieza | Dónde |
+|---|---|
+| Clases generadas del XSD oficial (`xsdata`) | [`src/adapters/outbound/ubl/generated/`](src/adapters/outbound/ubl/generated/) |
+| Adaptador dominio → UBL → XML | [`generador.py`](src/adapters/outbound/ubl/generador.py) |
+| Validador contra el esquema oficial | [`validador.py`](src/adapters/outbound/ubl/validador.py) |
+| Dominio ejecutable (catálogos, tributos, letras) | [`src/domain/`](src/domain/) |
+| Pruebas de generación + XML de referencia | [`tests/unit/generacion_xml/`](tests/unit/generacion_xml/) |
+| Regenerar clases | `scripts/generar_clases_ubl.ps1` |
+
+Los 8 escenarios (factura al contado, al crédito, completa con ISC 01/02/03 + ICBPER, exportación en
+USD, factura de un vale, boleta, nota de crédito y nota de débito) **validan contra los esquemas
+oficiales** de OASIS.
 
 ---
 
@@ -107,9 +136,18 @@ examen/
 │   ├── domain/                   modelo-dominio · reglas-negocio · marco-normativo
 │   ├── features/                 casos de uso (Gherkin)
 │   └── templates/                plantillas de spec, ADR y contrato
-├── src/                          puertos (interfaces) + README de la fase 2
-├── tests/                        mapa de pruebas + mock de datos
-└── validacion/                   los tres validadores
+├── src/
+│   ├── domain/                   dominio ejecutable: catálogos, tributos, letras, comprobante
+│   ├── adapters/outbound/ubl/    generador (xsdata) + validador + clases del XSD oficial
+│   ├── cli.py                    segundo adaptador de entrada (generar-xml)
+│   └── puertos.py                interfaces del hexágono
+├── tests/
+│   ├── unit/generacion_xml/      98 pruebas de generación + esperados/*.xml
+│   ├── unit/test_dominio.py      44 pruebas de dominio
+│   └── mocks/mock_db.py          datos de prueba
+├── scripts/                      regeneración de las clases desde el XSD
+├── validacion/                   los tres validadores
+└── requirements-dev.txt          pytest + xsdata + lxml (Taller 2)
 ```
 
 </details>
@@ -128,7 +166,7 @@ examen/
 | *"Especificación de Endpoints / Servicios (Contratos API)"* | [`facturacion-api.yaml`](specs/contracts/facturacion-api.yaml) |
 | *"Matriz de Trazabilidad Normativa con cruces entre datos SUNAT y datos UBL"* | [`04-matriz`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) · [`08-tabla de match`](docs/arquitectura/08-tabla-match-sunat-ubl.md) |
 | *"Legado y Migración de Datos … sin perder trazabilidad"* | [`05-migracion`](docs/arquitectura/05-migracion-legado.md) · RN-21..RN-24 |
-| *"Normativa Tributaria Peruana … el catálogo 8 de SUNAT"* | [`catalogos`](specs/contracts/catalogs/catalogos-sunat.md) · [`marco normativo`](specs/domain/marco-normativo.md) |
+| *"Normativa Tributaria Peruana … el catálogo 06 de SUNAT"* | [`catalogos`](specs/contracts/catalogs/catalogos-sunat.md) · [`marco normativo`](specs/domain/marco-normativo.md) |
 | *"monolítica limpia … MVC … Arquitectura Hexagonal o Clean"* | [`mvc-hexagonal`](specs/architecture/mvc-hexagonal.md) · [ADR-0001](specs/adr/0001-monolito-mvc-con-vision-hexagonal.md) |
 | *"Windows … Android … instalador MSI … APK"* | [`06-distribucion`](docs/arquitectura/06-distribucion-msi-apk.md) · [ADR-0003](specs/adr/0003-estrategia-multiplataforma.md) |
 | *"detalle los casos posibles … Nubefact"* | [`casos de uso`](specs/features/casos-de-uso.md) · [`benchmark`](docs/benchmark-facturacion.md) |
@@ -157,7 +195,7 @@ examen/
 
 ## Decisiones que se pueden defender
 
-1. **El contrato manda.** El OpenAPI y los 7 JSON Schemas se escribieron antes que cualquier
+1. **El contrato manda.** El OpenAPI y los 9 JSON Schemas se escribieron antes que cualquier
    implementación, y el validador comprueba que siguen siendo coherentes.
 2. **Un mock, una fuente.** Los datos de prueba viven solo en `tests/mocks/`; no hay copias en `src/`.
 3. **Antifraude en los datos.** El DTO de entrada no acepta `totales`, `id`, `estado` ni
@@ -185,7 +223,9 @@ examen/
 
 **Trabajo académico** — Universidad Nacional Agraria de la Selva · Arquitectura de Software · 2026
 
-*Estado: entrega completa de la fase 1. Los límites conocidos están declarados en
-[`VERIFICACION.md §4`](VERIFICACION.md).*
+**Alvarado Ichpas Benny Joshua**
+
+*Estado: especificaciones (1.er parcial) + generación del XML (Taller 2). Los límites conocidos están
+declarados en [`VERIFICACION.md §4`](VERIFICACION.md).*
 
 </div>

@@ -1,4 +1,4 @@
-﻿# Entornos y artefactos locales
+# Entornos y artefactos locales
 .venv/
 venv/
 __pycache__/
@@ -6,6 +6,13 @@ __pycache__/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Apoyo de la sesión (no forma parte de la entrega)
+_build/
+_tools/
+
+# Clases generadas desde el XSD: se versionan, pero su caché no
+src/adapters/outbound/ubl/generated/__pycache__/
 
 # Entregables generados
 out/

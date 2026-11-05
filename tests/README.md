@@ -4,45 +4,53 @@ En Spec-Driven Development los tests se organizan por **qué validan**, no por c
 
 ```text
 tests/
-├── acceptance/   valida los escenarios Gherkin de specs/features/
-├── integration/  valida la interacción entre adaptadores (repositorio, XML, OSE)
-├── unit/         valida reglas y cálculos aislados (sin HTTP, sin base de datos)
-├── mocks/        datos estáticos que simulan la persistencia
-└── README.md     esta guía
+├── unit/
+│   ├── generacion_xml/     Taller 2: generación del XML UBL (lo que se evalúa)
+│   │   ├── fabrica.py      escenarios del dominio (sin HTTP ni base de datos)
+│   │   ├── test_*.py       98 pruebas de generación
+│   │   └── esperados/      XML de referencia ("golden files")
+│   └── test_dominio.py     44 pruebas de cálculo y reglas
+├── acceptance/             escenarios Gherkin de specs/features/ (fase 2)
+├── integration/            interacción entre adaptadores (fase 2)
+├── mocks/mock_db.py        datos estáticos que simulan la persistencia
+└── README.md               esta guía
 ```
 
-## Estado en esta fase
+## Estado
 
-El examen pide **especificaciones**, no implementación, así que los tests están **especificados**
-(escenarios Gherkin + IDs QA-01..QA-24) pero todavía no codificados: no existe lógica de negocio que
-probar. El mock ya está listo (`tests/mocks/mock_db.py`).
+| Nivel | Estado |
+|---|---|
+| `unit/generacion_xml` | **implementado**: 98 pruebas de generación + conformidad con el XSD oficial |
+| `unit/test_dominio.py` | **implementado**: 44 pruebas (RUC, serie, IGV, ISC, ICBPER, letras, cuotas) |
+| `acceptance` | especificado (Gherkin), se implementa cuando exista la API |
+| `integration` | especificado, requiere repositorio y OSE |
 
-Lo que **sí** es ejecutable hoy es la validación de los contratos, que no depende de la lógica:
+## Cómo se ejecutan
 
-```bash
-python validacion/validar_contratos.py
+```powershell
+pip install -r requirements-dev.txt
+pytest tests/unit -q
 ```
 
-## Mapa de pruebas comprometidas (fase 2)
+En el entorno de este repositorio las dependencias viven en `_tools/` (no se versionan), así que se
+ejecuta con `PYTHONPATH` apuntando ahí:
 
-| Nivel | Archivo previsto | Qué valida | Origen |
-|---|---|---|---|
-| Unitario | `unit/test_calculadora_tributos.py` | IGV 18%, exonerado, ISC, ICBPER, redondeo | RN-04..RN-09, QA-17..QA-19 |
-| Unitario | `unit/test_reglas.py` | RUC (módulo 11), catálogo 8, series, fechas | RN-01..RN-13, QA-08..QA-10 |
-| Unitario | `unit/test_numeracion.py` | correlativo por serie, sin huecos | RN-10..RN-12, QA-02 |
-| Unitario | `unit/test_ubl_builder.py` | namespaces, orden de elementos, rutas | perfil UBL, QA-21 |
-| Aceptación | `acceptance/test_emision_factura.py` | CU-01 completo contra la API | Gherkin CU-01 |
-| Aceptación | `acceptance/test_emision_boleta.py` | CU-02 consumidor final | Gherkin CU-02 |
-| Aceptación | `acceptance/test_notas.py` | CU-03/CU-04, referencia y saldo | Gherkin CU-03 |
-| Aceptación | `acceptance/test_baja.py` | CU-06 y transición de estados | Gherkin CU-06 |
-| Aceptación | `acceptance/test_migracion.py` | lote, observadas, idempotencia | RN-22, QA-23/24 |
-| Integración | `integration/test_repositorio_sqlite.py` | persistencia real y transacción de correlativo | RN-11, RN-12 |
-| Integración | `integration/test_ose_gateway.py` | envío simulado y lectura de CDR | RN-19, QA-22 |
+```powershell
+$env:PYTHONPATH = "$PWD\_tools\deps;$PWD\_tools;$PWD"
+pytest tests/unit -q
+```
 
-## Reglas de los tests en este proyecto
+## Qué garantizan las pruebas de generación
 
-1. Un test por escenario Gherkin; el nombre del test cita el ID (ej. `test_cu01_emision_factura`).
-2. Prohibido tocar un test para que pase: si falla, se corrige el código o el contrato (en ese orden
-   inverso si el contrato estaba mal).
-3. Los tests usan `mock_db.reiniciar()` en un fixture para ser independientes entre sí.
-4. El caso negativo siempre existe: un escenario que debe **fallar** (RUC inválido, XML inválido).
+1. **Estructura**: raíz, orden de los elementos que impone el XSD y namespaces.
+2. **Datos**: `serie_numero` → `cbc:ID`, catálogos 01/02/03/05/06/07/08 en su elemento.
+3. **Cálculo**: IGV, ISC de los tres sistemas, ICBPER, cuadre de totales por línea y por documento.
+4. **Conformidad**: los 8 escenarios validan contra `UBL-Invoice-2.1.xsd` (y NC/ND contra sus XSD).
+5. **Regresión**: el XML no cambia sin que se note (comparación byte a byte con `esperados/`).
+6. **Robustez**: determinismo y escape de `&`, `<`, `>`, `"`, `'`, `Ñ`, `€`.
+
+Regenerar los XML de referencia cuando el cambio es intencional:
+
+```powershell
+$env:ACTUALIZAR_ESPERADOS="1"; pytest tests/unit/generacion_xml; Remove-Item Env:ACTUALIZAR_ESPERADOS
+```

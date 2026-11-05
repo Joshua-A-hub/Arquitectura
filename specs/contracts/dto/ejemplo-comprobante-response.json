@@ -14,14 +14,14 @@
     "razon_social": "DISTRIBUIDORA SELVA SAC"
   },
   "totales": {
-    "op_gravada": 389.83,
-    "op_exonerada": 60.0,
-    "op_inafecta": 0,
-    "op_exportacion": 0,
-    "total_igv": 70.17,
-    "total_isc": 0,
-    "total_icbper": 10.0,
-    "importe_total": 530.0
+    "op_gravada": "389.83",
+    "op_exonerada": "60.00",
+    "op_inafecta": "0.00",
+    "op_exportacion": "0.00",
+    "total_igv": "70.17",
+    "total_isc": "0.00",
+    "total_icbper": "10.00",
+    "importe_total": "530.00"
   },
   "hash_xml": "ca4844a03ca8da6d54233e04154da31ea36da73a62893c1ec85bebc234bc47d6",
   "xml_url": "/api/v1/comprobantes/F001-00000123/xml",

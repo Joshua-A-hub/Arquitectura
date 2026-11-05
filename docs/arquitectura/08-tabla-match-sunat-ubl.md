@@ -44,7 +44,7 @@ el cliente no lo envía, lo asigna el sistema (RN-11).
 | 3 | `nombre_comercial_emisor` | Nombre comercial | `…/cac:PartyName/cbc:Name` | `Empresa.nombre_comercial` | string(200) | No | — |
 | 4 | `ubigeo_emisor` | Código de ubigeo del domicilio fiscal | `…/cac:RegistrationAddress/cbc:ID` | `Empresa.ubigeo` | 6 díg. | Sí | RN-03 |
 | 5 | `direccion_emisor` | Dirección del domicilio fiscal | `…/cac:AddressLine/cbc:Line` | `Empresa.direccion` | string(200) | Sí | RN-03 |
-| 6 | `tipo_documento_receptor` | Tipo de documento de identidad (**catálogo 8**) | `cac:AccountingCustomerParty/…/cbc:ID` (`@schemeID`) | `cliente.tipo_documento` | cat. 8 | Sí | RN-02 |
+| 6 | `tipo_documento_receptor` | Tipo de documento de identidad (**catálogo 06**) | `cac:AccountingCustomerParty/…/cbc:ID` (`@schemeID`) | `cliente.tipo_documento` | cat. 8 | Sí | RN-02 |
 | 7 | `numero_documento_receptor` | DNI (8) o RUC (11) del receptor | `…/cbc:ID` | `cliente.numero_documento` | string(15) | Sí | RN-02 |
 | 8 | `razon_social_receptor` | Nombre o razón social del receptor | `…/cac:PartyLegalEntity/cbc:RegistrationName` | `cliente.razon_social` | string(200) | Sí | RN-03 |
 | 9 | `ubigeo_receptor` | Ubigeo del receptor | `…/cac:RegistrationAddress/cbc:ID` | `cliente.ubigeo` | 6 díg. | Cond. | RN-03 |

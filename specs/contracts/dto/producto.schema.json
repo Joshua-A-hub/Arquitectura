@@ -13,25 +13,79 @@
     "es_bolsa_plastica"
   ],
   "properties": {
-    "codigo": { "type": "string", "minLength": 1, "maxLength": 30 },
-    "descripcion": { "type": "string", "minLength": 3, "maxLength": 200 },
+    "codigo": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
+    "descripcion": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    },
     "unidad_medida": {
       "type": "string",
-      "enum": ["NIU", "KGM", "BX", "LTR", "ZZ"],
+      "enum": [
+        "NIU",
+        "KGM",
+        "BX",
+        "LTR",
+        "ZZ"
+      ],
       "description": "Catálogo 3"
     },
     "precio_unitario": {
-      "type": "number",
-      "minimum": 0,
-      "description": "Precio de venta al público (incluye IGV)"
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d{1,10})?$",
+      "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
     },
     "afectacion_igv": {
       "type": "string",
-      "enum": ["10", "11", "20", "21", "30", "31", "40"],
+      "enum": [
+        "10",
+        "11",
+        "20",
+        "21",
+        "30",
+        "31",
+        "40"
+      ],
       "description": "Catálogo 7"
     },
-    "tasa_isc": { "type": "number", "minimum": 0, "maximum": 50, "default": 0 },
-    "es_bolsa_plastica": { "type": "boolean" },
-    "stock_actual": { "type": "number", "minimum": 0 }
+    "tasa_isc": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d{1,10})?$",
+      "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
+    },
+    "es_bolsa_plastica": {
+      "type": "boolean"
+    },
+    "stock_actual": {
+      "type": "number",
+      "minimum": 0
+    },
+    "sistema_isc": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "01",
+        "02",
+        "03",
+        null
+      ],
+      "description": "Catálogo 08 (sistema de cálculo del ISC)"
+    },
+    "monto_fijo_isc": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d{1,10})?$",
+      "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
+    },
+    "precio_venta_publico": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d{1,10})?$",
+      "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
+    }
   }
 }

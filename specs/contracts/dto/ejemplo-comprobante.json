@@ -20,7 +20,7 @@
       "descripcion": "SACO DE ARROZ 50KG",
       "unidad_medida": "NIU",
       "cantidad": 10,
-      "precio_unitario": 45.0,
+      "precio_unitario": "45.00",
       "afectacion_igv": "10"
     },
     {
@@ -29,7 +29,7 @@
       "descripcion": "CAJA DE LECHE 1L",
       "unidad_medida": "BX",
       "cantidad": 5,
-      "precio_unitario": 12.0,
+      "precio_unitario": "12.00",
       "afectacion_igv": "20"
     },
     {
@@ -38,7 +38,7 @@
       "descripcion": "BOLSA PLASTICA RECICLABLE",
       "unidad_medida": "NIU",
       "cantidad": 20,
-      "precio_unitario": 0.5,
+      "precio_unitario": "0.50",
       "afectacion_igv": "10"
     }
   ]

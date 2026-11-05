@@ -77,24 +77,13 @@ Cada catálogo se expone por la API (`GET /api/v1/catalogos/{codigo}`) y se refe
 | `37` | Inafecto — retiro por entrega a trabajadores | No |
 | `40` | Exportación de bienes o servicios | No (tasa 0%) |
 
-## Catálogo 08 — Sistema de cálculo del ISC · y catálogo 06 — Tipo de documento de identidad ★
+## Catálogo 06 — Tipo de documento de identidad
 
-> **Aclaración de numeración.** En la numeración oficial del SEE, el **catálogo 06** es el de *tipo de
-> documento de identidad* y el **catálogo 08** es el de *sistema de cálculo del ISC*. El enunciado del
-> examen señala "el catálogo 8" como punto clave; para no depender de esa numeración se documentan
-> **ambos**: los sistemas de ISC (`01` ad valorem, `02` específico, `03` al valor) y los tipos de
-> documento de identidad.
+Se usa para identificar al receptor (`cac:AccountingCustomerParty/cac:Party/cac:PartyIdentification/cbc:ID/@schemeID`)
+y al emisor cuando corresponde.
 
-| Sistema de cálculo del ISC (catálogo 08) | Descripción |
-|---|---|
-| `01` | Ad valorem (porcentaje sobre el valor) |
-| `02` | Específico (monto por unidad) |
-| `03` | Al valor (sobre el precio de venta) |
-
-### Tipo de documento de identidad (catálogo 06)
-
-**Es el catálogo que el examen señala como punto clave.** Se usa para identificar al receptor
-(`cac:AccountingCustomerParty`) y al emisor cuando corresponde.
+> **Numeración:** el tipo de documento de identidad es el **catálogo 06**. El **08** es el de
+> *sistema de cálculo del ISC* (ver más abajo), que es el que el enunciado señala como punto clave.
 
 > **Subconjunto operativo soportado por el contrato:** `0`, `1`, `4`, `6`, `7`, `A`. Los códigos
 > `B`–`G` existen en el catálogo SUNAT y se listan como referencia, pero el DTO de emisión los
@@ -122,6 +111,32 @@ Cada catálogo se expone por la API (`GET /api/v1/catalogos/{codigo}`) y se refe
 | Factura (`01`) | solo `6` (RUC) |
 | Boleta (`03`) | `1`, `6`, `0` (consumidor final) |
 | Nota de crédito/débito | el mismo del comprobante que modifica |
+
+## Catálogo 08 — Sistema de cálculo del ISC ★
+
+**Es el catálogo que el enunciado destaca.** No identifica personas: decide **cómo se calcula el ISC**
+de cada línea. Sin él, el ISC solo puede calcularse de una forma (ad valorem) y las otras dos quedan
+fuera del sistema.
+
+| Código | Sistema | Fórmula del ISC de la línea | Datos que exige |
+|:--:|---|---|---|
+| `01` | **Ad valorem** | `isc = valor_venta × (tasa_isc / 100)` | `tasa_isc` |
+| `02` | **Específico** | `isc = monto_fijo_isc × cantidad` | `monto_fijo_isc` (S/ por unidad de medida) |
+| `03` | **Al valor** (precio de venta al público) | `isc = (precio_venta_publico − valor_venta_sin_isc) × cantidad` | `precio_venta_publico` |
+
+Reglas del catálogo en el dominio (RN-06):
+
+1. Si el producto **no** está afecto al ISC, `sistema_isc` es nulo y `isc = 0`.
+2. Si está afecto, `sistema_isc` es **obligatorio** y solo se admite `01`, `02` o `03`.
+3. Cada sistema exige **su** dato: `01` → `tasa_isc > 0`; `02` → `monto_fijo_isc > 0`; `03` →
+   `precio_venta_publico > valor_venta_sin_isc`. Si falta, es error de negocio (422).
+4. El ISC calculado **integra la base del IGV** (RN-05) y se declara en el XML con
+   `cac:TaxScheme/cbc:ID = 2000`.
+
+**Dónde viaja en el UBL:** el sistema/tasa se declara en
+`cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cbc:TierRange` (con `cac:TaxScheme/cbc:ID`
+= `2000`, `cbc:Name` = `ISC` y `cbc:TaxTypeCode` = `EXC`); el importe, en el `cbc:TaxAmount` del
+mismo `cac:TaxSubtotal`.
 
 ## Catálogo 09 — Tipo de nota de crédito
 
@@ -170,8 +185,9 @@ Cada catálogo se expone por la API (`GET /api/v1/catalogos/{codigo}`) y se refe
 | 02 | `cbc:DocumentCurrencyCode` |
 | 03 | `cbc:InvoicedQuantity/@unitCode` |
 | 05 | `cac:TaxScheme/cbc:ID` |
+| 06 | `cac:PartyIdentification/cbc:ID/@schemeID` (emisor y receptor) |
 | 07 | `cbc:TaxExemptionReasonCode` |
-| **08** | `cbc:ID/@schemeID` (emisor y receptor) |
+| **08** | `cac:TaxCategory/cbc:TierRange` (con `cac:TaxScheme/cbc:ID = 2000`) |
 | 09 | `cac:DiscrepancyResponse/cbc:ResponseCode` (NC) |
 | 10 | `cac:DiscrepancyResponse/cbc:ResponseCode` (ND) |
 | 51 | `cbc:InvoiceTypeCode/@listID` |

@@ -41,7 +41,7 @@ El enunciado nombra cuatro explícitamente y señala uno como **punto clave**:
 | Tipos de documentos | código 01, 03, 07, 08 | [`catalogs/catalogos-sunat.md`](../contracts/catalogs/catalogos-sunat.md) |
 | Afectación al IGV | códigos 10, 20, 30, 40 y familia | mismo archivo |
 | Códigos de moneda | PEN, USD | mismo archivo |
-| **Catálogo 8** ★ | **tipo de documento de identidad** del receptor | mismo archivo, sección dedicada |
+| **Catálogo 06** ★ | **tipo de documento de identidad** del receptor | mismo archivo, sección dedicada |
 | Otros usados | 03 unidad de medida, 05 tributo, 09/10 notas, 51 tipo de operación | mismo archivo |
 
 ## 4. Reglas de emisión que se derivan
@@ -51,7 +51,7 @@ El enunciado nombra cuatro explícitamente y señala uno como **punto clave**:
 | Series y correlativos | RN-10, RN-11, RN-12 | unicidad por `tipo+serie`; formato `F001-00000001` |
 | Fecha y hora de emisión | RN-13 | no futura; `HH:mm:ss` |
 | Validación de RUC | RN-01 | módulo 11 |
-| Documento del receptor | RN-02 | catálogo 8 + combinación por comprobante |
+| Documento del receptor | RN-02 | catálogo 06 + combinación por comprobante |
 | Cálculo de tributos | RN-04..RN-09 | IGV 18%, ISC, ICBPER S/ 0.50 |
 | Inmutabilidad | RN-15 | corrección solo por nota |
 | Notas de crédito/débito | RN-16 | referencia + catálogo 09/10 |
@@ -94,7 +94,7 @@ vive siempre en el servidor (ADR-0002).
 |---|---|---|
 | RS 097-2012 / masificación CPE | RN-17, RN-19 | máquina de estados + CDR (E1, E4) |
 | UBL 2.1 (OASIS) | RN-18 | perfil + matriz (E1, E4) |
-| Catálogo 8 | RN-02 | catálogos + matriz filas 19-20 (E1, E4) |
+| Catálogo 06 | RN-02 | catálogos + matriz filas 19-20 (E1, E4) |
 | Catálogos 01/02/03/05/07/51 | RN-04..RN-12 | catálogos + contrato (E1, E3) |
 | Reglas de emisión | RN-10..RN-13 | contrato + reglas (E1, E3) |
 

@@ -1,0 +1,12 @@
+# Dependencias de desarrollo (Taller 2: generación de XML)
+#
+# La generación usa las clases derivadas del XSD oficial de OASIS: `xsdata` las produce
+# a partir de `specs/contracts/ubl/oficial/` y serializa el XML. `lxml` valida el
+# resultado contra el mismo esquema en las pruebas.
+#
+#   pip install -r requirements-dev.txt
+#   pytest tests/unit -q
+
+pytest>=8.0
+xsdata[cli]>=26.0
+lxml>=5.0.0

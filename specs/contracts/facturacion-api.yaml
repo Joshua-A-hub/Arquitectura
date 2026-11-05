@@ -1,22 +1,19 @@
 openapi: 3.0.3
 info:
   title: API de Facturación Electrónica — ABC Software Corp
-  version: 1.0.1
+  version: 2.0.0
   description: |
-    Contrato de servicios de la primera fase (Spec-First) del sistema de facturación
-    electrónica. El servicio emite comprobantes bajo el estándar UBL 2.1 (Invoice),
-    los firma digitalmente, los valida contra el XSD y los envía a la OSE/SUNAT.
+    Contrato de servicios del sistema de facturación electrónica: emisión de comprobantes
+    (UBL 2.1 Invoice), notas, baja, migración del legado y libros SUNAT 12.1 y 14.1.
 
-    Regla transversal: **sin XML válido y firmado no existe comprobante**. Ningún
-    comprobante se registra como EMITIDO si falla la validación formal.
+    **Nomenclatura:** el identificador del comprobante es `serie_numero`
+    (`serie + "-" + correlativo`, ej. `F001-00000123`) y se mapea a `cbc:ID` del UBL.
 
-    Nomenclatura: el identificador del comprobante se denomina **`serie_numero`**
-    (serie + correlativo, ej. `F001-00000123`), conforme a SUNAT.
+    **Importes:** viajan como *string decimal* (`"1250.50"`), nunca como número de coma flotante.
 
-    Todos los errores comparten la forma `ErrorValidacion` y el código HTTP correspondiente.
+    **Validación:** el XML se valida contra el esquema oficial de OASIS *antes* de firmarse (RN-18).
 
-    **Seguridad:** toda operación exige un token de emisor (JWT) que identifica a la empresa y su
-    RUC. El emisor nunca viaja en el cuerpo de la petición: sale del token.
+    **Seguridad:** todas las operaciones exigen `bearerAuth` y declaran `401` y `403`.
 security:
   - bearerAuth: []
 x-catalogo-errores:
@@ -24,26 +21,30 @@ x-catalogo-errores:
     codigo: VALIDACION_ESQUEMA
     causa: el JSON no cumple el DTO (tipo, formato, obligatorio)
     accion: el cliente corrige el campo señalado en errores[].campo
-  - http: 400
-    codigo: VALIDACION_NEGOCIO
-    causa: incumple una regla RN-01..RN-17 (RUC, catálogo 8, series, fechas)
-    accion: el cliente corrige el dato o el flujo
   - http: 401
     codigo: NO_AUTORIZADO
-    causa: token ausente, vencido o de otra empresa
+    causa: token ausente o vencido
     accion: renovar credencial
+  - http: 403
+    codigo: PROHIBIDO
+    causa: el token no tiene el rol requerido (emisión, baja, migración)
+    accion: solicitar permiso al administrador
   - http: 404
     codigo: NO_ENCONTRADO
-    causa: el comprobante no existe
-    accion: verificar el serie_numero
+    causa: el comprobante o recurso no existe
+    accion: verificar el identificador
   - http: 409
-    codigo: CONFLICTO_CORRELATIVO
-    causa: número duplicado por concurrencia (RN-12)
-    accion: reintentar; el correlativo se reasigna
+    codigo: CONFLICTO
+    causa: correlativo duplicado o comprobante ya dado de baja
+    accion: reintentar con otra clave de idempotencia
+  - http: 422
+    codigo: VALIDACION_NEGOCIO
+    causa: incumple una regla tributaria (RN-01..RN-24, ISC, catálogo 06/08)
+    accion: corregir el dato; el error indica el campo
   - http: 500
     codigo: XML_INVALIDO
-    causa: el XML generado no valida contra el perfil XSD (no se registró nada)
-    accion: incidente técnico; se corrige el generador
+    causa: el XML no valida contra el esquema oficial (no se firmó ni se registró)
+    accion: incidente técnico
   - http: 502
     codigo: ERROR_ENVIO
     causa: la OSE/SUNAT no respondió; el comprobante queda PENDIENTE_ENVIO
@@ -53,13 +54,11 @@ servers:
     description: Despliegue local (Windows / Android)
 tags:
   - name: Comprobantes
-    description: Emisión, consulta y ciclo de vida
   - name: Notas
-    description: Notas de crédito y débito
+  - name: Bajas
   - name: Maestros
-    description: Clientes, productos y catálogos
   - name: Migración
-    description: Importación de fichas del sistema legado
+  - name: Libros SUNAT
 
 paths:
   /api/v1/comprobantes:
@@ -67,9 +66,8 @@ paths:
       tags: [Comprobantes]
       summary: Emitir un comprobante electrónico
       description: |
-        Orden interno obligatorio: 1) validar esquema, 2) validar reglas de negocio,
-        3) asignar correlativo, 4) calcular totales, 5) generar XML UBL, 6) firmar,
-        7) validar contra XSD, 8) enviar a OSE/SUNAT, 9) guardar CDR.
+        Orden obligatorio (RN-18): validar esquema → validar reglas → calcular (IGV, ISC por
+        sistema, ICBPER) → generar XML → **validar contra el esquema oficial** → firmar → enviar.
       requestBody:
         required: true
         content:
@@ -84,29 +82,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/ComprobanteResponse'
         '400':
-          description: Error de esquema o de regla de negocio
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorValidacion'
+          $ref: '#/components/responses/ErrorEsquema'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
         '409':
-          description: Correlativo duplicado (RN-12)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorValidacion'
+          $ref: '#/components/responses/Conflicto'
+        '422':
+          $ref: '#/components/responses/ErrorNegocio'
         '500':
-          description: El XML no validó contra el XSD (no se registró nada)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorValidacion'
+          $ref: '#/components/responses/XmlInvalido'
         '502':
-          description: La OSE/SUNAT no respondió (el comprobante quedó PENDIENTE_ENVIO)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorValidacion'
+          $ref: '#/components/responses/ErrorEnvio'
     get:
       tags: [Comprobantes]
       summary: Listar comprobantes con filtros y paginación
@@ -127,11 +115,9 @@ paths:
           schema: { type: string, format: date }
         - name: page
           in: query
-          description: Número de página (base 1)
           schema: { type: integer, minimum: 1, default: 1 }
         - name: size
           in: query
-          description: Registros por página (máximo 100)
           schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
       responses:
         '200':
@@ -140,13 +126,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListadoComprobantes'
+        '400':
+          description: Filtros inválidos (fecha mal formada, página negativa)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidacion'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
 
   /api/v1/comprobantes/{id}:
     get:
       tags: [Comprobantes]
       summary: Consultar un comprobante por su identificador interno
       parameters:
-        - $ref: '#/components/parameters/IdComprobante'
+        - $ref: '#/components/parameters/Id'
       responses:
         '200':
           description: Comprobante encontrado
@@ -154,28 +150,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ComprobanteResponse'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
         '404':
           $ref: '#/components/responses/NoEncontrado'
 
-  /api/v1/comprobantes/{serie_numero}/xml:
+  /api/v1/comprobantes/{id}/xml:
     get:
       tags: [Comprobantes]
-      summary: Descargar el XML UBL firmado (evidencia del comprobante)
+      summary: Descargar el XML firmado (evidencia del comprobante)
       parameters:
-        - name: serie_numero
-          in: path
-          required: true
-          description: Identificador completo del comprobante (serie + correlativo)
-          schema:
-            type: string
-            pattern: '^[FB][0-9]{3}-[0-9]{8}$'
-            example: F001-00000123
+        - $ref: '#/components/parameters/Id'
       responses:
         '200':
-          description: XML UBL 2.1 Invoice
+          description: XML UBL 2.1 validado contra el esquema oficial
           content:
             application/xml:
               schema: { type: string }
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
         '404':
           $ref: '#/components/responses/NoEncontrado'
 
@@ -184,7 +181,7 @@ paths:
       tags: [Notas]
       summary: Emitir una nota de crédito o débito sobre un comprobante aceptado
       parameters:
-        - $ref: '#/components/parameters/IdComprobante'
+        - $ref: '#/components/parameters/Id'
       requestBody:
         required: true
         content:
@@ -199,18 +196,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/ComprobanteResponse'
         '400':
-          description: Error de regla de negocio (RN-16)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorValidacion'
+          $ref: '#/components/responses/ErrorEsquema'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
+        '404':
+          $ref: '#/components/responses/NoEncontrado'
+        '409':
+          $ref: '#/components/responses/Conflicto'
+        '422':
+          $ref: '#/components/responses/ErrorNegocio'
 
   /api/v1/comprobantes/{id}/baja:
     post:
-      tags: [Comprobantes]
-      summary: Dar de baja un comprobante aceptado
+      tags: [Bajas]
+      summary: Solicitar la baja de un comprobante aceptado
+      description: |
+        La comunicación de baja es **asíncrona**: se acepta la solicitud, se devuelve un ticket y el
+        estado final se consulta con ese ticket (SUNAT responde con número de ticket).
       parameters:
-        - $ref: '#/components/parameters/IdComprobante'
+        - $ref: '#/components/parameters/Id'
       requestBody:
         required: true
         content:
@@ -224,13 +230,21 @@ paths:
                   minLength: 5
                   maxLength: 200
       responses:
-        '200':
-          description: Baja registrada
+        '202':
+          description: Solicitud de baja aceptada para procesamiento
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ComprobanteResponse'
+                $ref: '#/components/schemas/TareaAceptada'
         '400':
+          $ref: '#/components/responses/ErrorEsquema'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
+        '404':
+          $ref: '#/components/responses/NoEncontrado'
+        '409':
           description: El comprobante no está en estado ACEPTADO
           content:
             application/json:
@@ -242,8 +256,9 @@ paths:
       tags: [Migración]
       summary: Migrar fichas del sistema legado
       description: |
-        Acepta un lote de fichas (fecha, ingreso, salida, producto, nro_documento).
-        Cada ficha termina MIGRADA u OBSERVADA (RN-22): nunca se descarta en silencio.
+        Procesa un lote de fichas (fecha, ingreso, salida, producto, nro_documento). Cada ficha
+        termina MIGRADA u OBSERVADA (RN-22): nunca se descarta en silencio. El lote se procesa de
+        forma asíncrona y devuelve un ticket.
       requestBody:
         required: true
         content:
@@ -251,18 +266,141 @@ paths:
             schema:
               $ref: '#/components/schemas/MigracionRequest'
       responses:
+        '202':
+          description: Lote aceptado para procesamiento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TareaAceptada'
+        '400':
+          $ref: '#/components/responses/ErrorEsquema'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
+        '422':
+          $ref: '#/components/responses/ErrorNegocio'
+
+  /api/v1/migracion/tareas/{ticket}:
+    get:
+      tags: [Migración]
+      summary: Consultar el resultado de un lote de migración
+      parameters:
+        - name: ticket
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
         '200':
-          description: Resultado del lote con trazabilidad
+          description: Estado y resultado del lote
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MigracionResponse'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
+        '404':
+          $ref: '#/components/responses/NoEncontrado'
+
+  /api/v1/movimientos-almacen:
+    post:
+      tags: [Libros SUNAT]
+      summary: Registrar un movimiento de almacén (alimenta el libro 12.1)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovimientoAlmacen'
+      responses:
+        '201':
+          description: Movimiento registrado con saldo actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovimientoAlmacen'
         '400':
-          description: Lote inválido
+          $ref: '#/components/responses/ErrorEsquema'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
+        '422':
+          $ref: '#/components/responses/ErrorNegocio'
+    get:
+      tags: [Libros SUNAT]
+      summary: Listar movimientos por producto y período (kardex)
+      parameters:
+        - name: producto
+          in: query
+          schema: { type: string }
+        - name: desde
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: hasta
+          in: query
+          required: true
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: Movimientos del período
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovimientoAlmacen'
+        '400':
+          description: Rango de fechas inválido
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorValidacion'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
+
+  /api/v1/libros/14-1:
+    get:
+      tags: [Libros SUNAT]
+      summary: Registro de Ventas e Ingresos (Formato 14.1) del período
+      parameters:
+        - name: desde
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: hasta
+          in: query
+          required: true
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: Registro de ventas del período
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RegistroVenta'
+        '400':
+          description: Rango de fechas inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidacion'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
 
   /api/v1/clientes:
     get:
@@ -277,6 +415,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Cliente'
+        '400':
+          description: Paginación inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidacion'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
     post:
       tags: [Maestros]
       summary: Registrar cliente
@@ -295,11 +443,17 @@ paths:
                 $ref: '#/components/schemas/Cliente'
         '400':
           $ref: '#/components/responses/ErrorEsquema'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
+        '422':
+          $ref: '#/components/responses/ErrorNegocio'
 
   /api/v1/productos:
     get:
       tags: [Maestros]
-      summary: Listar productos con su afectación tributaria
+      summary: Listar productos con su afectación e ISC
       responses:
         '200':
           description: Listado
@@ -309,16 +463,26 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Producto'
+        '400':
+          description: Filtros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidacion'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
 
   /api/v1/catalogos/{codigo}:
     get:
       tags: [Maestros]
-      summary: Consultar un catálogo SUNAT (01, 02, 03, 05, 07, 08, 09, 10, 51)
+      summary: Consultar un catálogo SUNAT (01, 02, 03, 05, 06, 07, 08, 09, 10, 51)
       parameters:
         - name: codigo
           in: path
           required: true
-          schema: { type: string, enum: ['01', '02', '03', '05', '07', '08', '09', '10', '51'] }
+          schema: { type: string, enum: ['01', '02', '03', '05', '06', '07', '08', '09', '10', '51'] }
       responses:
         '200':
           description: Entradas del catálogo
@@ -331,6 +495,16 @@ paths:
                   properties:
                     codigo: { type: string }
                     descripcion: { type: string }
+        '400':
+          description: Código de catálogo inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidacion'
+        '401':
+          $ref: '#/components/responses/NoAutorizado'
+        '403':
+          $ref: '#/components/responses/Prohibido'
         '404':
           $ref: '#/components/responses/NoEncontrado'
 
@@ -341,17 +515,29 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: |
-        Token del emisor. El sub del token determina el RUC del emisor y la empresa;
-        el cuerpo de la petición no puede cambiarlo (evita emitir a nombre de otro contribuyente).
+        Token del emisor. El sub determina el RUC del emisor y la empresa; el cuerpo de la petición
+        no puede cambiarlo.
 
   parameters:
-    IdComprobante:
+    Id:
       name: id
       in: path
       required: true
       schema: { type: string, format: uuid }
 
   responses:
+    NoAutorizado:
+      description: Token ausente o vencido
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorValidacion'
+    Prohibido:
+      description: Sin rol suficiente para la operación
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorValidacion'
     NoEncontrado:
       description: Recurso no encontrado
       content:
@@ -359,7 +545,31 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorValidacion'
     ErrorEsquema:
-      description: Error de validación del esquema
+      description: El cuerpo no cumple el DTO
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorValidacion'
+    ErrorNegocio:
+      description: Regla tributaria incumplida (RN, ISC, catálogos)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorValidacion'
+    Conflicto:
+      description: Correlativo duplicado o estado incompatible
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorValidacion'
+    XmlInvalido:
+      description: El XML no valida contra el esquema oficial; no se firmó ni se registró
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorValidacion'
+    ErrorEnvio:
+      description: La OSE no respondió; el comprobante queda PENDIENTE_ENVIO
       content:
         application/json:
           schema:
@@ -373,10 +583,10 @@ components:
         tipo:
           type: string
           enum: ['01', '03']
-          description: 'Catálogo 1: 01 factura, 03 boleta'
         serie:
           type: string
-          pattern: '^[FB][0-9]{3}$'
+          pattern: '^[FB][A-Z0-9]{3}$'
+          description: 4 caracteres; 3 alfanuméricos (F001, FC01, BA01)
           example: F001
         fecha_emision:
           type: string
@@ -385,15 +595,12 @@ components:
         hora_emision:
           type: string
           pattern: '^[0-2][0-9]:[0-5][0-9]:[0-5][0-9]$'
-          example: '09:15:00'
         moneda:
           type: string
           enum: [PEN, USD]
-          description: Catálogo 2
         tipo_operacion:
           type: string
           default: '0101'
-          description: Catálogo 51 (venta interna)
         forma_pago:
           type: string
           enum: [CONTADO, CREDITO]
@@ -424,18 +631,39 @@ components:
         unidad_medida:
           type: string
           enum: [NIU, KGM, BX, LTR, ZZ]
-          description: Catálogo 3
-        cantidad: { type: number, exclusiveMinimum: true, minimum: 0 }
-        precio_unitario:
+        cantidad:
           type: number
+          exclusiveMinimum: true
           minimum: 0
-          description: Precio de venta al público (incluye IGV)
-        descuento: { type: number, minimum: 0, default: 0 }
+        precio_unitario:
+          type: string
+          pattern: '^\d+(\.\d{1,10})?$'
+          description: Precio de venta al público (con IGV), como texto
+          example: '45.00'
+        descuento:
+          type: string
+          pattern: '^\d+(\.\d{1,10})?$'
+          default: '0.00'
         afectacion_igv:
           type: string
           enum: ['10', '11', '20', '21', '30', '31', '40']
-          description: Catálogo 7
-        tasa_isc: { type: number, minimum: 0, maximum: 50, default: 0 }
+        sistema_isc:
+          type: string
+          nullable: true
+          enum: ['01', '02', '03']
+          description: Catálogo 08 — 01 ad valorem, 02 específico, 03 al valor (RN-06)
+        tasa_isc:
+          type: string
+          pattern: '^\d+(\.\d{1,10})?$'
+          description: Exigido por el sistema 01
+        monto_fijo_isc:
+          type: string
+          pattern: '^\d+(\.\d{1,10})?$'
+          description: Exigido por el sistema 02 (S/ por unidad)
+        precio_venta_publico:
+          type: string
+          pattern: '^\d+(\.\d{1,10})?$'
+          description: Exigido por el sistema 03 (PVP sin IGV)
 
     ClienteRef:
       type: object
@@ -444,7 +672,7 @@ components:
         tipo_documento:
           type: string
           enum: ['0', '1', '4', '6', '7', 'A']
-          description: Catálogo 8
+          description: Catálogo 06
         numero_documento: { type: string, minLength: 1, maxLength: 15 }
         razon_social: { type: string, minLength: 3, maxLength: 200 }
         ubigeo: { type: string, pattern: '^[0-9]{6}$' }
@@ -465,16 +693,22 @@ components:
         codigo: { type: string, maxLength: 30 }
         descripcion: { type: string, maxLength: 200 }
         unidad_medida: { type: string, enum: [NIU, KGM, BX, LTR, ZZ] }
-        precio_unitario: { type: number, minimum: 0 }
+        precio_unitario: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
         afectacion_igv: { type: string, enum: ['10', '11', '20', '21', '30', '31', '40'] }
-        tasa_isc: { type: number, minimum: 0 }
+        sistema_isc:
+          type: string
+          nullable: true
+          enum: ['01', '02', '03']
+        tasa_isc: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        monto_fijo_isc: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        precio_venta_publico: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
         es_bolsa_plastica: { type: boolean }
 
     Cuota:
       type: object
       required: [monto, fecha_vencimiento]
       properties:
-        monto: { type: number, exclusiveMinimum: true, minimum: 0 }
+        monto: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
         fecha_vencimiento: { type: string, format: date }
 
     NotaCreate:
@@ -484,11 +718,9 @@ components:
         tipo:
           type: string
           enum: ['07', '08']
-          description: '07 nota de crédito, 08 nota de débito'
         motivo_codigo:
           type: string
-          description: Catálogo 9 (NC) o catálogo 10 (ND)
-          example: '01'
+          description: Catálogo 09 (NC) o 10 (ND)
         descripcion_motivo: { type: string, minLength: 3, maxLength: 200 }
         lineas:
           type: array
@@ -499,14 +731,14 @@ components:
     Totales:
       type: object
       properties:
-        op_gravada: { type: number }
-        op_exonerada: { type: number }
-        op_inafecta: { type: number }
-        op_exportacion: { type: number }
-        total_igv: { type: number }
-        total_isc: { type: number }
-        total_icbper: { type: number }
-        importe_total: { type: number }
+        op_gravada: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        op_exonerada: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        op_inafecta: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        op_exportacion: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        total_igv: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        total_isc: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        total_icbper: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        importe_total: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
 
     Cdr:
       type: object
@@ -524,8 +756,7 @@ components:
         correlativo: { type: integer }
         serie_numero:
           type: string
-          pattern: '^[FB][0-9]{3}-[0-9]{8}$'
-          description: Identificador completo del comprobante (serie + correlativo)
+          pattern: '^[FB][A-Z0-9]{3}-[0-9]{1,8}$'
           example: F001-00000123
         estado:
           type: string
@@ -547,6 +778,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ComprobanteResponse'
+
+    TareaAceptada:
+      type: object
+      description: Respuesta 202 de un proceso asíncrono (baja o migración)
+      required: [ticket, estado, recurso]
+      properties:
+        ticket: { type: string, format: uuid }
+        estado:
+          type: string
+          enum: [EN_COLA, EN_PROCESO]
+        recurso:
+          type: string
+          description: URL para consultar el resultado
+          example: /api/v1/migracion/tareas/3f2b…
+        mensaje: { type: string }
 
     FichaLegada:
       type: object
@@ -587,6 +833,91 @@ components:
               entidad_destino_id: { type: string, format: uuid, nullable: true }
               observacion: { type: string, nullable: true }
 
+    MovimientoAlmacen:
+      type: object
+      description: Movimiento de almacén que alimenta el libro 12.1 (inventario permanente en unidades físicas)
+      required:
+        - fecha
+        - tipo_movimiento
+        - establecimiento
+        - tipo_existencia
+        - tipo_operacion
+        - documento_soporte
+        - producto_codigo
+        - unidad_medida
+        - cantidad
+        - saldo_cantidad
+        - saldo_valor
+      properties:
+        id: { type: string, format: uuid, readOnly: true }
+        fecha: { type: string, format: date }
+        tipo_movimiento: { type: string, enum: [INGRESO, SALIDA] }
+        establecimiento: { type: string, pattern: '^[0-9]{4}$' }
+        tipo_existencia:
+          type: string
+          pattern: '^[0-9]{2}$'
+          description: Tabla 5 SUNAT
+        tipo_operacion:
+          type: string
+          pattern: '^[0-9]{2}$'
+          description: Tabla 12 SUNAT
+        documento_soporte:
+          type: object
+          required: [tipo, serie_numero, fecha]
+          properties:
+            tipo: { type: string, pattern: '^[0-9]{2}$', description: Tabla 10 SUNAT }
+            serie_numero: { type: string, pattern: '^[A-Z0-9]{4}-[0-9]{1,8}$' }
+            fecha: { type: string, format: date }
+        producto_codigo: { type: string, maxLength: 30 }
+        unidad_medida:
+          type: string
+          pattern: '^[A-Z0-9]{2,3}$'
+          description: Tabla 6 SUNAT, equivalente al catálogo 03
+        cantidad: { type: number, exclusiveMinimum: true, minimum: 0 }
+        costo_unitario: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        saldo_cantidad: { type: number, minimum: 0 }
+        saldo_valor: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        origen_ficha_id: { type: string, maxLength: 50 }
+
+    RegistroVenta:
+      type: object
+      description: Línea del Registro de Ventas e Ingresos (Formato 14.1)
+      required:
+        - fecha_emision
+        - tipo_comprobante
+        - serie_numero
+        - cliente_documento
+        - cliente_razon_social
+        - base_gravada
+        - igv
+        - importe_total
+        - moneda
+        - estado
+      properties:
+        id: { type: string, format: uuid, readOnly: true }
+        fecha_emision: { type: string, format: date }
+        tipo_comprobante: { type: string, enum: ['01', '03', '07', '08'] }
+        serie_numero: { type: string, pattern: '^[FB][A-Z0-9]{3}-[0-9]{1,8}$' }
+        cliente_documento:
+          type: object
+          required: [tipo, numero]
+          properties:
+            tipo: { type: string, enum: ['0', '1', '4', '6', '7', 'A'], description: Catálogo 06 }
+            numero: { type: string, minLength: 1, maxLength: 15 }
+        cliente_razon_social: { type: string, minLength: 3, maxLength: 200 }
+        base_gravada: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        base_exonerada: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        base_inafecta: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        base_exportacion: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        igv: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        isc: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        icbper: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        importe_total: { type: string, pattern: '^\d+(\.\d{1,10})?$' }
+        moneda: { type: string, enum: [PEN, USD] }
+        tipo_cambio: { type: string, pattern: '^\d+(\.\d{1,6})?$' }
+        estado: { type: string, enum: [REGISTRADO, ANULADO] }
+        comprobante_id: { type: string, format: uuid }
+
     ErrorValidacion:
       type: object
       required: [codigo, errores]
@@ -597,10 +928,11 @@ components:
             - VALIDACION_ESQUEMA
             - VALIDACION_NEGOCIO
             - NO_ENCONTRADO
-            - CONFLICTO_CORRELATIVO
+            - CONFLICTO
             - XML_INVALIDO
             - ERROR_ENVIO
             - NO_AUTORIZADO
+            - PROHIBIDO
         mensaje: { type: string }
         errores:
           type: array

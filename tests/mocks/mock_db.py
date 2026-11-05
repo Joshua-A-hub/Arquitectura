@@ -1,7 +1,9 @@
 """Datos estáticos que simulan la base de datos de ABC Software Corp.
 
 **Mock del sistema.** No hay base de datos real: `src/adaptadores/sqlite_comprobante_repository.py`
-(fase 2) leerá y escribirá aquí. Todo dato cumple los esquemas de `specs/contracts/dto/`.
+(fase 2) leerá y escribirá aquí. Todo dato cumple los esquemas de `specs/contracts/dto/`:
+los importes viajan como **string decimal** y el ISC se declara con el **catálogo 08**
+(`sistema_isc` = `01` ad valorem, `02` específico, `03` al valor).
 
 Uso: los tests importan `reiniciar()` en un fixture para arrancar siempre en el mismo estado.
 """
@@ -38,16 +40,29 @@ DB_CLIENTES: list[dict] = [
         "direccion": "JR. LAS BEGONIAS 789",
         "email": "juan.perez@correo.pe",
     },
+    {
+        "id": "33333333-3333-3333-3333-333333333333",
+        "tipo_documento": "0",
+        "numero_documento": "0",
+        "razon_social": "CLIENTES VARIOS",
+        "ubigeo": "150101",
+        "direccion": "",
+        "email": "",
+    },
 ]
 
+# `afectacion_igv` = catálogo 07 · `sistema_isc` = catálogo 08 (None si no está afecto)
 DB_PRODUCTOS: list[dict] = [
     {
         "codigo": "ARR-50KG",
         "descripcion": "SACO DE ARROZ 50KG",
         "unidad_medida": "NIU",
-        "precio_unitario": 45.00,
+        "precio_unitario": "45.00",
         "afectacion_igv": "10",
-        "tasa_isc": 0,
+        "sistema_isc": None,
+        "tasa_isc": "0.00",
+        "monto_fijo_isc": None,
+        "precio_venta_publico": None,
         "es_bolsa_plastica": False,
         "stock_actual": 120,
     },
@@ -55,9 +70,12 @@ DB_PRODUCTOS: list[dict] = [
         "codigo": "LEC-1L",
         "descripcion": "CAJA DE LECHE 1L",
         "unidad_medida": "BX",
-        "precio_unitario": 12.00,
+        "precio_unitario": "12.00",
         "afectacion_igv": "20",
-        "tasa_isc": 0,
+        "sistema_isc": None,
+        "tasa_isc": "0.00",
+        "monto_fijo_isc": None,
+        "precio_venta_publico": None,
         "es_bolsa_plastica": False,
         "stock_actual": 80,
     },
@@ -65,11 +83,56 @@ DB_PRODUCTOS: list[dict] = [
         "codigo": "BOL-001",
         "descripcion": "BOLSA PLASTICA RECICLABLE",
         "unidad_medida": "NIU",
-        "precio_unitario": 0.50,
+        "precio_unitario": "0.50",
         "afectacion_igv": "10",
-        "tasa_isc": 0,
+        "sistema_isc": None,
+        "tasa_isc": "0.00",
+        "monto_fijo_isc": None,
+        "precio_venta_publico": None,
         "es_bolsa_plastica": True,
         "stock_actual": 1000,
+    },
+    {
+        # ISC sistema 01 (ad valorem): cerveza afecta al 25 %.
+        "codigo": "CER-620ML",
+        "descripcion": "CERVEZA BOTELLA 620 ML",
+        "unidad_medida": "NIU",
+        "precio_unitario": "8.00",
+        "afectacion_igv": "10",
+        "sistema_isc": "01",
+        "tasa_isc": "25.00",
+        "monto_fijo_isc": None,
+        "precio_venta_publico": None,
+        "es_bolsa_plastica": False,
+        "stock_actual": 240,
+    },
+    {
+        # ISC sistema 02 (específico): S/ 1.35 por unidad.
+        "codigo": "PIS-750ML",
+        "descripcion": "PISCO QUEBRANTA 750 ML",
+        "unidad_medida": "NIU",
+        "precio_unitario": "53.10",
+        "afectacion_igv": "10",
+        "sistema_isc": "02",
+        "tasa_isc": None,
+        "monto_fijo_isc": "1.35",
+        "precio_venta_publico": None,
+        "es_bolsa_plastica": False,
+        "stock_actual": 60,
+    },
+    {
+        # ISC sistema 03 (al valor / precio de venta al público).
+        "codigo": "GAS-3L",
+        "descripcion": "GASEOSA 3 L",
+        "unidad_medida": "NIU",
+        "precio_unitario": "10.62",
+        "afectacion_igv": "10",
+        "sistema_isc": "03",
+        "tasa_isc": "17.00",
+        "monto_fijo_isc": None,
+        "precio_venta_publico": "12.50",
+        "es_bolsa_plastica": False,
+        "stock_actual": 96,
     },
 ]
 

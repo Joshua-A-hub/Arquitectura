@@ -24,7 +24,7 @@ válido   = (digito == digito_verificador)  # el dígito 11
 Prefijos válidos: `10` (persona natural), `15`, `17`, `20` (persona jurídica).
 **Origen:** SUNAT — validación de RUC. **Aplica en:** `Empresa.ruc`, `Cliente` tipo 6.
 
-### RN-02 — Documentos de identidad del receptor (catálogo 8)
+### RN-02 — Documentos de identidad del receptor (catálogo 06)
 
 | Código | Documento | Validación |
 |---|---|---|
@@ -43,7 +43,8 @@ Reglas de combinación:
   hasta ese monto (umbral configurable, verificar el texto vigente).
 - **NC/ND (07/08)** → heredan el receptor del comprobante que modifican.
 
-**Origen:** **Catálogo 8** (punto clave señalado en el caso). **Aplica en:** `Cliente.tipo_documento`.
+**Origen:** **Catálogo 06** (tipo de documento de identidad). **Aplica en:** `Cliente.tipo_documento`.
+El **catálogo 08** es el de *sistema de cálculo del ISC*, que se modela en RN-06.
 
 ### RN-03 — Integridad del receptor
 
@@ -81,19 +82,29 @@ si exonerado (20–21), inafecto (30–37) o exportación (40):
 > El **descuento reduce la base imponible** antes de calcular el IGV. Calcular el impuesto sobre el
 > valor bruto y descontar después sobrestima el tributo.
 
-### RN-06 — ISC por línea
+### RN-06 — ISC por línea (catálogo 08)
 
-```text
-isc_linea = valor_unitario × cantidad × (tasa_isc/100)
-```
+El ISC **no tiene una sola fórmula**: el catálogo 08 define el sistema de cálculo y cada producto
+declara el suyo. Aplicar siempre `valor × tasa` es un error: deja fuera dos de los tres sistemas.
 
-`tasa_isc` = 0 cuando el producto no está afecto. El **ISC forma parte de la base imponible del
-IGV**: la base es el valor de venta incluido el ISC (TUO de la Ley del IGV). Fórmulas:
+| Sistema (catálogo 08) | Fórmula de la línea | Dato obligatorio |
+|:--:|---|---|
+| **`01` Ad valorem** | `isc_linea = base_linea × (tasa_isc / 100)` | `tasa_isc > 0` |
+| **`02` Específico** | `isc_linea = monto_fijo_isc × cantidad` | `monto_fijo_isc > 0` (S/ por unidad) |
+| **`03` Al valor** | `isc_linea = (precio_venta_publico − valor_unitario) × cantidad` | `precio_venta_publico > valor_unitario` |
 
-```text
-base_igv = base_linea + isc_linea
-igv_linea = base_igv × (tasa_igv/100)
-```
+Donde `base_linea = valor_unitario × cantidad − descuento` (RN-05).
+
+**Validación condicional (error de negocio 422):**
+
+1. Producto **no afecto** → `sistema_isc` nulo y `isc_linea = 0`.
+2. Producto **afecto** → `sistema_isc` obligatorio y restringido a `01`, `02` o `03`.
+3. Cada sistema exige **su** dato: si falta o no es positivo, se rechaza la emisión.
+4. El ISC calculado **integra la base del IGV** (RN-05).
+
+**Dónde viaja en el UBL:** `cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cbc:TierRange`
+con `cac:TaxScheme/cbc:ID = 2000` (ISC), `cbc:Name = ISC` y `cbc:TaxTypeCode = EXC`; el importe en el
+`cbc:TaxAmount` del mismo `TaxSubtotal`.
 
 ### RN-07 — ICBPER por línea
 
@@ -146,10 +157,12 @@ El DTO de entrada **no acepta** el campo `totales`: si llega, se ignora y se rec
 **Formato de la serie (validación de emisión):**
 
 ```text
-^[FB][0-9]{3}$       4 caracteres: una letra del tipo + tres dígitos (001..999)
-                     la letra debe corresponder al tipo de comprobante
-                     la serie debe existir entre las series registradas por la empresa
+^[FB][A-Z0-9]{3}$     4 caracteres: una letra del tipo + tres alfanuméricos (F001, FC01, BA01)
+                      la letra debe corresponder al tipo de comprobante
+                      la serie debe existir entre las series registradas por la empresa
 ```
+
+> La serie es **alfanumérica**: `^[FB][0-9]{3}$` rechaza series válidas como `FC01` o `BA01`.
 
 ### RN-11 — Correlativo
 
@@ -199,10 +212,19 @@ ACEPTADO → (baja, plazo normativo) → BAJA
 
 ## E. Integración SUNAT
 
-### RN-18 — Validación antes del envío
+### RN-18 — Validación antes de firmar y antes de enviar
 
-El XML se genera, se **firma digitalmente** y se **valida contra el XSD** antes de enviarse a la OSE.
-Si no valida, no se envía y el comprobante queda `RECHAZADO` con el detalle del error.
+Orden obligatorio:
+
+```text
+generar XML → VALIDAR contra el esquema oficial (UBL-Invoice-2.1.xsd) → firmar → enviar
+```
+
+- La validación se hace contra los **esquemas oficiales de OASIS**, no contra un perfil propio.
+- Se valida **antes de firmar**: si la validación obliga a corregir el documento, una firma previa
+  quedaría invalidada.
+- Tras firmar se verifica que la firma no alteró la estructura (segunda pasada del mismo esquema).
+- Si no valida, no se firma, no se envía y el comprobante queda `RECHAZADO` con el detalle del error.
 
 ### RN-19 — Procesamiento del CDR
 

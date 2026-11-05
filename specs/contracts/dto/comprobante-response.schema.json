@@ -31,7 +31,7 @@
     },
     "serie": {
       "type": "string",
-      "pattern": "^[FB][0-9]{3}$"
+      "pattern": "^[FB][A-Z0-9]{3}$"
     },
     "correlativo": {
       "type": "integer",
@@ -39,7 +39,7 @@
     },
     "serie_numero": {
       "type": "string",
-      "pattern": "^[FB][0-9]{3}-[0-9]{8}$",
+      "pattern": "^[FB][A-Z0-9]{3}-[0-9]{1,8}$",
       "description": "Identificador completo: serie + correlativo (nomenclatura SUNAT)"
     },
     "estado": {
@@ -107,36 +107,44 @@
       ],
       "properties": {
         "op_gravada": {
-          "type": "number",
-          "minimum": 0
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,10})?$",
+          "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
         },
         "op_exonerada": {
-          "type": "number",
-          "minimum": 0
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,10})?$",
+          "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
         },
         "op_inafecta": {
-          "type": "number",
-          "minimum": 0
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,10})?$",
+          "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
         },
         "op_exportacion": {
-          "type": "number",
-          "minimum": 0
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,10})?$",
+          "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
         },
         "total_igv": {
-          "type": "number",
-          "minimum": 0
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,10})?$",
+          "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
         },
         "total_isc": {
-          "type": "number",
-          "minimum": 0
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,10})?$",
+          "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
         },
         "total_icbper": {
-          "type": "number",
-          "minimum": 0
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,10})?$",
+          "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
         },
         "importe_total": {
-          "type": "number",
-          "minimum": 0
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,10})?$",
+          "description": "Importe decimal como texto (SUNAT usa decimales, no coma flotante)"
         }
       }
     },

@@ -74,7 +74,7 @@ Este documento son los **requisitos de arquitectura (ASR)** verificables. Los di
 | **Modificabilidad** | ASR-03, ASR-05 | dominio aislado; cambiar SQLite no toca reglas | tabla de equivalencia |
 | **Testabilidad** | ASR-09 | reglas puras, sin infraestructura | mapa de pruebas en `tests/README.md` |
 | **Portabilidad** | ASR-07 | cliente delgado + contrato | ADR-0003 |
-| **Trazabilidad** | ASR-08, ASR-10 | contrato + ADR + matriz normativa | 59 cruces |
+| **Trazabilidad** | ASR-08, ASR-10 | contrato + ADR + matriz normativa | 63 cruces |
 | **Escalabilidad** | ASR-06 | puertos permiten extraer módulos | plan de migración |
 
 ## 7. Requisitos no funcionales (RNF)

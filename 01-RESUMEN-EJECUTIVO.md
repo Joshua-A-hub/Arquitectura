@@ -4,7 +4,7 @@
 Facultad de Ingeniería en Informática y Sistemas
 **Curso:** Arquitectura de Software — Examen de Medio Curso, Grupo "A"
 **Fecha del examen:** 19 de octubre de 2026 · **Duración:** 2:00 horas
-**Alumno:** ______________________________________  **Docente:** ______________________
+**Alumno:** Alvarado Ichpas Benny Joshua  ·  **Docente:** ______________________
 
 ---
 
@@ -24,10 +24,10 @@ El examen enumera cuatro artefactos. Esta entrega los cubre uno a uno, con la mi
 
 | # | Entregable exigido por el examen | Dónde está | Evidencia |
 |---|---|---|---|
-| **E1** | *El Modelo de Dominio y Contratos (DTOs / Schemas)* | [`specs/domain/modelo-dominio.md`](specs/domain/modelo-dominio.md) · [diagrama de clases](docs/arquitectura/07-diagrama-clases.md) · [`specs/contracts/dto/`](specs/contracts/dto/) | 7 JSON Schemas (petición y respuesta) validados por script |
+| **E1** | *El Modelo de Dominio y Contratos (DTOs / Schemas)* | [`specs/domain/modelo-dominio.md`](specs/domain/modelo-dominio.md) · [diagrama de clases](docs/arquitectura/07-diagrama-clases.md) · [`specs/contracts/dto/`](specs/contracts/dto/) | 9 JSON Schemas (petición y respuesta) validados por script |
 | **E2** | *Diagramas de Arquitectura MVC con visión a Hexagonal* | [`specs/architecture/mvc-hexagonal.md`](specs/architecture/mvc-hexagonal.md) · [`docs/arquitectura/`](docs/arquitectura/README.md) | 11 requisitos ASR + 2 diagramas SVG + tabla de equivalencia |
-| **E3** | *Especificación de Endpoints / Servicios (Contratos API)* | [`specs/contracts/facturacion-api.yaml`](specs/contracts/facturacion-api.yaml) | 9 rutas, 15 referencias resueltas, seguridad y catálogo de errores |
-| **E4** | *Matriz de Trazabilidad Normativa con cruces entre datos SUNAT y datos UBL* | [`docs/arquitectura/04-matriz-trazabilidad-normativa.md`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) | 59 cruces, 9 catálogos, 24 reglas |
+| **E3** | *Especificación de Endpoints / Servicios (Contratos API)* | [`specs/contracts/facturacion-api.yaml`](specs/contracts/facturacion-api.yaml) | 12 rutas, 15 referencias resueltas, seguridad y catálogo de errores |
+| **E4** | *Matriz de Trazabilidad Normativa con cruces entre datos SUNAT y datos UBL* | [`docs/arquitectura/04-matriz-trazabilidad-normativa.md`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) | 63 cruces, 10 catálogos, 24 reglas |
 
 ## 2. Cómo leerlo (orden sugerido)
 
@@ -74,7 +74,7 @@ validar_contratos.py → 13 comprobaciones correctas, 0 fallos
   OK  el ejemplo de respuesta cumple comprobante-response
   OK  OpenAPI: estructura mínima presente
   OK  OpenAPI: 15 referencias a esquemas, todas resueltas
-  OK  OpenAPI: 9 rutas declaradas
+  OK  OpenAPI: 12 rutas declaradas
 
 validar_xml_ubl.py → 6 comprobaciones correctas, 0 fallos
   OK  ejemplo-invoice.xml valida contra Invoice-2-profile.xsd
@@ -90,9 +90,9 @@ validar_xml_ubl.py → 6 comprobaciones correctas, 0 fallos
 | Restricción del examen | Cómo se cumple | Archivo |
 |---|---|---|
 | Migración del legado sin perder trazabilidad | mapeo campo a campo + estado `OBSERVADA` con motivo | [`docs/arquitectura/05`](docs/arquitectura/05-migracion-legado.md) |
-| Normativa tributaria peruana | 24 reglas + 9 catálogos + matriz de 59 cruces | [`docs/arquitectura/04`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) |
+| Normativa tributaria peruana | 24 reglas + 10 catálogos + matriz de 63 cruces | [`docs/arquitectura/04`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) |
 | **Normas citadas (RS 097-2012, RS 234-2006)** | qué regula cada norma y dónde se implementa | [`marco-normativo`](specs/domain/marco-normativo.md) |
-| Catálogo 8 como punto clave | tabla completa + reglas de combinación por comprobante | [`catalogs`](specs/contracts/catalogs/catalogos-sunat.md) |
+| Catálogo 06 como punto clave | tabla completa + reglas de combinación por comprobante | [`catalogs`](specs/contracts/catalogs/catalogos-sunat.md) |
 | Monolito MVC con visión hexagonal **en los specs** | 11 requisitos ASR verificables + 2 diagramas + plan de migración | [`specs/architecture`](specs/architecture/mvc-hexagonal.md) |
 | Windows y Android | decisión de stack (ADR-0003) + MSI/APK + consecuencias | [`docs/arquitectura/06`](docs/arquitectura/06-distribucion-msi-apk.md) |
 | Casos de uso detallados | 10 casos + 10 escenarios Gherkin + benchmark de usuarios | [`features`](specs/features/casos-de-uso.md) · [`benchmark`](docs/benchmark-facturacion.md) |

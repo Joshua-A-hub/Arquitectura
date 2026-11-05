@@ -38,7 +38,7 @@ Ver también: [`reglas-negocio.md`](reglas-negocio.md), [`../contracts/`](../con
 | Campo | Tipo | Obligatorio | Regla |
 |---|---|---|---|
 | `id` | uuid | sí | interno |
-| `tipo_documento` | string(1) | sí | **catálogo 8** (RN-02) |
+| `tipo_documento` | string(1) | sí | **catálogo 06** (RN-02) |
 | `numero_documento` | string(15) | sí | según tipo: RUC 11, DNI 8 (RN-02) |
 | `razon_social` | string(200) | sí | para DNI: nombres y apellidos |
 | `ubigeo` | string(6) | no | obligatorio cuando el documento lo exige |
@@ -54,7 +54,10 @@ Ver también: [`reglas-negocio.md`](reglas-negocio.md), [`../contracts/`](../con
 | `unidad_medida` | string(3) | sí | **catálogo 3** (NIU, KGM, BX, LTR, ZZ) |
 | `precio_unitario` | decimal(12,2) | sí | **incluye IGV** (precio de venta) |
 | `afectacion_igv` | string(2) | sí | **catálogo 7** (10, 20, 30, 40) |
-| `tasa_isc` | decimal(5,2) | no | 0 si no aplica |
+| `sistema_isc` | string(2) | condicional | **catálogo 08**: `01` ad valorem, `02` específico, `03` al valor. Obligatorio si el producto está afecto al ISC (RN-06) |
+| `tasa_isc` | decimal(5,2) | condicional | exigido por el sistema `01` (0 si no aplica) |
+| `monto_fijo_isc` | decimal(12,4) | condicional | exigido por el sistema `02`: soles por unidad de medida |
+| `precio_venta_publico` | decimal(12,2) | condicional | exigido por el sistema `03`: PVP sin IGV |
 | `es_bolsa_plastica` | boolean | sí | dispara ICBPER (RN-07) |
 | `stock_actual` | decimal(12,3) | sí | ≥ 0 |
 
@@ -96,9 +99,13 @@ Ver también: [`reglas-negocio.md`](reglas-negocio.md), [`../contracts/`](../con
 | `descuento` | decimal(12,2) | no | monto, no porcentaje |
 | `afectacion_igv` | string(2) | sí | catálogo 7 |
 | `tasa_igv` | decimal(5,2) | sí | 18.00 salvo exonerado/inafecto/exportación |
+| `sistema_isc` | string(2) | condicional | **catálogo 08**; se hereda del producto (RN-06) |
+| `tasa_isc` | decimal(5,2) | condicional | sistema `01` |
+| `monto_fijo_isc` | decimal(12,4) | condicional | sistema `02` |
+| `precio_venta_publico` | decimal(12,2) | condicional | sistema `03` |
+| `isc_linea` | decimal(12,2) | condicional | calculado según el sistema (RN-06) |
 | `igv_linea` | decimal(12,2) | sí | calculado |
-| `isc_linea` | decimal(12,2) | no | calculado |
-| `icbper_linea` | decimal(12,2) | no | calculado |
+| `icbper_linea` | decimal(12,2) | condicional | calculado |
 | `total_linea` | decimal(12,2) | sí | calculado |
 
 ### 2.6 Totales — `Totales` (value object inmutable)
@@ -131,14 +138,62 @@ Ver también: [`reglas-negocio.md`](reglas-negocio.md), [`../contracts/`](../con
 | `entidad_destino_id` | uuid | a qué entidad nueva se mapeó |
 | `observacion` | string | motivo si quedó observada |
 
-## 3. Relaciones
+### 2.8 Movimiento de almacén — `MovimientoAlmacen` (libro 12.1)
+
+Es el registro que alimenta el **Registro de Inventario Permanente en Unidades Físicas (Formato 12.1)**
+y el kardex. Sin estos campos el libro no se puede generar.
+
+| Campo | Tipo | Obligatorio | Regla / catálogo |
+|---|---|---|---|
+| `id` | uuid | sí | interno |
+| `fecha` | date | sí | fecha del movimiento |
+| `tipo_movimiento` | enum | sí | `INGRESO` \| `SALIDA` |
+| `establecimiento` | string(4) | sí | código del establecimiento anexo |
+| `tipo_existencia` | string(2) | sí | **tabla 5 SUNAT** (mercadería, materia prima, envases…) |
+| `tipo_operacion` | string(2) | sí | **tabla 12 SUNAT** (compra, venta, devolución, inventario…) |
+| `documento_soporte` | object | sí | **tabla 10 SUNAT**: tipo, serie_numero, fecha |
+| `producto_codigo` | string(30) | sí | referencia a `Producto` |
+| `unidad_medida` | string(3) | sí | **tabla 6 SUNAT**, con equivalencia desde el **catálogo 03** |
+| `cantidad` | decimal(12,3) | sí | > 0, en la unidad del movimiento |
+| `costo_unitario` | decimal(12,6) | condicional | obligatorio en ingresos |
+| `saldo_cantidad` | decimal(12,3) | sí | saldo acumulado del producto tras el movimiento |
+| `saldo_valor` | decimal(12,2) | sí | saldo valorizado (kardex) |
+| `origen_ficha_id` | string | condicional | obligatorio si proviene de la migración (RN-21) |
+
+### 2.9 Registro de venta — `RegistroVenta` (libro 14.1)
+
+Alimenta el **Registro de Ventas e Ingresos (Formato 14.1)**.
+
+| Campo | Tipo | Obligatorio | Regla |
+|---|---|---|---|
+| `id` | uuid | sí | interno |
+| `fecha_emision` | date | sí | igual a la del comprobante |
+| `tipo_comprobante` | string(2) | sí | catálogo 01 |
+| `serie_numero` | string(13) | sí | identificador del comprobante |
+| `cliente_documento` | object | sí | tipo (catálogo 06) + número |
+| `cliente_razon_social` | string(200) | sí | — |
+| `base_gravada` | decimal(12,2) | sí | op_gravada |
+| `base_exonerada` | decimal(12,2) | no | — |
+| `base_inafecta` | decimal(12,2) | no | — |
+| `base_exportacion` | decimal(12,2) | no | — |
+| `igv` | decimal(12,2) | sí | total_igv |
+| `isc` | decimal(12,2) | no | total_isc |
+| `icbper` | decimal(12,2) | no | total_icbper |
+| `importe_total` | decimal(12,2) | sí | total del comprobante |
+| `moneda` | string(3) | sí | catálogo 02 |
+| `tipo_cambio` | decimal(9,6) | condicional | obligatorio si la moneda no es PEN |
+| `estado` | enum | sí | `REGISTRADO` \| `ANULADO` |
+| `comprobante_id` | uuid | sí | trazabilidad al comprobante emitido |
+
+
 
 ```text
 Empresa 1 ──── N Comprobante        (emisor)
 Cliente 1 ──── N Comprobante        (receptor)
 Comprobante 1 ──── N LineaDetalle   (agregado: el detalle no existe sin el comprobante)
 LineaDetalle N ──── 1 Producto      (referencia por código, no por identidad)
-Producto 1 ──── N MovimientoAlmacen (kardex: ingresos y salidas)
+Producto 1 ──── N MovimientoAlmacen (kardex: ingresos y salidas — libro 12.1)
+Comprobante 1 ──── 1 RegistroVenta  (libro 14.1, derivado del comprobante aceptado)
 FichaLegada 1 ──── 0..1 MovimientoAlmacen / Comprobante   (trazabilidad de migración)
 Comprobante 1 ──── 0..1 Comprobante (referencia de NC/ND)
 ```
@@ -147,7 +202,8 @@ Comprobante 1 ──── 0..1 Comprobante (referencia de NC/ND)
 
 - `Comprobante` es la **raíz de agregado**: protege sus líneas y sus totales. No se modifica una
   línea de un comprobante emitido; se emite una nota.
-- `Producto` es agregado propio (stock).
+- `Producto` es agregado propio (stock); sus movimientos se registran en `MovimientoAlmacen`.
+- `RegistroVenta` es una **proyección** del comprobante aceptado para el libro 14.1: no se edita a mano.
 - `FichaLegada` es un agregado de **migración**: se procesa en lote y deja rastro.
 
 ## 4. Invariantes del dominio
@@ -158,10 +214,13 @@ Comprobante 1 ──── 0..1 Comprobante (referencia de NC/ND)
 | **INV-02** | `total_linea = (valor_unitario × cantidad − descuento) + igv + isc + icbper` | cálculo |
 | **INV-03** | `importe_total = op_gravada + op_exonerada + op_inafecta + op_exportacion + total_igv + total_isc + total_icbper` | cálculo |
 | **INV-04** | La numeración es única por `tipo + serie` | repositorio (transacción) |
-| **INV-05** | Un comprobante no se emite si el cliente no tiene documento válido según catálogo 8 | validación |
+| **INV-05** | Un comprobante no se emite si el cliente no tiene documento válido según **catálogo 06** | validación |
 | **INV-06** | Una NC/ND siempre referencia un comprobante existente y aceptado | validación |
 | **INV-07** | Un comprobante no se emite si el RUC del emisor no valida | validación |
 | **INV-08** | Toda ficha migrada conserva su `id_ficha` y su `origen_archivo` | migración |
+| **INV-09** | Un producto afecto al ISC no se emite sin `sistema_isc` y sin el dato que ese sistema exige | validación RN-06 |
+| **INV-10** | Todo comprobante aceptado genera **un** `RegistroVenta` (libro 14.1); anularlo lo marca `ANULADO` | servicio de emisión |
+| **INV-11** | Todo movimiento de almacén conserva `saldo_cantidad` y `saldo_valor` del producto | registro 12.1 |
 
 ## 5. Máquina de estados del comprobante
 
@@ -190,6 +249,8 @@ en el contrato OpenAPI [`../contracts/facturacion-api.yaml`](../contracts/factur
 | `ProductoDTO` | catálogo de productos | `producto.schema.json` |
 | `NotaCreate` | nota de crédito/débito | `nota-create.schema.json` |
 | `MigracionRequest/Response` | migración de fichas | `migracion.schema.json` |
+| `MovimientoAlmacen` | libro **12.1** | `movimiento-almacen.schema.json` |
+| `RegistroVenta` | libro **14.1** | `registro-venta.schema.json` |
 | `ErrorValidacion` | error uniforme | `error.schema.json` |
 
 ### Regla de los DTOs
@@ -197,4 +258,5 @@ en el contrato OpenAPI [`../contracts/facturacion-api.yaml`](../contracts/factur
 - **Los totales nunca viajan en la petición**: se calculan en el dominio (evita manipulación).
 - **Los DTOs no son las entidades**: el DTO de entrada no tiene `id`, `estado`, `hash` ni `cdr`.
 - **El detalle es obligatorio y no vacío**: mínimo una línea.
-- **Fechas en ISO 8601**; importes con 2 decimales; cantidades hasta 3.
+- **Fechas en ISO 8601**; los **importes viajan como string decimal** (`"1250.50"`) para no perder
+  precisión con coma flotante; las cantidades, hasta 3 decimales.

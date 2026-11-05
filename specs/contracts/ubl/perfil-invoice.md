@@ -1,7 +1,16 @@
 # Perfil UBL 2.1 — Invoice (factura y boleta)
 
-**Base normativa:** estándar **UBL 2.1** (OASIS), esquema `UBL-Invoice-2.1.xsd`, con el perfil de
-comprobantes electrónicos exigido por SUNAT.
+**Base normativa:** estándar **UBL 2.1** (OASIS). La **autoridad de validación es el esquema oficial**,
+que vive completo en el repositorio:
+
+- `specs/contracts/ubl/oficial/maindoc/UBL-Invoice-2.1.xsd` (y `CreditNote` / `DebitNote`)
+- `specs/contracts/ubl/oficial/common/*.xsd` — los 13 esquemas que importa, incluidos XMLDSig y XAdES
+
+> **El perfil NO sustituye al esquema oficial.** Este documento describe *qué subconjunto emite el
+> sistema* y *qué restricciones añade SUNAT* (campos obligatorios, catálogos, cuadre de importes), pero
+> la conformidad UBL 2.1 se demuestra contra `UBL-Invoice-2.1.xsd`. El ejemplo
+> [`ejemplo-invoice.xml`](ejemplo-invoice.xml) valida contra él con 0 errores — ver
+> [`informe-xsd-oficial.md`](informe-xsd-oficial.md).
 
 Este documento **no copia** el XSD completo (miles de campos): define el **perfil** — el subconjunto
 ordenado de elementos que el sistema emite — y su correspondencia con los datos del dominio.
@@ -44,7 +53,7 @@ Invoice
 │           └── cac:RegistrationAddress       ubigeo + dirección
 ├── cac:AccountingCustomerParty               receptor
 │   └── cac:Party
-│       ├── cac:PartyIdentification/cbc:ID    doc (@schemeID = catálogo 8)
+│       ├── cac:PartyIdentification/cbc:ID    doc (@schemeID = catálogo 06)
 │       └── cac:PartyLegalEntity
 ├── cac:PaymentTerms                          forma de pago / cuotas
 ├── cac:TaxTotal                              totales de impuestos
@@ -205,7 +214,7 @@ como emitido.
 ```text
   XSD oficial (OASIS)          Perfil SUNAT              Nuestro perfil           DTO / dominio
   ─────────────────────  →  ───────────────────  →  ─────────────────────  →  ──────────────────
-  InvoiceType (60+ elem.)     campos obligatorios      los campos de la matriz (59 cruces)      7 JSON Schemas
+  InvoiceType (60+ elem.)     campos obligatorios      los campos de la matriz (63 cruces)      9 JSON Schemas
 ```
 
 | Decisión del perfil | Justificación |

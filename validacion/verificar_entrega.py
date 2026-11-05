@@ -19,7 +19,15 @@ RAIZ = Path(__file__).resolve().parents[1]
 DIR_DTO = RAIZ / "specs" / "contracts" / "dto"
 DIR_DOCS = RAIZ / "docs" / "arquitectura"
 
+#: Carpetas que no forman parte del entregable (scaffolding de la sesión, VCS, cachés).
+EXCLUIDAS = {".git", "_build", "_tools", "__pycache__", ".pytest_cache", ".venv"}
+
 resultados: list[tuple[bool, str, str]] = []
+
+
+def excluida(ruta: Path) -> bool:
+    """True si la ruta cae en una carpeta que no se entrega."""
+    return any(parte in EXCLUIDAS for parte in ruta.parts)
 
 
 def registrar(ok: bool, nombre: str, detalle: str = "") -> None:
@@ -54,7 +62,7 @@ def verificar_xml() -> None:
 
 
 def verificar_enlaces() -> None:
-    documentos = list(RAIZ.rglob("*.md"))
+    documentos = [d for d in RAIZ.rglob("*.md") if not excluida(d)]
     rotos: list[str] = []
     for documento in documentos:
         texto = documento.read_text(encoding="utf-8")
@@ -72,7 +80,7 @@ def verificar_codificacion() -> None:
     con_bom = [
         f.name
         for f in RAIZ.rglob("*")
-        if f.suffix.lower() in extensiones and f.read_bytes().startswith(b"\xef\xbb\xbf")
+        if f.suffix.lower() in extensiones and not excluida(f) and f.read_bytes().startswith(b"\xef\xbb\xbf")
     ]
     registrar(not con_bom, "Codificación sin BOM", f"{len(con_bom)} archivo/s con BOM")
 
@@ -85,12 +93,12 @@ def verificar_cifras() -> None:
     """Las cifras que los documentos declaran deben coincidir con lo que contienen."""
     esperado = {
         "cruces de la matriz": (RAIZ / "docs/arquitectura/04-matriz-trazabilidad-normativa.md",
-                                r"^\|\s*\d+\s*\|", 59),
+                                r"^\|\s*\d+\s*\|", 63),
         "campos de la tabla de match": (RAIZ / "docs/arquitectura/08-tabla-match-sunat-ubl.md",
                                         r"^\|\s*\d+\s*\|", 47),
         "reglas de negocio": (RAIZ / "specs/domain/reglas-negocio.md", r"^### RN-\d+", 24),
         "escenarios Gherkin": (RAIZ / "specs/features/casos-de-uso.md", r"```gherkin", 10),
-        "catálogos SUNAT": (RAIZ / "specs/contracts/catalogs/catalogos-sunat.md", r"^## Catálogo", 9),
+        "catálogos SUNAT": (RAIZ / "specs/contracts/catalogs/catalogos-sunat.md", r"^## Catálogo", 10),
     }
     problemas = []
     for nombre, (ruta, patron, valor) in esperado.items():
@@ -106,6 +114,7 @@ def verificar_cifras() -> None:
 def verificar_entregables() -> None:
     """Los cuatro entregables y la memoria deben existir."""
     requeridos = {
+        "XSD oficial": RAIZ / "specs/contracts/ubl/oficial/maindoc/UBL-Invoice-2.1.xsd",
         "E1 modelo": RAIZ / "specs/domain/modelo-dominio.md",
         "E1 schemas": DIR_DTO / "comprobante-create.schema.json",
         "E2 diagramas": DIR_DOCS / "01-mvc-capas.svg",
