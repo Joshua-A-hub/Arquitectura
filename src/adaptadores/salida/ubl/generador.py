@@ -21,19 +21,19 @@ from xsdata.formats.dataclass.serializers import XmlSerializer
 from xsdata.formats.dataclass.serializers.config import SerializerConfig
 from xsdata.models.datatype import XmlDate, XmlTime
 
-from src.adapters.outbound.ubl import NAMESPACES, SUNAT, UNECE, catalogo
-from src.adapters.outbound.ubl.generated.common import (
+from src.adaptadores.salida.ubl import NAMESPACES, SUNAT, UNECE, catalogo
+from src.adaptadores.salida.ubl.generated.common import (
     ubl_common_aggregate_components_2_1 as cac,
 )
-from src.adapters.outbound.ubl.generated.common import (
+from src.adaptadores.salida.ubl.generated.common import (
     ubl_common_basic_components_2_1 as cbc,
 )
-from src.adapters.outbound.ubl.generated.maindoc.ubl_credit_note_2_1 import CreditNote
-from src.adapters.outbound.ubl.generated.maindoc.ubl_debit_note_2_1 import DebitNote
-from src.adapters.outbound.ubl.generated.maindoc.ubl_invoice_2_1 import Invoice
-from src.domain.catalogos import TipoComprobante, Tributo
-from src.domain.comprobante import Comprobante, Linea
-from src.domain.tributos import CERO
+from src.adaptadores.salida.ubl.generated.maindoc.ubl_credit_note_2_1 import CreditNote
+from src.adaptadores.salida.ubl.generated.maindoc.ubl_debit_note_2_1 import DebitNote
+from src.adaptadores.salida.ubl.generated.maindoc.ubl_invoice_2_1 import Invoice
+from src.dominio.catalogos import TipoComprobante, Tributo
+from src.dominio.comprobante import Comprobante, Linea
+from src.dominio.tributos import CERO
 
 _DOS_DECIMALES = Decimal("0.01")
 _SEIS_DECIMALES = Decimal("0.000001")

@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from lxml import etree
 
-from src.adapters.outbound.ubl import NAMESPACES
+from src.adaptadores.salida.ubl import NAMESPACES
 from tests.unit.generacion_xml import fabrica as f
 
 

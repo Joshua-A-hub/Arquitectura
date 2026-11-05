@@ -7,12 +7,12 @@ from decimal import Decimal
 
 import pytest
 
-from src.domain.catalogos import AfectacionIGV, SistemaISC, TipoComprobante, UnidadMedida
-from src.domain.comprobante import Cliente, Comprobante, Emisor, Linea
-from src.domain.errores import ErrorReglaNegocio
-from src.domain.letras import monto_en_letras
-from src.domain.tributos import TASA_IGV, ConfiguracionISC, calcular_linea, redondear, valor_unitario
-from src.domain.valores import RUC, Correlativo, DocumentoIdentidad, Serie
+from src.dominio.catalogos import AfectacionIGV, SistemaISC, TipoComprobante, UnidadMedida
+from src.dominio.comprobante import Cliente, Comprobante, Emisor, Linea
+from src.dominio.errores import ErrorReglaNegocio
+from src.dominio.letras import monto_en_letras
+from src.dominio.tributos import TASA_IGV, ConfiguracionISC, calcular_linea, redondear, valor_unitario
+from src.dominio.valores import RUC, Correlativo, DocumentoIdentidad, Serie
 from tests.unit.generacion_xml import fabrica as f
 
 # --- RUC (RN-01) -------------------------------------------------------------------
@@ -192,8 +192,8 @@ def test_cantidad_cero_se_rechaza() -> None:
 
 def test_las_cuotas_deben_sumar_el_importe_total() -> None:
     """RN-16: la suma de cuotas debe cuadrar con el total del comprobante."""
-    from src.domain.catalogos import TipoFormaPago
-    from src.domain.comprobante import Cuota, FormaPago
+    from src.dominio.catalogos import TipoFormaPago
+    from src.dominio.comprobante import Cuota, FormaPago
 
     cuotas = (Cuota(Decimal("100.00"), date(2026, 11, 21)), Cuota(Decimal("50.00"), date(2026, 12, 21)))
     with pytest.raises(ErrorReglaNegocio):
@@ -206,8 +206,8 @@ def test_las_cuotas_deben_sumar_el_importe_total() -> None:
 
 
 def test_cuotas_que_suman_el_total_se_aceptan() -> None:
-    from src.domain.catalogos import TipoFormaPago
-    from src.domain.comprobante import Cuota, FormaPago
+    from src.dominio.catalogos import TipoFormaPago
+    from src.dominio.comprobante import Cuota, FormaPago
 
     cuotas = (Cuota(Decimal("105.00"), date(2026, 11, 21)), Cuota(Decimal("105.00"), date(2026, 12, 21)))
     assert f.armar(

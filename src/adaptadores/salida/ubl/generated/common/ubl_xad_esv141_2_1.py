@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from src.adapters.outbound.ubl.generated.common.ubl_xad_esv132_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xad_esv132_2_1 import (
     CertificateValues,
     RevocationValues,
     XadEstimeStampType,

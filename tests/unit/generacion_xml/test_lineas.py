@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.domain.catalogos import UnidadMedida
+from src.dominio.catalogos import UnidadMedida
 from tests.unit.generacion_xml import fabrica as f
 
 LINEAS = "cac:InvoiceLine"
@@ -124,7 +124,7 @@ def test_line_count_numeric_coincide_con_las_lineas() -> None:
 
 def test_el_descuento_por_item_se_declara_con_allowance_charge() -> None:
     """Matriz fila 32: `/cac:InvoiceLine/cac:AllowanceCharge/cbc:Amount`."""
-    from src.domain.comprobante import Linea
+    from src.dominio.comprobante import Linea
 
     con_descuento = Linea.calcular(
         numero=1,

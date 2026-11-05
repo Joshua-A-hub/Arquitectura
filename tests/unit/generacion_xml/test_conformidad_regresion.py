@@ -59,7 +59,7 @@ def test_la_generacion_es_determinista() -> None:
 
 
 def test_dos_instancias_del_generador_producen_el_mismo_xml() -> None:
-    from src.adapters.outbound.ubl.generador import GeneradorUblXsdata
+    from src.adaptadores.salida.ubl.generador import GeneradorUblXsdata
 
     comprobante = f.factura_completa()
     assert GeneradorUblXsdata().generar(comprobante) == GeneradorUblXsdata().generar(comprobante)

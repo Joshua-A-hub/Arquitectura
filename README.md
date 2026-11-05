@@ -91,10 +91,10 @@ python -m src.cli generar-xml specs/ejemplos/emision-cli.json --salida out
 
 | Pieza | Dónde |
 |---|---|
-| Clases generadas del XSD oficial (`xsdata`) | [`src/adapters/outbound/ubl/generated/`](src/adapters/outbound/ubl/generated/) |
-| Adaptador dominio → UBL → XML | [`generador.py`](src/adapters/outbound/ubl/generador.py) |
-| Validador contra el esquema oficial | [`validador.py`](src/adapters/outbound/ubl/validador.py) |
-| Dominio ejecutable (catálogos, tributos, letras) | [`src/domain/`](src/domain/) |
+| Clases generadas del XSD oficial (`xsdata`) | [`src/adaptadores/salida/ubl/generated/`](src/adaptadores/salida/ubl/generated/) |
+| Adaptador dominio → UBL → XML | [`generador.py`](src/adaptadores/salida/ubl/generador.py) |
+| Validador contra el esquema oficial | [`validador.py`](src/adaptadores/salida/ubl/validador.py) |
+| Dominio ejecutable (catálogos, tributos, letras) | [`src/dominio/`](src/dominio/) |
 | Pruebas de generación + XML de referencia | [`tests/unit/generacion_xml/`](tests/unit/generacion_xml/) |
 | Regenerar clases | `scripts/generar_clases_ubl.ps1` |
 

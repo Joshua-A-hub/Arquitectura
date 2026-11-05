@@ -2,7 +2,7 @@
 
 Comprueba:
   1. Los 18 módulos generados están presentes.
-  2. Se importan desde la ruta real del proyecto (`src.adapters.outbound.ubl.generated`).
+  2. Se importan desde la ruta real del proyecto (`src.adaptadores.salida.ubl.generated`).
   3. Un Invoice construido con esas clases valida contra `UBL-Invoice-2.1.xsd`.
   4. Un elemento que el XSD no permite no se puede construir (el generador es la garantía).
 
@@ -54,19 +54,19 @@ def main() -> int:
         from xsdata.formats.dataclass.serializers.config import SerializerConfig
         from xsdata.models.datatype import XmlDate, XmlTime
 
-        from src.adapters.outbound.ubl.generated.common import (
+        from src.adaptadores.salida.ubl.generated.common import (
             ubl_common_aggregate_components_2_1 as cac,
         )
-        from src.adapters.outbound.ubl.generated.common import (
+        from src.adaptadores.salida.ubl.generated.common import (
             ubl_common_basic_components_2_1 as cbc,
         )
-        from src.adapters.outbound.ubl.generated.maindoc.ubl_invoice_2_1 import Invoice
+        from src.adaptadores.salida.ubl.generated.maindoc.ubl_invoice_2_1 import Invoice
     except ImportError as e:  # noqa: BLE001
         print(f"No se pudieron importar las clases generadas: {e}")
         print("Revisa PYTHONPATH / pip install -r requirements-dev.txt")
         return 1
 
-    ok.append("las clases se importan desde src.adapters.outbound.ubl.generated")
+    ok.append("las clases se importan desde src.adaptadores.salida.ubl.generated")
 
     # 2. construcción mínima
     factura = Invoice(

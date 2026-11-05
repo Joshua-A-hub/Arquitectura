@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     AcceptedVariantsDescription,
     AccountFormatCode,
     AccountId,
@@ -795,34 +795,34 @@ from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 
     WorkPhaseCode,
     Xpath,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     CertificateType as UblCommonBasicComponents21CertificateType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     Condition as UblCommonBasicComponents21Condition,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     ConsumptionType as UblCommonBasicComponents21ConsumptionType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     ContractType as UblCommonBasicComponents21ContractType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     Duty as UblCommonBasicComponents21Duty,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     Location as UblCommonBasicComponents21Location,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     MeterReadingType as UblCommonBasicComponents21MeterReadingType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     PartyType as UblCommonBasicComponents21PartyType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     PriceType as UblCommonBasicComponents21PriceType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     TelecommunicationsSupplyType as UblCommonBasicComponents21TelecommunicationsSupplyType,
 )
 

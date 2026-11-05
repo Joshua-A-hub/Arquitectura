@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from datetime import date, time
 from decimal import Decimal
 
-from src.domain.catalogos import (
+from src.dominio.catalogos import (
     AfectacionIGV,
     Moneda,
     MotivoNotaCredito,
@@ -23,9 +23,9 @@ from src.domain.catalogos import (
     TipoOperacion,
     UnidadMedida,
 )
-from src.domain.errores import ErrorReglaNegocio
-from src.domain.letras import monto_en_letras
-from src.domain.tributos import (
+from src.dominio.errores import ErrorReglaNegocio
+from src.dominio.letras import monto_en_letras
+from src.dominio.tributos import (
     CERO,
     ConfiguracionISC,
     TotalesComprobante,
@@ -34,7 +34,7 @@ from src.domain.tributos import (
     calcular_totales,
     valor_unitario,
 )
-from src.domain.valores import RUC, Correlativo, DocumentoIdentidad, Serie, a_decimal, redondear
+from src.dominio.valores import RUC, Correlativo, DocumentoIdentidad, Serie, a_decimal, redondear
 
 
 @dataclass(frozen=True)

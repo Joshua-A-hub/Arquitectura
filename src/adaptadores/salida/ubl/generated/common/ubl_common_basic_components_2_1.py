@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     AmountType as UblUnqualifiedDataTypes21AmountType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     BinaryObjectType,
     CodeType,
     IdentifierType,
@@ -13,25 +13,25 @@ from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 i
     NumericType,
     TimeType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     DateType as UblUnqualifiedDataTypes21DateType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     MeasureType as UblUnqualifiedDataTypes21MeasureType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     NameType as UblUnqualifiedDataTypes21NameType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     PercentType as UblUnqualifiedDataTypes21PercentType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     QuantityType as UblUnqualifiedDataTypes21QuantityType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     RateType as UblUnqualifiedDataTypes21RateType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     TextType as UblUnqualifiedDataTypes21TextType,
 )
 

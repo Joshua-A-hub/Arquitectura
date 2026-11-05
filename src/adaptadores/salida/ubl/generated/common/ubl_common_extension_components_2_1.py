@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     Id,
     Name,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_extension_content_data_type_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_extension_content_data_type_2_1 import (
     ExtensionContentType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     CodeType,
     IdentifierType,
     TextType,

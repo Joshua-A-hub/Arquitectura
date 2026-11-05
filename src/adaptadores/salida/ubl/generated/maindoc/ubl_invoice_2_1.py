@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     AccountingCustomerParty,
     AccountingSupplierParty,
     AdditionalDocumentReference,
@@ -35,7 +35,7 @@ from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_
     TaxTotal,
     WithholdingTaxTotal,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     AccountingCost,
     AccountingCostCode,
     BuyerReference,
@@ -59,7 +59,7 @@ from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 
     UblversionId,
     Uuid,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_extension_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_extension_components_2_1 import (
     Ublextensions,
 )
 

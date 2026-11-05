@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     Id,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_signature_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_signature_basic_components_2_1 import (
     ReferencedSignatureId,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
     Signature,
 )
 

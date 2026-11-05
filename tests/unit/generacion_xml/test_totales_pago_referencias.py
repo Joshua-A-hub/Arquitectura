@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.domain.catalogos import MotivoNotaCredito, MotivoNotaDebito
+from src.dominio.catalogos import MotivoNotaCredito, MotivoNotaDebito
 from tests.unit.generacion_xml import fabrica as f
 
 # --- totales del comprobante -------------------------------------------------------
@@ -48,7 +48,7 @@ def test_forma_de_pago_al_credito_con_cuotas() -> None:
     import datetime as dt
     from decimal import Decimal as D
 
-    from src.domain.comprobante import Cuota
+    from src.dominio.comprobante import Cuota
 
     cuotas = (Cuota(D("105.00"), dt.date(2026, 11, 21)), Cuota(D("105.00"), dt.date(2026, 12, 21)))
     xml = f.arbol(

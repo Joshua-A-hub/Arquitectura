@@ -15,9 +15,9 @@ from datetime import date, time
 from decimal import Decimal
 from pathlib import Path
 
-from src.adapters.outbound.ubl.generador import GeneradorUblXsdata
-from src.adapters.outbound.ubl.validador import ValidadorXsd
-from src.domain.catalogos import (
+from src.adaptadores.salida.ubl.generador import GeneradorUblXsdata
+from src.adaptadores.salida.ubl.validador import ValidadorXsd
+from src.dominio.catalogos import (
     AfectacionIGV,
     Moneda,
     SistemaISC,
@@ -27,10 +27,10 @@ from src.domain.catalogos import (
     TipoOperacion,
     UnidadMedida,
 )
-from src.domain.comprobante import Cliente, Comprobante, Cuota, Emisor, FormaPago, Linea
-from src.domain.errores import ErrorDominio
-from src.domain.tributos import ConfiguracionISC
-from src.domain.valores import RUC, Correlativo, DocumentoIdentidad, Serie
+from src.dominio.comprobante import Cliente, Comprobante, Cuota, Emisor, FormaPago, Linea
+from src.dominio.errores import ErrorDominio
+from src.dominio.tributos import ConfiguracionISC
+from src.dominio.valores import RUC, Correlativo, DocumentoIdentidad, Serie
 
 RAIZ = Path(__file__).resolve().parents[1]
 

@@ -1,34 +1,34 @@
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     AmountType as CctsCctSchemaModuleAmountType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     BinaryObjectType as CctsCctSchemaModuleBinaryObjectType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     CodeType as CctsCctSchemaModuleCodeType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     DateTimeType as CctsCctSchemaModuleDateTimeType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     IdentifierType as CctsCctSchemaModuleIdentifierType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     IndicatorType as CctsCctSchemaModuleIndicatorType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     MeasureType as CctsCctSchemaModuleMeasureType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     NumericType as CctsCctSchemaModuleNumericType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     QuantityType as CctsCctSchemaModuleQuantityType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     TextType as CctsCctSchemaModuleTextType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     AcceptanceTransportEvent,
     AccessoryRelatedItem,
     AccountingContact,
@@ -912,52 +912,52 @@ from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_
     WorkPhaseReference,
     WorkPhaseReferenceType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     CertificateType as AggregateCertificateType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     Condition as AggregateCondition,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     ConditionType as AggregateConditionType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     ConsumptionType as AggregateConsumptionType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     ContractType as AggregateContractType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     Duty as AggregateDuty,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     DutyType as AggregateDutyType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     Location as AggregateLocation,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     LocationType as AggregateLocationType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     MeterReadingType as AggregateMeterReadingType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     PartyType as AggregatePartyType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     PriceType as AggregatePriceType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     Signature as AggregateComponentsSignature,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     SignatureType as AggregateComponentsSignatureType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_aggregate_components_2_1 import (
     TelecommunicationsSupplyType as AggregateTelecommunicationsSupplyType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     AcceptedIndicator,
     AcceptedIndicatorType,
     AcceptedVariantsDescription,
@@ -2677,91 +2677,91 @@ from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 
     Xpath,
     XpathType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     AmountType as BasicComponentsAmountType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     CanonicalizationMethod as BasicComponentsCanonicalizationMethod,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     CanonicalizationMethodType as BasicComponentsCanonicalizationMethodType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     CertificateType as BasicCertificateType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     Condition as BasicCondition,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     ConditionType as BasicConditionType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     ConsumptionType as BasicConsumptionType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     ContractType as BasicContractType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     DateType as BasicComponentsDateType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     Duty as BasicDuty,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     DutyType as BasicDutyType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     Location as BasicLocation,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     LocationType as BasicLocationType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     MeasureType as BasicComponentsMeasureType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     MeterReadingType as BasicMeterReadingType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     NameType as BasicComponentsNameType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     PartyType as BasicPartyType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     PercentType as BasicComponentsPercentType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     PriceType as BasicPriceType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     QuantityType as BasicComponentsQuantityType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     RateType as BasicComponentsRateType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     Reference as BasicComponentsReference,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     ReferenceType as BasicComponentsReferenceType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     SignatureMethod as BasicComponentsSignatureMethod,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     SignatureMethodType as BasicComponentsSignatureMethodType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     TelecommunicationsSupplyType as BasicTelecommunicationsSupplyType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     TextType as BasicComponentsTextType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_basic_components_2_1 import (
     ValueType as BasicComponentsValueType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_extension_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_extension_components_2_1 import (
     ExtensionAgencyId,
     ExtensionAgencyIdtype,
     ExtensionAgencyName,
@@ -2782,74 +2782,74 @@ from src.adapters.outbound.ubl.generated.common.ubl_common_extension_components_
     UblextensionsType,
     UblextensionType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_common_signature_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_common_signature_components_2_1 import (
     UbldocumentSignatures,
     UbldocumentSignaturesType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_extension_content_data_type_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_extension_content_data_type_2_1 import (
     ExtensionContentType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_signature_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_signature_aggregate_components_2_1 import (
     SignatureInformation,
     SignatureInformationType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_signature_basic_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_signature_basic_components_2_1 import (
     ReferencedSignatureId,
     ReferencedSignatureIdtype,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     AmountType as UnqualifiedDataTypesAmountType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     BinaryObjectType as UnqualifiedDataTypesBinaryObjectType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     CodeType as UnqualifiedDataTypesCodeType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     DateTimeType as UnqualifiedDataTypesDateTimeType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     DateType as UnqualifiedDataTypesDateType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     GraphicType,
     PictureType,
     SoundType,
     TimeType,
     VideoType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     IdentifierType as UnqualifiedDataTypesIdentifierType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     IndicatorType as UnqualifiedDataTypesIndicatorType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     MeasureType as UnqualifiedDataTypesMeasureType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     NameType as UnqualifiedDataTypesNameType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     NumericType as UnqualifiedDataTypesNumericType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     PercentType as UnqualifiedDataTypesPercentType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     QuantityType as UnqualifiedDataTypesQuantityType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     RateType as UnqualifiedDataTypesRateType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     TextType as UnqualifiedDataTypesTextType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     ValueType as UnqualifiedDataTypesValueType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xad_esv132_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xad_esv132_2_1 import (
     AllDataObjectsTimeStamp,
     AnyType,
     ArchiveTimeStamp,
@@ -2939,21 +2939,21 @@ from src.adapters.outbound.ubl.generated.common.ubl_xad_esv132_2_1 import (
     XadEstimeStamp,
     XadEstimeStampType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xad_esv132_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xad_esv132_2_1 import (
     IdentifierType as XadEsv132IdentifierType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xad_esv141_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xad_esv141_2_1 import (
     ArchiveTimeStampV2,
     TimeStampValidationData,
     ValidationDataType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
     CanonicalizationMethod as XmldsigCoreSchemaCanonicalizationMethod,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
     CanonicalizationMethodType as XmldsigCoreSchemaCanonicalizationMethodType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
     DigestMethod,
     DigestMethodType,
     DigestValue,
@@ -2993,22 +2993,22 @@ from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 impo
     X509DataType,
     X509IssuerSerialType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
     Reference as XmldsigCoreSchemaReference,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
     ReferenceType as XmldsigCoreSchemaReferenceType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
     Signature as XmldsigCoreSchemaSignature,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
     SignatureMethod as XmldsigCoreSchemaSignatureMethod,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
     SignatureMethodType as XmldsigCoreSchemaSignatureMethodType,
 )
-from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
     SignatureType as XmldsigCoreSchemaSignatureType,
 )
 

@@ -13,7 +13,7 @@ import sys
 from datetime import date, time
 from decimal import Decimal
 
-from src.domain.catalogos import (
+from src.dominio.catalogos import (
     AfectacionIGV,
     Moneda,
     SistemaISC,
@@ -21,11 +21,11 @@ from src.domain.catalogos import (
     TipoDocumentoIdentidad,
     UnidadMedida,
 )
-from src.domain.comprobante import Cliente, Comprobante, Emisor, Linea
-from src.domain.errores import ErrorDominio, ErrorReglaNegocio
-from src.domain.letras import monto_en_letras
-from src.domain.tributos import ConfiguracionISC
-from src.domain.valores import RUC, Correlativo, DocumentoIdentidad, Serie
+from src.dominio.comprobante import Cliente, Comprobante, Emisor, Linea
+from src.dominio.errores import ErrorDominio, ErrorReglaNegocio
+from src.dominio.letras import monto_en_letras
+from src.dominio.tributos import ConfiguracionISC
+from src.dominio.valores import RUC, Correlativo, DocumentoIdentidad, Serie
 
 ok: list[str] = []
 fallos: list[str] = []

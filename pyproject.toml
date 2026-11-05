@@ -7,7 +7,7 @@ addopts = "-ra"
 [tool.ruff]
 line-length = 120
 target-version = "py313"
-extend-exclude = ["src/adapters/outbound/ubl/generated", "tests/unit/generacion_xml/esperados"]
+extend-exclude = ["src/adaptadores/salida/ubl/generated", "tests/unit/generacion_xml/esperados"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "SIM"]

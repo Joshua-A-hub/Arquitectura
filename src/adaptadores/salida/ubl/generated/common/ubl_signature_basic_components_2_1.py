@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from src.adapters.outbound.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_unqualified_data_types_2_1 import (
     IdentifierType,
 )
 

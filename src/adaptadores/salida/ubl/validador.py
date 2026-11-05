@@ -13,7 +13,7 @@ from pathlib import Path
 
 from lxml import etree
 
-from src.domain.catalogos import TipoComprobante
+from src.dominio.catalogos import TipoComprobante
 
 RAIZ = Path(__file__).resolve().parents[4]
 DIR_XSD = RAIZ / "specs" / "contracts" / "ubl" / "oficial" / "maindoc"

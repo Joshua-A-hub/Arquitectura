@@ -12,9 +12,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from decimal import Decimal
 
-from src.domain.catalogos import AfectacionIGV, SistemaISC
-from src.domain.errores import ErrorReglaNegocio
-from src.domain.valores import CERO, a_decimal, redondear
+from src.dominio.catalogos import AfectacionIGV, SistemaISC
+from src.dominio.errores import ErrorReglaNegocio
+from src.dominio.valores import CERO, a_decimal, redondear
 
 TASA_IGV = Decimal("0.18")  # 18 % vigente
 TASA_ICBPER = Decimal("0.50")  # S/ 0.50 por bolsa plástica

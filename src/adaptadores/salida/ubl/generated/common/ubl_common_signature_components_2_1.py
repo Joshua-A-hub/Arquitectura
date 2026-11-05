@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from src.adapters.outbound.ubl.generated.common.ubl_signature_aggregate_components_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_signature_aggregate_components_2_1 import (
     SignatureInformation,
 )
 

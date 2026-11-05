@@ -79,8 +79,8 @@ def test_codigo_de_establecimiento_del_emisor() -> None:
 
 
 def test_ubigeo_del_cliente_cuando_lo_tiene() -> None:
-    from src.domain.comprobante import Cliente as ClienteDominio
-    from src.domain.valores import DocumentoIdentidad
+    from src.dominio.comprobante import Cliente as ClienteDominio
+    from src.dominio.valores import DocumentoIdentidad
 
     cliente = ClienteDominio(
         DocumentoIdentidad(f.TipoDocumentoIdentidad.RUC, "20512345671"),
@@ -93,8 +93,8 @@ def test_ubigeo_del_cliente_cuando_lo_tiene() -> None:
 
 
 def test_boleta_a_consumidor_final() -> None:
-    from src.domain.comprobante import Cliente as ClienteDominio
-    from src.domain.valores import DocumentoIdentidad
+    from src.dominio.comprobante import Cliente as ClienteDominio
+    from src.dominio.valores import DocumentoIdentidad
 
     cliente = ClienteDominio(DocumentoIdentidad(f.TipoDocumentoIdentidad.NO_DOMICILIADO, "0"), "CLIENTES VARIOS")
     xml = f.arbol(f.armar(f.TipoComprobante.BOLETA, "B001", (f.linea(1),), cliente=cliente))

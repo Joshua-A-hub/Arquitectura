@@ -11,9 +11,9 @@ from decimal import Decimal as D
 
 from lxml import etree
 
-from src.adapters.outbound.ubl import NAMESPACES
-from src.adapters.outbound.ubl.generador import GeneradorUblXsdata
-from src.domain.catalogos import (
+from src.adaptadores.salida.ubl import NAMESPACES
+from src.adaptadores.salida.ubl.generador import GeneradorUblXsdata
+from src.dominio.catalogos import (
     AfectacionIGV,
     Moneda,
     MotivoNotaCredito,
@@ -25,9 +25,9 @@ from src.domain.catalogos import (
     TipoOperacion,
     UnidadMedida,
 )
-from src.domain.comprobante import Cliente, Comprobante, Cuota, Emisor, FormaPago, Linea
-from src.domain.tributos import ConfiguracionISC
-from src.domain.valores import RUC, Correlativo, DocumentoIdentidad, Serie
+from src.dominio.comprobante import Cliente, Comprobante, Cuota, Emisor, FormaPago, Linea
+from src.dominio.tributos import ConfiguracionISC
+from src.dominio.valores import RUC, Correlativo, DocumentoIdentidad, Serie
 
 HOY = dt.date(2026, 10, 22)
 HORA = dt.time(10, 30, 0)

@@ -4,28 +4,28 @@ from dataclasses import dataclass, field
 
 from xsdata.models.datatype import XmlDate, XmlDateTime, XmlTime
 
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     AmountType as CctsCctSchemaModule21AmountType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     BinaryObjectType as CctsCctSchemaModule21BinaryObjectType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     CodeType as CctsCctSchemaModule21CodeType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     IdentifierType as CctsCctSchemaModule21IdentifierType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     MeasureType as CctsCctSchemaModule21MeasureType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     NumericType as CctsCctSchemaModule21NumericType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     QuantityType as CctsCctSchemaModule21QuantityType,
 )
-from src.adapters.outbound.ubl.generated.common.ccts_cct_schema_module_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ccts_cct_schema_module_2_1 import (
     TextType as CctsCctSchemaModule21TextType,
 )
 

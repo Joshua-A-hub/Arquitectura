@@ -21,7 +21,7 @@ pytest tests/unit -q           # 142 pruebas (98 de generación + 44 de dominio)
 specs/contracts/ubl/oficial/        (16 XSD oficiales de OASIS)
         │  xsdata generate
         ▼
-src/adapters/outbound/ubl/generated/  (dataclasses tipadas: Invoice, InvoiceLine, TaxSubtotal…)
+src/adaptadores/salida/ubl/generated/  (dataclasses tipadas: Invoice, InvoiceLine, TaxSubtotal…)
         │  GeneradorUblXsdata
         ▼
 dominio (Comprobante · Linea · Totales · FormaPago)
@@ -42,7 +42,7 @@ XML UBL 2.1 ──► validador lxml contra el XSD oficial (antes de firmar, RN-
 El generador **no recibe JSON ni diccionarios**: recibe el agregado `Comprobante`. El cálculo (IGV,
 ISC, ICBPER, totales, cuotas) ya lo hizo el dominio; el generador **solo traduce**.
 
-| Término del dominio (`src/domain`) | Elemento UBL 2.1 que genera |
+| Término del dominio (`src/dominio`) | Elemento UBL 2.1 que genera |
 |---|---|
 | `Comprobante.tipo` (factura/boleta → `Invoice`; NC → `CreditNote`; ND → `DebitNote`) | elemento raíz |
 | `Comprobante.serie_numero` | `cbc:ID` (`F001-00000123`) |
@@ -62,7 +62,7 @@ ISC, ICBPER, totales, cuotas) ya lo hizo el dominio; el generador **solo traduce
 | `Comprobante.referencia` / `motivo` | `cac:BillingReference` + `cac:DiscrepancyResponse` |
 | `Comprobante.documentos_legado` | `cac:AdditionalDocumentReference` (tipo `99`) |
 
-Código: [`src/adapters/outbound/ubl/generador.py`](../src/adapters/outbound/ubl/generador.py). El
+Código: [`src/adaptadores/salida/ubl/generador.py`](../src/adaptadores/salida/ubl/generador.py). El
 generador implementa el puerto `IXmlBuilder` de [`src/puertos.py`](../src/puertos.py).
 
 ## 3. Pruebas unitarias de generación

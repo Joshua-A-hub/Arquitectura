@@ -9,8 +9,8 @@ import re
 from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 
-from src.domain.catalogos import TipoComprobante, TipoDocumentoIdentidad
-from src.domain.errores import ErrorDominio, ErrorReglaNegocio
+from src.dominio.catalogos import TipoComprobante, TipoDocumentoIdentidad
+from src.dominio.errores import ErrorDominio, ErrorReglaNegocio
 
 CERO = Decimal("0.00")
 DOS_DECIMALES = Decimal("0.01")

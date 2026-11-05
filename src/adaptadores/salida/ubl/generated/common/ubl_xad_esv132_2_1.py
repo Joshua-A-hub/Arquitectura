@@ -6,7 +6,7 @@ from typing import Any
 
 from xsdata.models.datatype import XmlDateTime
 
-from src.adapters.outbound.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
+from src.adaptadores.salida.ubl.generated.common.ubl_xmldsig_core_schema_2_1 import (
     CanonicalizationMethod,
     DigestMethod,
     DigestValue,
