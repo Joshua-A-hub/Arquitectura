@@ -16,7 +16,7 @@ oficiales de OASIS**.
 | # | Texto literal del examen | Evidencia | Estado |
 |---|---|---|---|
 | E1 | *"El Modelo de Dominio y Contratos (DTOs / Schemas)"* | 9 entidades + invariantes + diagrama de clases + 9 JSON Schemas | ✅ |
-| E2 | *"Diagramas de Arquitectura MVC con visión a Hexagonal"* | 2 diagramas SVG+PNG, 11 ASR, 10 RNF, 3 ADR | ✅ |
+| E2 | *"Diagramas de Arquitectura MVC con visión a Hexagonal"* | 2 diagramas SVG+PNG, 11 ASR, 10 RNF, 6 ADR | ✅ |
 | E3 | *"Especificación de Endpoints / Servicios (Contratos API)"* | OpenAPI 3.0.3: 12 rutas, 18 esquemas, JWT, catálogo de errores | ✅ |
 | E4 | *"Matriz de Trazabilidad Normativa con cruces entre datos SUNAT y datos UBL"* | **63 cruces** + tabla de match de 47 campos | ✅ |
 
@@ -128,7 +128,7 @@ Los 32 puntos que descontó la rúbrica tienen corrección y prueba. Lo que qued
 | Clases generadas desde los XSD oficiales (xsdata) | 15 módulos, 3.1 MB, regenerables con scripts/generar_clases_ubl.ps1 |
 | Pruebas por regla (`tests/unit/reglas`) | **119** (RN-01 a RN-25) |
 | Estructura y regresión | **30** (`test_estructura_xml.py`, `test_regresion_golden.py`) |
-| **Total de la suite** | **147 pruebas, 0 fallos** |
+| **Total de la suite** | **152 pruebas, 0 fallos** |
 | Conformidad | los **6 escenarios propios** validan contra UBL-Invoice-2.1.xsd (NC/ND contra sus XSD) |
 | Prueba de mutación | romper versión UBL, numeración de líneas o tasa de IGV hace fallar **21 pruebas** |
 | CLI (segundo adaptador de entrada) | python -m src.cli generar-xml genera, valida y escribe el XML |

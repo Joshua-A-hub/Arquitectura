@@ -38,7 +38,7 @@ specs/
 | `contracts/catalogs/` | `catalogos-sunat.md` | catálogos 01, 02, 03, 05, 07, **08**, 09, 10, 51 |
 | `contracts/ubl/` | `perfil-invoice.md` | perfil UBL 2.1 Invoice (rutas y orden) |
 | `features/` | `casos-de-uso.md` | 10 casos de uso + 10 escenarios Gherkin |
-| `adr/` | `0001`, `0002`, `0003` | MVC→Hexagonal, UBL/XSD y multiplataforma |
+| `adr/` | `0001` a `0006` | MVC→Hexagonal, UBL/XSD, multiplataforma, implementación del puerto XML, cálculo decimal y envío asíncrono |
 
 ## Cómo proponer un cambio
 

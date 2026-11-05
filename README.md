@@ -30,7 +30,7 @@ usuario ni implementación; incluye lo que hace posible implementarlas sin reint
 | # | Entregable del enunciado | Dónde está | Evidencia |
 |:--:|---|---|---|
 | **E1** | Modelo de Dominio y Contratos (DTOs / Schemas) | [`specs/domain/`](specs/domain/modelo-dominio.md) · [`specs/contracts/dto/`](specs/contracts/dto/) | 9 JSON Schemas validados |
-| **E2** | Diagramas de Arquitectura MVC con visión a Hexagonal | [`specs/architecture/`](specs/architecture/mvc-hexagonal.md) · [`docs/arquitectura/`](docs/arquitectura/README.md) | 11 requisitos ASR + 10 RNF + 3 ADR |
+| **E2** | Diagramas de Arquitectura MVC con visión a Hexagonal | [`specs/architecture/`](specs/architecture/mvc-hexagonal.md) · [`docs/arquitectura/`](docs/arquitectura/README.md) | 11 requisitos ASR + 10 RNF + 6 ADR |
 | **E3** | Especificación de Endpoints / Servicios (Contratos API) | [`facturacion-api.yaml`](specs/contracts/facturacion-api.yaml) | 12 rutas · 18 esquemas · JWT |
 | **E4** | Matriz de Trazabilidad Normativa SUNAT ↔ UBL | [`04-matriz`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) · [`08-tabla de match`](docs/arquitectura/08-tabla-match-sunat-ubl.md) | 63 cruces + 47 campos |
 
@@ -85,7 +85,7 @@ dominio y evaluada con **pruebas unitarias de generación**. Detalle completo en
 
 ```bash
 pip install -r requirements-dev.txt
-pytest tests/unit -q                 # 147 pruebas (119 por regla + 28 de estructura y regresión)
+pytest tests/unit -q                 # 152 pruebas (119 por regla + 28 de estructura y regresión)
 python -m src.cli generar-xml specs/ejemplos/emision-cli.json --salida out
 ```
 
@@ -131,7 +131,7 @@ examen/
 │       └── 08-tabla-match-sunat-ubl.md            match por campo
 ├── specs/
 │   ├── README.md                 reglas de la carpeta
-│   ├── adr/                      0001 MVC→Hexagonal · 0002 UBL/XSD · 0003 multiplataforma
+│   ├── adr/                      0001 MVC→Hexagonal · 0002 UBL/XSD · 0003 multiplataforma · 0004 IXmlBuilder · 0005 Decimal · 0006 outbox
 │   ├── architecture/             mvc-hexagonal (ASR + RNF)
 │   ├── contracts/                OpenAPI + dto/ + catalogs/ + ubl/ (con XSD)
 │   ├── domain/                   modelo-dominio · reglas-negocio · marco-normativo

@@ -27,6 +27,7 @@ tests/
 │   │   ├── test_rn25_forma_pago.py
 │   │   ├── test_descuento_item.py       (matriz fila 32)
 │   │   └── test_leyenda_1000.py         (matriz fila 6)
+│   ├── test_puertos.py             los adaptadores cumplen los puertos del hexagono
 │   └── generacion_xml/             forma del documento, no reglas
 │       ├── escenarios.py              escenarios del dominio (sin HTTP ni base de datos)
 │       ├── test_estructura_xml.py  raíz, namespaces, catálogos 01/02/03/51, orden del XSD
@@ -47,7 +48,7 @@ tests/
 | `acceptance` | especificado (Gherkin), se implementa cuando exista la API |
 | `integration` | especificado, requiere repositorio y OSE |
 
-Total: **147 pruebas** (`pytest tests/unit`).
+Total: **152 pruebas** (`pytest tests/unit`).
 
 ## Cómo se ejecutan
 

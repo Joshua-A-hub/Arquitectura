@@ -51,12 +51,16 @@ def _valor_unitario(valor: Decimal) -> Decimal:
 
 
 class GeneradorUblXsdata:
-    """Implementa el puerto `IXmlBuilder`."""
+    """Implementa el puerto `IXmlBuilder` de `src/puertos.py`."""
 
     def __init__(self) -> None:
         self._serializador = XmlSerializer(config=SerializerConfig(xml_declaration=True, encoding="UTF-8"))
 
     # ------------------------------------------------------------------ público
+    def construir(self, comprobante: Comprobante) -> bytes:
+        """Implementación del puerto `IXmlBuilder`: XML del comprobante, sin firmar."""
+        return self.generar(comprobante)
+
     def generar(self, comprobante: Comprobante) -> bytes:
         """Devuelve el XML UBL 2.1 del comprobante (sin firmar)."""
         documento, raiz = self._documento(comprobante)

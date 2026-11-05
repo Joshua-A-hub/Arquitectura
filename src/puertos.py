@@ -1,15 +1,14 @@
 """Puertos del dominio (arquitectura hexagonal).
 
-**Fase 1 (esta entrega):** solo se declaran las interfaces. No hay lógica de negocio todavía,
-porque el enunciado exige definir los contratos antes de escribir una sola línea de negocio.
+**Fase 1:** los contratos se definieron antes del código.
+**Taller 2:** ya están implementados los dos adaptadores de salida del XML:
 
-**Fase 2:** se implementan los adaptadores:
+    src/adaptadores/salida/ubl/generador.py   -> IXmlBuilder   (dominio → clases del XSD → XML)
+    src/adaptadores/salida/ubl/validador.py   -> IValidadorXsd (XML contra el esquema oficial)
 
-    src/adaptadores/sqlite_comprobante_repository.py   -> IComprobanteRepository
-    src/adaptadores/ubl_builder.py                     -> IXmlBuilder
-    src/adaptadores/firma_xml.py                       -> IFirmaDigital
-    src/adaptadores/ose_gateway.py                     -> ISunatGateway
-    src/controladores/emision_controller.py            -> usa IEmisionService
+Pendientes (fase siguiente): `IComprobanteRepository`, `IFirmaDigital`, `ISunatGateway` y los
+servicios de entrada. Los puertos de persistencia siguen hablando de datos (`dict`) porque la
+persistencia no forma parte de esta entrega.
 
 Regla: el dominio importa estas interfaces; los adaptadores las implementan. Nunca al revés.
 """
@@ -18,6 +17,9 @@ from __future__ import annotations
 
 from datetime import date
 from typing import Protocol, runtime_checkable
+
+from src.dominio.catalogos import TipoComprobante
+from src.dominio.comprobante import Comprobante
 
 # --------------------------------------------------------------------------- #
 # Tipos de apoyo (contratos de datos, sin comportamiento)
@@ -97,10 +99,14 @@ class IComprobanteRepository(Protocol):
 
 @runtime_checkable
 class IXmlBuilder(Protocol):
-    """Construye el documento UBL 2.1 a partir del comprobante del dominio."""
+    """Construye el documento UBL 2.1 a partir del **agregado del dominio**.
 
-    def construir(self, comprobante: dict) -> bytes:
-        """Genera el XML con namespaces y orden de elementos del perfil."""
+    Implementado por `src/adaptadores/salida/ubl/generador.py` con las clases que `xsdata`
+    produce desde el XSD oficial (ver ADR-0004).
+    """
+
+    def construir(self, comprobante: Comprobante) -> bytes:
+        """Devuelve el XML del comprobante, sin firmar y conforme al esquema oficial."""
         ...
 
 
@@ -124,8 +130,11 @@ class ISunatGateway(Protocol):
 
 @runtime_checkable
 class IValidadorXsd(Protocol):
-    """Validación formal contra el perfil UBL."""
+    """Validación formal contra el **esquema oficial** de OASIS (RN-18).
 
-    def validar(self, xml: bytes) -> list[str]:
-        """Devuelve la lista de errores del XSD (vacía = válido)."""
+    Implementado por `src/adaptadores/salida/ubl/validador.py`.
+    """
+
+    def validar(self, xml: bytes, tipo: TipoComprobante) -> list[str]:
+        """Devuelve los errores del esquema (vacía = conforme)."""
         ...

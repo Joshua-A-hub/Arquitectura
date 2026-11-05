@@ -24,7 +24,7 @@ Este documento son los **requisitos de arquitectura (ASR)** verificables. Los di
 | **ASR-07** | La aplicación MUST ejecutarse nativamente en **Windows y Android**, empaquetada como **MSI** o **APK** | MUST | [`docs/arquitectura/06-distribucion-msi-apk.md`](../../docs/arquitectura/06-distribucion-msi-apk.md) · [ADR-0003](../adr/0003-estrategia-multiplataforma.md) |
 | **ASR-08** | El **contrato** (OpenAPI + DTOs) MUST ser la única frontera entre cliente y servicio | MUST | [`specs/contracts/facturacion-api.yaml`](../contracts/facturacion-api.yaml) |
 | **ASR-09** | Las reglas de negocio MUST poder probarse sin servidor, sin base de datos y sin red | SHOULD | `tests/unit/` del mapa de pruebas |
-| **ASR-10** | Toda decisión arquitectónica significativa MUST registrarse como ADR | MUST | 3 ADR en [`specs/adr/`](../adr/) |
+| **ASR-10** | Toda decisión arquitectónica significativa MUST registrarse como ADR | MUST | 6 ADR en [`specs/adr/`](../adr/) |
 | **ASR-11** | La validación formal del XML MUST ocurrir en el dominio/aplicación, no en la vista | MUST | RN-18; el certificado nunca llega al cliente |
 
 ## 2. Cómo se ve MVC en los specs

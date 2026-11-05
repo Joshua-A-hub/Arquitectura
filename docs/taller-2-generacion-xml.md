@@ -81,7 +81,7 @@ regla → fila de la matriz → prueba.
 | Forma del documento | [`test_estructura_xml.py`](../tests/unit/generacion_xml/test_estructura_xml.py) | raíz según el tipo, namespaces, catálogos 01/02/03/51, moneda en cada importe, orden del XSD, determinismo |
 | Regresión | [`test_regresion_golden.py`](../tests/unit/generacion_xml/test_regresion_golden.py) | el XML no cambia sin querer (comparación byte a byte con `esperados/`) |
 
-**147 pruebas** en total. Los escenarios del dominio se construyen en
+**152 pruebas** en total. Los escenarios del dominio se construyen en
 [`escenarios.py`](../tests/unit/generacion_xml/escenarios.py), sin HTTP ni base de datos.
 
 Los escenarios son **propios**: factura del contrato (F001-00000123, S/ 530.00), factura con
