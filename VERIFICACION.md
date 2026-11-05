@@ -30,7 +30,7 @@ oficiales de OASIS**.
 | *"Windows y Android … MSI … APK"* | decisión registrada, empaquetado con WiX (MSI real) | ✅ |
 | *"detalle los casos posibles … Nubefact"* | 10 casos, 10 escenarios Gherkin, 17 inventariados, benchmark | ✅ |
 | *"estudiando el archivo UBL-Invoice-2.1.xsd"* | **esquemas oficiales de OASIS en el repositorio** + XML validado contra ellos | ✅ |
-| *"no es ponerte a codificar … antes de la primera línea"* | entrega = especificación; solo interfaces y validadores | ✅ |
+| *"no es ponerte a codificar … antes de la primera línea"* | se especificó antes; la implementación del Taller 2 (generación del XML) llegó después, sobre esos contratos | ✅ |
 | *"no quiere interfaz, solo specs"* | UI fuera de alcance en 4 documentos | ✅ |
 
 ---
@@ -91,10 +91,10 @@ evidencia:
 | Tema | Situación |
 |---|---|
 | **Esquemas SUNAT** | se validó contra OASIS; los esquemas del SEE no se descargaron: la conformidad UBL está probada, la validación SUNAT real no |
-| **Notas de crédito/débito** | se descargaron sus XSD oficiales, pero no se validó una instancia de ejemplo |
+| **Notas de crédito/débito** | se generan y validan contra sus XSD oficiales en la suite; no se enviaron a SUNAT |
 | **Firma criptográfica** | no se firma ni se verifica una firma real: es fase 2 |
 | **DOCX** | no se inspeccionó visualmente (entorno sin renderizador); validado en estructura |
-| **Código** | no hay lógica de negocio implementada: es una entrega de especificación |
+| **Código** | dominio y generación del XML implementados; API HTTP, firma y envío a la OSE quedan pendientes |
 | **Topología, numeración y outbox** | decisiones de diseño pendientes, documentadas en §4.1 de la revisión anterior |
 
 ---
@@ -113,11 +113,11 @@ python validacion/validar_xml_ubl.py       # 13 comprobaciones (incluye el esque
 ## 6. Veredicto
 
 La entrega **cubre los cuatro entregables y las restricciones del enunciado**, y su evidencia es
-**ejecutable y falsificable**: 17 + 13 + 8 comprobaciones, con controles negativos, y el XML validado
+**ejecutable y falsificable**: 17 + 12 + 8 comprobaciones, con controles negativos, y el XML validado
 contra los esquemas **oficiales** de OASIS.
 
 Los 32 puntos que descontó la rúbrica tienen corrección y prueba. Lo que queda son límites de alcance
-(fase 2 y validación SUNAT real), no contradicciones entre documentos.
+(firma, API y validación SUNAT real), no contradicciones entre documentos.
 
 ---
 
@@ -127,10 +127,11 @@ Los 32 puntos que descontó la rúbrica tienen corrección y prueba. Lo que qued
 |---|---|
 | Clases generadas desde los XSD oficiales (xsdata) | 15 módulos, 3.1 MB, regenerables con scripts/generar_clases_ubl.ps1 |
 | Pruebas por regla (`tests/unit/reglas`) | **119** (RN-01 a RN-25) |
-| Estructura y regresión | **30** (`test_estructura_xml.py`, `test_regresion_golden.py`) |
+| Estructura y regresión | **28** (`test_estructura_xml.py`, `test_regresion_golden.py`) |
+| Puertos del hexágono | **5** (`test_puertos.py`) |
 | **Total de la suite** | **152 pruebas, 0 fallos** |
 | Conformidad | los **6 escenarios propios** validan contra UBL-Invoice-2.1.xsd (NC/ND contra sus XSD) |
-| Prueba de mutación | romper versión UBL, numeración de líneas o tasa de IGV hace fallar **21 pruebas** |
+| Prueba de mutación | romper la versión UBL, la numeración de líneas o la tasa de IGV rompe la conformidad y la regresión |
 | CLI (segundo adaptador de entrada) | python -m src.cli generar-xml genera, valida y escribe el XML |
 
 ### Errores que encontraron las pruebas

@@ -32,7 +32,7 @@
 4. **No hay diferencias de conformidad**: el ejemplo es estructuralmente conforme a UBL 2.1.
    La lista de diferencias del apartado 6 está, por tanto, vacía; en su lugar se documenta
    (medido, no supuesto) **qué es lo que el XSD oficial no restringe**.
-5. El perfil propio `xsd/Invoice-2-profile.xsd` queda como **restricción adicional** (subconjunto),
+5. El perfil propio `xsd/Invoice-2-profile.xsd` quedaba como **restricción adicional** (subconjunto) y se retiró del repositorio el 05/11/2026 (ver nota inicial),
    **no como sustituto** del esquema oficial. Evidencia en el apartado 7.
 
 ---

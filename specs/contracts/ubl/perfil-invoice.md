@@ -150,7 +150,7 @@ como emitido.
 |---|---|
 | Organización | **OASIS** — Universal Business Language 2.1 |
 | Especificación | <https://docs.oasis-open.org/ubl/os-UBL-2.1/> |
-| Documento principal | `UBL-Invoice-2.1.xsd` (carpeta `xsd/maindoc/`) |
+| Documento principal | `UBL-Invoice-2.1.xsd` (carpeta `oficial/maindoc/`) |
 | Dependencias | `UBL-CommonBasicComponents-2.1.xsd`, `UBL-CommonAggregateComponents-2.1.xsd`, `UBL-CommonExtensionComponents-2.1.xsd`, `UBL-QualifiedDatatypes-2.1.xsd` |
 | Extensión peruana | SUNAT agrega el bloque de firma y las reglas de catálogos sobre el estándar |
 

@@ -19,9 +19,11 @@
 > **Regla que ordena todo el diseño:** sin XML válido y firmado no existe comprobante. Ningún
 > comprobante se marca como emitido si no pasó la validación formal y el CDR.
 
-Este repositorio contiene la **primera fase** del proyecto: las reglas, contratos, validaciones y
-arquitectura definidos **antes** de escribir una línea de lógica de negocio. No incluye interfaz de
-usuario ni implementación; incluye lo que hace posible implementarlas sin reinterpretar el negocio.
+Este repositorio contiene la **especificación completa** del sistema (reglas, contratos, validaciones y
+arquitectura definidos antes del código) **y la implementación de la generación del XML UBL 2.1**
+(Taller 2): el dominio ejecuta las 25 reglas y un adaptador traduce el agregado a los esquemas
+oficiales de OASIS. No incluye interfaz de usuario, API HTTP, firma digital ni envío a la OSE: eso
+está declarado como alcance siguiente.
 
 ---
 
@@ -167,11 +169,11 @@ examen/
 | *"Especificación de Endpoints / Servicios (Contratos API)"* | [`facturacion-api.yaml`](specs/contracts/facturacion-api.yaml) |
 | *"Matriz de Trazabilidad Normativa con cruces entre datos SUNAT y datos UBL"* | [`04-matriz`](docs/arquitectura/04-matriz-trazabilidad-normativa.md) · [`08-tabla de match`](docs/arquitectura/08-tabla-match-sunat-ubl.md) |
 | *"Legado y Migración de Datos … sin perder trazabilidad"* | [`05-migracion`](docs/arquitectura/05-migracion-legado.md) · RN-21..RN-24 |
-| *"Normativa Tributaria Peruana … el catálogo 06 de SUNAT"* | [`catalogos`](specs/contracts/catalogs/catalogos-sunat.md) · [`marco normativo`](specs/domain/marco-normativo.md) |
+| *"Normativa Tributaria Peruana … el catálogo 8 de SUNAT"* | [`catalogos`](specs/contracts/catalogs/catalogos-sunat.md) · [`marco normativo`](specs/domain/marco-normativo.md) — *el "catálogo 8" del enunciado: **06** es identidad y **08** el sistema de cálculo del ISC* |
 | *"monolítica limpia … MVC … Arquitectura Hexagonal o Clean"* | [`mvc-hexagonal`](specs/architecture/mvc-hexagonal.md) · [ADR-0001](specs/adr/0001-monolito-mvc-con-vision-hexagonal.md) |
 | *"Windows … Android … instalador MSI … APK"* | [`06-distribucion`](docs/arquitectura/06-distribucion-msi-apk.md) · [ADR-0003](specs/adr/0003-estrategia-multiplataforma.md) |
 | *"detalle los casos posibles … Nubefact"* | [`casos de uso`](specs/features/casos-de-uso.md) · [`benchmark`](docs/benchmark-facturacion.md) |
-| *"estudiando el archivo UBL-Invoice-2.1.xsd"* | [`perfil UBL`](specs/contracts/ubl/perfil-invoice.md) · [`xsd/`](specs/contracts/ubl/) |
+| *"estudiando el archivo UBL-Invoice-2.1.xsd"* | [`perfil UBL`](specs/contracts/ubl/perfil-invoice.md) · [`XSD oficiales`](specs/contracts/ubl/oficial/) |
 
 </details>
 
@@ -181,16 +183,15 @@ examen/
 
 | ✅ Incluye | ❌ No incluye |
 |---|---|
-| Contratos, DTOs y catálogos | Implementación de los endpoints |
-| 25 reglas de negocio numeradas | Cálculo ejecutable de IGV/ISC/ICBPER |
-| Diagramas MVC y hexagonal | Código de controladores y adaptadores |
-| Puertos (interfaces) en `src/` | Implementación de esos puertos |
-| Mock y mapa de pruebas | Tests ejecutados contra la aplicación |
-| Matriz normativa y tabla de match | Integración real con OSE/SUNAT |
-| **Nada de interfaz de usuario** | Pantallas, wireframes o prototipos |
+| Especificación completa (E1–E4) | Interfaz de usuario (pantallas o wireframes) |
+| Dominio ejecutable: 25 reglas, IGV/ISC/ICBPER, RUC, letras | API HTTP implementada |
+| **Generación del XML** con clases del XSD oficial (Taller 2) | Firma digital XMLDSig |
+| Validador contra el esquema oficial y CLI | Envío real a SUNAT/OSE y CDR |
+| 6 ADR, 152 pruebas unitarias y CI | Libros PLE en formato Anexo 2 |
+| Matriz normativa y tabla de match | Empaquetado MSI/APK (decisión documentada) |
 
-> El alcance es **especificación técnica**. El contrato API es un contrato de servicio, no una
-> pantalla; la restricción MSI/APK se documenta como restricción arquitectónica.
+> La **interfaz de usuario no forma parte de la entrega**: el contrato API es un contrato de servicio y
+> la restricción MSI/APK se documenta como restricción arquitectónica (ADR-0003).
 
 ---
 

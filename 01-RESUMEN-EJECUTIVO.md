@@ -9,7 +9,7 @@ Facultad de Ingeniería en Informática y Sistemas
 ---
 
 **Cliente del caso:** ABC Software Corp
-**Entregable:** Primera fase (**Spec-First**) — esqueleto de especificaciones técnicas
+**Entregable:** Especificaciones (1.er parcial) + **Taller 2**: generación del XML UBL 2.1
 **Fecha de entrega:** 22 de octubre de 2026
 **Equipo:** Arquitectura de Software
 
@@ -98,19 +98,18 @@ validar_xml_ubl.py → 6 comprobaciones correctas, 0 fallos
 | Casos de uso detallados | 10 casos + 10 escenarios Gherkin + benchmark de usuarios | [`features`](specs/features/casos-de-uso.md) · [`benchmark`](docs/benchmark-facturacion.md) |
 | Estudio del `UBL-Invoice-2.1.xsd` | extracto del esquema, enlace OASIS y derivación del perfil | [`perfil`](specs/contracts/ubl/perfil-invoice.md), sección 7 |
 
-## 6. Alcance de esta fase (y por qué aún no hay lógica implementada)
+## 6. Alcance actual (especificación + generación del XML)
 
-El enunciado **no prohíbe codificar**: exige **no codificar sin especificar antes** — *"primero
-definir las reglas, contratos de datos, validaciones y contratos de interfaz antes de escribir una
-sola línea de lógica de negocio"*. Esta entrega es la **primera fase**: deja el borde trazado para
-que la fase 2 escriba código sin reinterpretar el negocio.
+El enunciado **no prohíbe codificar**: exige **no codificar sin especificar antes**. Ese orden se
+respetó: primero las reglas, contratos y validaciones (1.er parcial) y después el **Taller 2**, que
+implementa la generación del XML desde los esquemas oficiales.
 
-| Ya definido en esta fase | Se implementa en la fase 2 |
+| Ya implementado | Queda para la fase siguiente |
 |---|---|
-| Puertos e interfaces (`src/puertos.py`) | Controladores, servicios de dominio y adaptadores |
-| Reglas RN-01..RN-25 | Cálculo ejecutable de IGV, ISC e ICBPER |
-| Contrato OpenAPI + DTOs (JSON Schema) | Endpoints funcionando contra el contrato |
-| Mock (`tests/mocks/mock_db.py`) y mapa de pruebas | Tests ejecutados contra la aplicación |
+| Dominio: 25 reglas, IGV/ISC/ICBPER, RUC, importe en letras | API HTTP contra el contrato OpenAPI |
+| Generación del XML con clases del XSD oficial | Firma digital XMLDSig |
+| Validador contra el esquema oficial y CLI | Envío a la OSE/SUNAT y procesamiento del CDR |
+| 152 pruebas unitarias + CI y 6 ADR | Libros PLE en formato Anexo 2 y empaquetado |
 | Flujo de firma, validación XSD y envío | Firma XMLDSig real y cliente OSE |
 | Arquitectura MVC y plan de migración | Empaquetado MSI/APK |
 
