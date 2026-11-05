@@ -15,7 +15,6 @@ from src.domain.tributos import TASA_IGV, ConfiguracionISC, calcular_linea, redo
 from src.domain.valores import RUC, Correlativo, DocumentoIdentidad, Serie
 from tests.unit.generacion_xml import fabrica as f
 
-
 # --- RUC (RN-01) -------------------------------------------------------------------
 
 
@@ -69,7 +68,7 @@ def test_valor_unitario_exonerado_no_descuenta_igv() -> None:
 
 
 def test_la_tasa_de_igv_es_18_por_ciento() -> None:
-    assert TASA_IGV == Decimal("0.18")
+    assert Decimal("0.18") == TASA_IGV
 
 
 def test_igv_de_una_linea_gravada() -> None:
@@ -85,7 +84,9 @@ def test_igv_de_una_linea_gravada() -> None:
 
 def test_isc_ad_valorem() -> None:
     isc = ConfiguracionISC(SistemaISC.AD_VALOR, tasa=Decimal("0.25"))
-    assert isc.monto(valor_venta=Decimal("100.00"), cantidad=Decimal("1"), valor_unitario=Decimal("100.00")) == Decimal("25.00")
+    assert isc.monto(valor_venta=Decimal("100.00"), cantidad=Decimal("1"), valor_unitario=Decimal("100.00")) == Decimal(
+        "25.00"
+    )
 
 
 def test_isc_especifico() -> None:
@@ -95,7 +96,9 @@ def test_isc_especifico() -> None:
 
 def test_isc_al_valor() -> None:
     isc = ConfiguracionISC(SistemaISC.PRECIO_VENTA_PUBLICO, precio_venta_publico=Decimal("12.50"))
-    assert isc.monto(valor_venta=Decimal("0"), cantidad=Decimal("4"), valor_unitario=Decimal("9.00")) == Decimal("14.00")
+    assert isc.monto(valor_venta=Decimal("0"), cantidad=Decimal("4"), valor_unitario=Decimal("9.00")) == Decimal(
+        "14.00"
+    )
 
 
 @pytest.mark.parametrize("sistema", [SistemaISC.AD_VALOR, SistemaISC.MONTO_FIJO, SistemaISC.PRECIO_VENTA_PUBLICO])
@@ -124,8 +127,10 @@ def test_el_igv_se_calcula_sobre_la_base_exacta() -> None:
 
 def test_icbper_es_un_monto_por_bolsa() -> None:
     calculado = calcular_linea(
-        cantidad=Decimal("20"), precio_unitario=Decimal("0.50"),
-        afectacion=AfectacionIGV.GRAVADO_ONEROSA, aplica_icbper=True,
+        cantidad=Decimal("20"),
+        precio_unitario=Decimal("0.50"),
+        afectacion=AfectacionIGV.GRAVADO_ONEROSA,
+        aplica_icbper=True,
     )
     assert calculado.icbper == Decimal("10.00")
 
@@ -155,7 +160,9 @@ def test_importe_en_letras(importe: str, letras: str) -> None:
 def test_factura_con_dni_se_rechaza() -> None:
     with pytest.raises(ErrorReglaNegocio):
         f.armar(
-            TipoComprobante.FACTURA, "F001", (f.linea(1),),
+            TipoComprobante.FACTURA,
+            "F001",
+            (f.linea(1),),
             cliente=Cliente(DocumentoIdentidad(f.TipoDocumentoIdentidad.DNI, "45678912"), "JUAN PEREZ"),
         )
 
@@ -167,10 +174,14 @@ def test_la_factura_de_exportacion_admite_no_domiciliado() -> None:
 def test_un_comprobante_sin_lineas_se_rechaza() -> None:
     with pytest.raises(ErrorReglaNegocio):
         Comprobante(
-            tipo=TipoComprobante.FACTURA, serie=Serie("F001"), correlativo=Correlativo(1),
-            fecha_emision=date(2026, 10, 22), hora_emision=time(9, 0),
+            tipo=TipoComprobante.FACTURA,
+            serie=Serie("F001"),
+            correlativo=Correlativo(1),
+            fecha_emision=date(2026, 10, 22),
+            hora_emision=time(9, 0),
             emisor=Emisor(ruc=RUC("20123456786"), razon_social="ABC SAC"),
-            cliente=f.CLIENTE_RUC, lineas=(),
+            cliente=f.CLIENTE_RUC,
+            lineas=(),
         )
 
 
@@ -181,23 +192,27 @@ def test_cantidad_cero_se_rechaza() -> None:
 
 def test_las_cuotas_deben_sumar_el_importe_total() -> None:
     """RN-16: la suma de cuotas debe cuadrar con el total del comprobante."""
-    from src.domain.comprobante import Cuota, FormaPago
     from src.domain.catalogos import TipoFormaPago
+    from src.domain.comprobante import Cuota, FormaPago
 
     cuotas = (Cuota(Decimal("100.00"), date(2026, 11, 21)), Cuota(Decimal("50.00"), date(2026, 12, 21)))
     with pytest.raises(ErrorReglaNegocio):
         f.armar(
-            TipoComprobante.FACTURA, "F001", (f.linea(1),),  # total 210.00
+            TipoComprobante.FACTURA,
+            "F001",
+            (f.linea(1),),  # total 210.00
             forma_pago=FormaPago(TipoFormaPago.CREDITO, cuotas),
         )
 
 
 def test_cuotas_que_suman_el_total_se_aceptan() -> None:
-    from src.domain.comprobante import Cuota, FormaPago
     from src.domain.catalogos import TipoFormaPago
+    from src.domain.comprobante import Cuota, FormaPago
 
     cuotas = (Cuota(Decimal("105.00"), date(2026, 11, 21)), Cuota(Decimal("105.00"), date(2026, 12, 21)))
     assert f.armar(
-        TipoComprobante.FACTURA, "F001", (f.linea(1),),
+        TipoComprobante.FACTURA,
+        "F001",
+        (f.linea(1),),
         forma_pago=FormaPago(TipoFormaPago.CREDITO, cuotas),
     )

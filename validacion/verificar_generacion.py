@@ -20,7 +20,11 @@ RAIZ = Path(__file__).resolve().parents[1]
 GENERADO = RAIZ / "src" / "adapters" / "outbound" / "ubl" / "generated"
 XSD = RAIZ / "specs" / "contracts" / "ubl" / "oficial" / "maindoc" / "UBL-Invoice-2.1.xsd"
 
-NS = {None: "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2", "cac": "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"}
+NS = {
+    None: "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
+    "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
+    "cac": "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
+}
 
 ok: list[str] = []
 fallos: list[str] = []
@@ -75,25 +79,17 @@ def main() -> int:
         document_currency_code=cbc.DocumentCurrencyCode(value="PEN"),
         accounting_supplier_party=cac.AccountingSupplierParty(
             party=cac.Party(
-                party_identification=[
-                    cac.PartyIdentification(id=cbc.Id(value="20123456786", scheme_id="6"))
-                ],
+                party_identification=[cac.PartyIdentification(id=cbc.Id(value="20123456786", scheme_id="6"))],
                 party_legal_entity=[
-                    cac.PartyLegalEntity(
-                        registration_name=cbc.RegistrationName(value="ABC SOFTWARE CORP SAC")
-                    )
+                    cac.PartyLegalEntity(registration_name=cbc.RegistrationName(value="ABC SOFTWARE CORP SAC"))
                 ],
             )
         ),
         accounting_customer_party=cac.AccountingCustomerParty(
             party=cac.Party(
-                party_identification=[
-                    cac.PartyIdentification(id=cbc.Id(value="20512345671", scheme_id="6"))
-                ],
+                party_identification=[cac.PartyIdentification(id=cbc.Id(value="20512345671", scheme_id="6"))],
                 party_legal_entity=[
-                    cac.PartyLegalEntity(
-                        registration_name=cbc.RegistrationName(value="DISTRIBUIDORA SELVA SAC")
-                    )
+                    cac.PartyLegalEntity(registration_name=cbc.RegistrationName(value="DISTRIBUIDORA SELVA SAC"))
                 ],
             )
         ),
@@ -112,9 +108,11 @@ def main() -> int:
             )
         ],
     )
-    xml = XmlSerializer(config=SerializerConfig(xml_declaration=True, encoding="UTF-8")).render(
-        factura, ns_map=NS
-    ).encode("utf-8")
+    xml = (
+        XmlSerializer(config=SerializerConfig(xml_declaration=True, encoding="UTF-8"))
+        .render(factura, ns_map=NS)
+        .encode("utf-8")
+    )
     ok.append("un Invoice mínimo se construye y serializa sin errores")
 
     # 3. conformidad con el esquema oficial

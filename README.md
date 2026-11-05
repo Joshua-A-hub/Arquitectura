@@ -7,7 +7,7 @@
 ![Fase](https://img.shields.io/badge/fase-1%20%C2%B7%20especificaci%C3%B3n-1F3A5F)
 ![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.3-6BA539)
 ![UBL](https://img.shields.io/badge/UBL-2.1-orange)
-![Pruebas](https://img.shields.io/badge/pruebas-142%20pasando-brightgreen)
+[![CI](https://github.com/Joshua-A-hub/Arquitectura/actions/workflows/ci.yml/badge.svg)](https://github.com/Joshua-A-hub/Arquitectura/actions/workflows/ci.yml)
 
 *Arquitectura de Software · Universidad Nacional Agraria de la Selva · Grupo "A"*
 

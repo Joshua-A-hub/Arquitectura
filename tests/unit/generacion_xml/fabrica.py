@@ -120,7 +120,9 @@ def factura_credito() -> Comprobante:
     # 50 kg x 4.20 (precio con IGV) = 210.00, en dos cuotas de 105.00.
     cuotas = (Cuota(D("105.00"), dt.date(2026, 11, 21)), Cuota(D("105.00"), dt.date(2026, 12, 21)))
     return armar(
-        TipoComprobante.FACTURA, "F001", (linea(1),),
+        TipoComprobante.FACTURA,
+        "F001",
+        (linea(1),),
         forma_pago=FormaPago(TipoFormaPago.CREDITO, cuotas),
     )
 
@@ -128,39 +130,93 @@ def factura_credito() -> Comprobante:
 def factura_completa() -> Comprobante:
     """Una línea por cada caso tributario: gravado, ISC 01/02/03, ICBPER, exonerado e inafecto."""
     return armar(
-        TipoComprobante.FACTURA, "FA01",
+        TipoComprobante.FACTURA,
+        "FA01",
         (
             linea(1),
-            linea(2, "PISCO QUEBRANTA 750 ML", cantidad="6", precio="53.10", unidad=UnidadMedida.UNIDAD,
-                  codigo="PIS-750ML", isc=ConfiguracionISC(SistemaISC.MONTO_FIJO, monto_fijo=D("1.35"))),
-            linea(3, "CERVEZA BOTELLA 620 ML", cantidad="12", precio="8.00", unidad=UnidadMedida.UNIDAD,
-                  codigo="CER-620ML", isc=ConfiguracionISC(SistemaISC.AD_VALOR, tasa=D("0.25"))),
-            linea(4, "GASEOSA 3 L", cantidad="4", precio="10.62", unidad=UnidadMedida.UNIDAD,
-                  codigo="GAS-3L",
-                  isc=ConfiguracionISC(SistemaISC.PRECIO_VENTA_PUBLICO, tasa=D("0.17"),
-                                       precio_venta_publico=D("12.50"))),
-            linea(5, "BOLSA PLASTICA RECICLABLE", cantidad="3", precio="0.50", unidad=UnidadMedida.UNIDAD,
-                  codigo="BOL-001", icbper=True),
-            linea(6, "LIBRO ESCOLAR", cantidad="2", precio="30.00", unidad=UnidadMedida.UNIDAD,
-                  codigo=None, afectacion=AfectacionIGV.EXONERADO_ONEROSA),
-            linea(7, "FLETE INTERNO", cantidad="1", precio="15.00", unidad=UnidadMedida.SERVICIO,
-                  codigo=None, afectacion=AfectacionIGV.INAFECTO_ONEROSA),
+            linea(
+                2,
+                "PISCO QUEBRANTA 750 ML",
+                cantidad="6",
+                precio="53.10",
+                unidad=UnidadMedida.UNIDAD,
+                codigo="PIS-750ML",
+                isc=ConfiguracionISC(SistemaISC.MONTO_FIJO, monto_fijo=D("1.35")),
+            ),
+            linea(
+                3,
+                "CERVEZA BOTELLA 620 ML",
+                cantidad="12",
+                precio="8.00",
+                unidad=UnidadMedida.UNIDAD,
+                codigo="CER-620ML",
+                isc=ConfiguracionISC(SistemaISC.AD_VALOR, tasa=D("0.25")),
+            ),
+            linea(
+                4,
+                "GASEOSA 3 L",
+                cantidad="4",
+                precio="10.62",
+                unidad=UnidadMedida.UNIDAD,
+                codigo="GAS-3L",
+                isc=ConfiguracionISC(SistemaISC.PRECIO_VENTA_PUBLICO, tasa=D("0.17"), precio_venta_publico=D("12.50")),
+            ),
+            linea(
+                5,
+                "BOLSA PLASTICA RECICLABLE",
+                cantidad="3",
+                precio="0.50",
+                unidad=UnidadMedida.UNIDAD,
+                codigo="BOL-001",
+                icbper=True,
+            ),
+            linea(
+                6,
+                "LIBRO ESCOLAR",
+                cantidad="2",
+                precio="30.00",
+                unidad=UnidadMedida.UNIDAD,
+                codigo=None,
+                afectacion=AfectacionIGV.EXONERADO_ONEROSA,
+            ),
+            linea(
+                7,
+                "FLETE INTERNO",
+                cantidad="1",
+                precio="15.00",
+                unidad=UnidadMedida.SERVICIO,
+                codigo=None,
+                afectacion=AfectacionIGV.INAFECTO_ONEROSA,
+            ),
         ),
     )
 
 
 def factura_exportacion_usd() -> Comprobante:
     return armar(
-        TipoComprobante.FACTURA, "F002",
-        (linea(1, "QUINUA BLANCA", cantidad="1000", precio="2.10", unidad=UnidadMedida.KILOGRAMO,
-               afectacion=AfectacionIGV.EXPORTACION, codigo=None),),
-        cliente=CLIENTE_EXTERIOR, moneda=Moneda.USD, tipo_operacion=TipoOperacion.EXPORTACION,
+        TipoComprobante.FACTURA,
+        "F002",
+        (
+            linea(
+                1,
+                "QUINUA BLANCA",
+                cantidad="1000",
+                precio="2.10",
+                unidad=UnidadMedida.KILOGRAMO,
+                afectacion=AfectacionIGV.EXPORTACION,
+                codigo=None,
+            ),
+        ),
+        cliente=CLIENTE_EXTERIOR,
+        moneda=Moneda.USD,
+        tipo_operacion=TipoOperacion.EXPORTACION,
     )
 
 
 def factura_de_vale() -> Comprobante:
     return armar(
-        TipoComprobante.FACTURA, "F001",
+        TipoComprobante.FACTURA,
+        "F001",
         (linea(1, "AZUCAR RUBIA", cantidad="250", precio="3.80", codigo="AZU-001"),),
         documentos_legado=("VALE-SALIDA-0042",),
     )
@@ -168,26 +224,39 @@ def factura_de_vale() -> Comprobante:
 
 def boleta() -> Comprobante:
     return armar(
-        TipoComprobante.BOLETA, "B001",
-        (linea(1, "ACEITE VEGETAL BOTELLA 1 L", cantidad="2", precio="8.50",
-               unidad=UnidadMedida.UNIDAD, codigo="ACE-001"),),
+        TipoComprobante.BOLETA,
+        "B001",
+        (
+            linea(
+                1,
+                "ACEITE VEGETAL BOTELLA 1 L",
+                cantidad="2",
+                precio="8.50",
+                unidad=UnidadMedida.UNIDAD,
+                codigo="ACE-001",
+            ),
+        ),
         cliente=CLIENTE_DNI,
     )
 
 
 def nota_credito() -> Comprobante:
     return armar(
-        TipoComprobante.NOTA_CREDITO, "FC01", (linea(1, cantidad="10"),),
-        referencia=factura_contado(), motivo=MotivoNotaCredito.DEVOLUCION_ITEM,
+        TipoComprobante.NOTA_CREDITO,
+        "FC01",
+        (linea(1, cantidad="10"),),
+        referencia=factura_contado(),
+        motivo=MotivoNotaCredito.DEVOLUCION_ITEM,
     )
 
 
 def nota_debito() -> Comprobante:
     return armar(
-        TipoComprobante.NOTA_DEBITO, "FD01",
-        (linea(1, "INTERESES MORATORIOS", cantidad="1", precio="15.00", unidad=UnidadMedida.SERVICIO,
-               codigo=None),),
-        referencia=factura_contado(), motivo=MotivoNotaDebito.INTERESES_MORA,
+        TipoComprobante.NOTA_DEBITO,
+        "FD01",
+        (linea(1, "INTERESES MORATORIOS", cantidad="1", precio="15.00", unidad=UnidadMedida.SERVICIO, codigo=None),),
+        referencia=factura_contado(),
+        motivo=MotivoNotaDebito.INTERESES_MORA,
     )
 
 

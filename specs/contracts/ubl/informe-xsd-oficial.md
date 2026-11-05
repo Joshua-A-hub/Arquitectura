@@ -110,6 +110,7 @@ esquema compila apuntando a los archivos locales y **no** sale a la red.
 
 ```python
 from lxml import etree
+
 doc = etree.parse(r"...\specs\contracts\ubl\oficial\maindoc\UBL-Invoice-2.1.xsd")
 schema = etree.XMLSchema(doc)
 ```
@@ -133,8 +134,8 @@ enlazadas: un solo `schemaLocation` roto habría hecho fallar la compilación.
 
 ```python
 schema = etree.XMLSchema(etree.parse(".../oficial/maindoc/UBL-Invoice-2.1.xsd"))
-doc    = etree.parse(".../specs/contracts/ubl/ejemplo-invoice.xml")
-schema.validate(doc)   # → True
+doc = etree.parse(".../specs/contracts/ubl/ejemplo-invoice.xml")
+schema.validate(doc)  # → True
 ```
 
 **Resultado: el ejemplo ES VÁLIDO contra el esquema oficial de OASIS UBL 2.1.**
@@ -289,11 +290,12 @@ Compilación y validación:
 ```python
 import os
 from lxml import etree
+
 BASE = r"C:\Users\benny\Desktop\Arquitectura\Medio curso Arquitectura 2026-II\specs\contracts\ubl"
 schema = etree.XMLSchema(etree.parse(os.path.join(BASE, "oficial", "maindoc", "UBL-Invoice-2.1.xsd")))
-print(schema.error_log)                                            # 0 entradas
-print(schema.validate(etree.parse(os.path.join(BASE, "ejemplo-invoice.xml"))))   # True
-print(len(schema.error_log))                                       # 0
+print(schema.error_log)  # 0 entradas
+print(schema.validate(etree.parse(os.path.join(BASE, "ejemplo-invoice.xml"))))  # True
+print(len(schema.error_log))  # 0
 ```
 
 ---

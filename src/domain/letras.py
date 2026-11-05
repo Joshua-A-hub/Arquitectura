@@ -12,17 +12,47 @@ from src.domain.catalogos import Moneda
 from src.domain.valores import redondear
 
 _UNIDADES = (
-    "CERO", "UNO", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE",
-    "DIEZ", "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE", "DIECISÉIS", "DIECISIETE",
-    "DIECIOCHO", "DIECINUEVE", "VEINTE",
+    "CERO",
+    "UNO",
+    "DOS",
+    "TRES",
+    "CUATRO",
+    "CINCO",
+    "SEIS",
+    "SIETE",
+    "OCHO",
+    "NUEVE",
+    "DIEZ",
+    "ONCE",
+    "DOCE",
+    "TRECE",
+    "CATORCE",
+    "QUINCE",
+    "DIECISÉIS",
+    "DIECISIETE",
+    "DIECIOCHO",
+    "DIECINUEVE",
+    "VEINTE",
 )
 _DECENAS = {
-    30: "TREINTA", 40: "CUARENTA", 50: "CINCUENTA", 60: "SESENTA",
-    70: "SETENTA", 80: "OCHENTA", 90: "NOVENTA",
+    30: "TREINTA",
+    40: "CUARENTA",
+    50: "CINCUENTA",
+    60: "SESENTA",
+    70: "SETENTA",
+    80: "OCHENTA",
+    90: "NOVENTA",
 }
 _CENTENAS = {
-    1: "CIENTO", 2: "DOSCIENTOS", 3: "TRESCIENTOS", 4: "CUATROCIENTOS", 5: "QUINIENTOS",
-    6: "SEISCIENTOS", 7: "SETECIENTOS", 8: "OCHOCIENTOS", 9: "NOVECIENTOS",
+    1: "CIENTO",
+    2: "DOSCIENTOS",
+    3: "TRESCIENTOS",
+    4: "CUATROCIENTOS",
+    5: "QUINIENTOS",
+    6: "SEISCIENTOS",
+    7: "SETECIENTOS",
+    8: "OCHOCIENTOS",
+    9: "NOVECIENTOS",
 }
 
 

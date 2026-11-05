@@ -66,9 +66,8 @@ def validar(instancia, esquema: dict, ruta: str = "$", raiz: dict | None = None)
     # allOf / if-then
     for sub in esquema.get("allOf", []):
         errores += validar(instancia, sub, ruta, raiz)
-    if "if" in esquema and "then" in esquema:
-        if not validar(instancia, esquema["if"], ruta, raiz):
-            errores += validar(instancia, esquema["then"], ruta, raiz)
+    if "if" in esquema and "then" in esquema and not validar(instancia, esquema["if"], ruta, raiz):
+        errores += validar(instancia, esquema["then"], ruta, raiz)
 
     tipo = esquema.get("type")
     if isinstance(tipo, list):
@@ -179,6 +178,7 @@ def _resolver_ref(ref: str, raiz: dict):
 # Comprobaciones
 # --------------------------------------------------------------------------- #
 
+
 def main() -> int:
     fallos: list[str] = []
     ok: list[str] = []
@@ -199,13 +199,9 @@ def main() -> int:
             continue
         ok.append(f"{ruta.name}: esquema válido")
 
-    esquema_comprobante = json.loads(
-        (DIR_DTO / "comprobante-create.schema.json").read_text(encoding="utf-8")
-    )
+    esquema_comprobante = json.loads((DIR_DTO / "comprobante-create.schema.json").read_text(encoding="utf-8"))
     ejemplo_valido = json.loads((DIR_DTO / "ejemplo-comprobante.json").read_text(encoding="utf-8"))
-    ejemplo_invalido = json.loads(
-        (DIR_DTO / "ejemplo-comprobante-invalido.json").read_text(encoding="utf-8")
-    )
+    ejemplo_invalido = json.loads((DIR_DTO / "ejemplo-comprobante-invalido.json").read_text(encoding="utf-8"))
 
     errores_valido = validar(ejemplo_valido, esquema_comprobante)
     if errores_valido:
@@ -223,17 +219,11 @@ def main() -> int:
         )
 
     # Contrato de salida: la respuesta también está validada
-    esquema_respuesta = json.loads(
-        (DIR_DTO / "comprobante-response.schema.json").read_text(encoding="utf-8")
-    )
-    ejemplo_respuesta = json.loads(
-        (DIR_DTO / "ejemplo-comprobante-response.json").read_text(encoding="utf-8")
-    )
+    esquema_respuesta = json.loads((DIR_DTO / "comprobante-response.schema.json").read_text(encoding="utf-8"))
+    ejemplo_respuesta = json.loads((DIR_DTO / "ejemplo-comprobante-response.json").read_text(encoding="utf-8"))
     errores_respuesta = validar(ejemplo_respuesta, esquema_respuesta)
     if errores_respuesta:
-        fallos.append(
-            "El ejemplo de RESPUESTA no cumple su esquema: " + "; ".join(errores_respuesta[:3])
-        )
+        fallos.append("El ejemplo de RESPUESTA no cumple su esquema: " + "; ".join(errores_respuesta[:3]))
     else:
         ok.append("ejemplo-comprobante-response.json cumple comprobante-response.schema.json")
 
@@ -288,9 +278,7 @@ def main() -> int:
             sin_respuesta = []
             for ruta, item in rutas_reales.items():
                 for metodo, operacion in item.items():
-                    if metodo in ("get", "post", "put", "patch", "delete") and not operacion.get(
-                        "responses"
-                    ):
+                    if metodo in ("get", "post", "put", "patch", "delete") and not operacion.get("responses"):
                         sin_respuesta.append(f"{metodo.upper()} {ruta}")
             if sin_respuesta:
                 fallos.append(f"OpenAPI: operaciones sin responses -> {', '.join(sin_respuesta)}")
@@ -307,9 +295,7 @@ def main() -> int:
     else:
         # Sin PyYAML no se puede validar el documento: se comprueba lo verificable por texto
         referencias = set(re.findall(r"#/components/schemas/([A-Za-z0-9_]+)", texto))
-        definidos = set(
-            re.findall(r"^    ([A-Za-z0-9_]+):\s*$", texto, flags=re.MULTILINE)
-        )
+        definidos = set(re.findall(r"^    ([A-Za-z0-9_]+):\s*$", texto, flags=re.MULTILINE))
         huerfanas = sorted(referencias - definidos)
         if huerfanas:
             fallos.append(f"OpenAPI: $ref sin esquema -> {', '.join(huerfanas)}")

@@ -54,7 +54,7 @@ def _ruc_valido(ruc: str) -> bool:
     if not (len(ruc) == 11 and ruc.isdigit()):
         return False
     factores = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]
-    suma = sum(int(d) * f for d, f in zip(ruc[:10], factores))
+    suma = sum(int(d) * f for d, f in zip(ruc[:10], factores, strict=True))
     resto = suma % 11
     digito = 11 - resto
     if digito == 10:
@@ -97,9 +97,7 @@ def main() -> int:
             fallos.append("el esquema oficial no compila")
         errores_oficial = validar_oficial(xml)
         if errores_oficial:
-            fallos.append(
-                "el XML NO valida contra el esquema oficial: " + " | ".join(errores_oficial[:3])
-            )
+            fallos.append("el XML NO valida contra el esquema oficial: " + " | ".join(errores_oficial[:3]))
         else:
             ok.append("ejemplo-invoice.xml valida contra el esquema OFICIAL de OASIS (UBL 2.1)")
     else:
@@ -172,7 +170,7 @@ def main() -> int:
     valor_venta = decimal(total.find("cbc:LineExtensionAmount", NS))
     con_impuestos = decimal(total.find("cbc:TaxInclusiveAmount", NS))
     a_pagar = decimal(total.find("cbc:PayableAmount", NS))
-    suma_lineas = sum(decimal(l.find("cbc:LineExtensionAmount", NS)) for l in lineas)
+    suma_lineas = sum(decimal(linea.find("cbc:LineExtensionAmount", NS)) for linea in lineas)
     if suma_lineas == valor_venta:
         ok.append(f"suma de líneas = {suma_lineas} coincide con el total")
     else:
@@ -186,9 +184,7 @@ def main() -> int:
             f"({valor_venta} + {igv_cabecera} + {icbper_cabecera})"
         )
     else:
-        fallos.append(
-            f"TaxInclusiveAmount {con_impuestos} != valor + IGV + ICBPER {esperado_con_impuestos}"
-        )
+        fallos.append(f"TaxInclusiveAmount {con_impuestos} != valor + IGV + ICBPER {esperado_con_impuestos}")
     if a_pagar == con_impuestos:
         ok.append(f"PayableAmount = {a_pagar} coincide con el total con impuestos")
     else:
@@ -221,7 +217,7 @@ def main() -> int:
         for s in t.findall("cac:TaxSubtotal", NS):
             if s.findtext("cac:TaxCategory/cac:TaxScheme/cbc:ID", namespaces=NS) == "1000":
                 igv_adulterado += decimal(s.find("cbc:TaxAmount", NS))
-    suma_lineas_ad = sum(decimal(l.find("cbc:LineExtensionAmount", NS)) for l in lineas)
+    suma_lineas_ad = sum(decimal(linea.find("cbc:LineExtensionAmount", NS)) for linea in lineas)
     valor_ad = decimal(adulterado.find("cac:LegalMonetaryTotal", NS).find("cbc:LineExtensionAmount", NS))
     if igv_adulterado != igv_lineas or suma_lineas_ad != valor_ad:
         ok.append("un IGV de cabecera adulterado rompe la reconciliación (control negativo)")

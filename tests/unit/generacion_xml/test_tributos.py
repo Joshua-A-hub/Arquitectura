@@ -91,7 +91,8 @@ def test_la_base_global_del_igv_no_incluye_el_isc() -> None:
     xml = f.arbol(comprobante)
     tax_totales = xml.xpath("cac:TaxTotal", namespaces=f.NS)
     igv = next(
-        t for t in tax_totales
+        t
+        for t in tax_totales
         if t.findtext("cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme/cbc:ID", namespaces=f.NS) == "1000"
     )
     base = igv.findtext("cac:TaxSubtotal/cbc:TaxableAmount", namespaces=f.NS)

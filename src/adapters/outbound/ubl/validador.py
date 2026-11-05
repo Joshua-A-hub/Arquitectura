@@ -46,8 +46,7 @@ class ValidadorXsd:
                 ruta = self._directorio / archivo
                 if not ruta.exists():
                     raise FileNotFoundError(
-                        f"falta el esquema oficial {ruta}. "
-                        "Está versionado en specs/contracts/ubl/oficial/"
+                        f"falta el esquema oficial {ruta}. Está versionado en specs/contracts/ubl/oficial/"
                     )
                 self._cache[archivo] = etree.XMLSchema(etree.parse(str(ruta)))
             return self._cache[archivo]

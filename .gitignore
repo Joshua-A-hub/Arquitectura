@@ -14,6 +14,9 @@ _tools/
 # Clases generadas desde el XSD: se versionan, pero su caché no
 src/adapters/outbound/ubl/generated/__pycache__/
 
+# Artefactos de generación accidental (nunca se versionan)
+build*/
+
 # Entregables generados
 out/
 *.zip

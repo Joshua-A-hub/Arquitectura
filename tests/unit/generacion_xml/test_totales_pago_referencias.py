@@ -7,7 +7,6 @@ import pytest
 from src.domain.catalogos import MotivoNotaCredito, MotivoNotaDebito
 from tests.unit.generacion_xml import fabrica as f
 
-
 # --- totales del comprobante -------------------------------------------------------
 
 
@@ -34,10 +33,14 @@ def test_el_total_del_xml_coincide_con_el_del_dominio() -> None:
 
 
 def test_forma_de_pago_al_contado() -> None:
-    xml = f.arbol(f.armar(
-        f.TipoComprobante.FACTURA, "F001", (f.linea(1),),
-        forma_pago=f.FormaPago(f.TipoFormaPago.CONTADO),
-    ))
+    xml = f.arbol(
+        f.armar(
+            f.TipoComprobante.FACTURA,
+            "F001",
+            (f.linea(1),),
+            forma_pago=f.FormaPago(f.TipoFormaPago.CONTADO),
+        )
+    )
     assert f.todos(xml, "cac:PaymentTerms/cbc:PaymentMeansID") == ["Contado"]
 
 
@@ -48,10 +51,14 @@ def test_forma_de_pago_al_credito_con_cuotas() -> None:
     from src.domain.comprobante import Cuota
 
     cuotas = (Cuota(D("105.00"), dt.date(2026, 11, 21)), Cuota(D("105.00"), dt.date(2026, 12, 21)))
-    xml = f.arbol(f.armar(
-        f.TipoComprobante.FACTURA, "F001", (f.linea(1),),
-        forma_pago=f.FormaPago(f.TipoFormaPago.CREDITO, cuotas),
-    ))
+    xml = f.arbol(
+        f.armar(
+            f.TipoComprobante.FACTURA,
+            "F001",
+            (f.linea(1),),
+            forma_pago=f.FormaPago(f.TipoFormaPago.CREDITO, cuotas),
+        )
+    )
     assert f.todos(xml, "cac:PaymentTerms/cbc:PaymentMeansID") == ["Credito", "Cuota001", "Cuota002"]
     assert f.todos(xml, "cac:PaymentTerms/cbc:PaymentDueDate") == ["2026-11-21", "2026-12-21"]
     assert f.texto(xml, "cac:PaymentTerms[1]/cbc:Amount") == "210.00"

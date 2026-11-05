@@ -19,7 +19,6 @@ from src.domain.catalogos import (
     MotivoNotaCredito,
     MotivoNotaDebito,
     TipoComprobante,
-    TipoDocumentoIdentidad,
     TipoFormaPago,
     TipoOperacion,
     UnidadMedida,
@@ -35,7 +34,7 @@ from src.domain.tributos import (
     calcular_totales,
     valor_unitario,
 )
-from src.domain.valores import Correlativo, DocumentoIdentidad, RUC, Serie, a_decimal, redondear
+from src.domain.valores import RUC, Correlativo, DocumentoIdentidad, Serie, a_decimal, redondear
 
 
 @dataclass(frozen=True)
@@ -117,7 +116,7 @@ class Linea:
         descuento: Decimal | str = CERO,
         isc: ConfiguracionISC | None = None,
         aplica_icbper: bool = False,
-    ) -> "Linea":
+    ) -> Linea:
         """Construye la línea calculando el valor unitario a partir del precio con IGV."""
         precio = a_decimal(precio_unitario)
         return cls(
@@ -184,7 +183,7 @@ class Comprobante:
     moneda: Moneda = Moneda.PEN
     tipo_operacion: TipoOperacion = TipoOperacion.VENTA_INTERNA
     forma_pago: FormaPago | None = None
-    referencia: "Comprobante | None" = None
+    referencia: Comprobante | None = None
     motivo: MotivoNotaCredito | MotivoNotaDebito | None = None
     sustento: str | None = None
     documentos_legado: tuple[str, ...] = ()

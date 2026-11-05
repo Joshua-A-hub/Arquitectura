@@ -52,7 +52,7 @@ class RUC:
         """Módulo 11 con factores 5,4,3,2,7,6,5,4,3,2 (10→0, 11→1)."""
         if not (len(valor) == 11 and valor.isdigit()):
             return False
-        suma = sum(int(d) * f for d, f in zip(valor[:10], _FACTORES_RUC))
+        suma = sum(int(d) * f for d, f in zip(valor[:10], _FACTORES_RUC, strict=True))
         resto = suma % 11
         digito = 11 - resto
         if digito == 10:
@@ -134,9 +134,12 @@ class DocumentoIdentidad:
 
         La factura exige RUC. La exportación admite al no domiciliado (catálogo 06 = `0`).
         """
-        if tipo_comprobante is TipoComprobante.FACTURA and self.tipo is not TipoDocumentoIdentidad.RUC:
-            if not (permite_no_domiciliado and self.tipo is TipoDocumentoIdentidad.NO_DOMICILIADO):
-                raise ErrorReglaNegocio("RN-02", "la factura exige RUC del receptor (salvo exportación)")
+        if (
+            tipo_comprobante is TipoComprobante.FACTURA
+            and self.tipo is not TipoDocumentoIdentidad.RUC
+            and not (permite_no_domiciliado and self.tipo is TipoDocumentoIdentidad.NO_DOMICILIADO)
+        ):
+            raise ErrorReglaNegocio("RN-02", "la factura exige RUC del receptor (salvo exportación)")
         if tipo_comprobante is TipoComprobante.BOLETA and self.tipo is TipoDocumentoIdentidad.CARNET_EXTRANJERIA:
             raise ErrorReglaNegocio("RN-02", "la boleta admite DNI, RUC o consumidor final")
 

@@ -23,7 +23,13 @@ def test_identificador_de_cada_linea() -> None:
 def test_unidad_de_medida_del_catalogo_03_por_linea() -> None:
     xml = f.arbol(f.factura_completa())
     assert f.todos(xml, f"{LINEAS}/cbc:InvoicedQuantity/@unitCode") == [
-        "KGM", "NIU", "NIU", "NIU", "NIU", "NIU", "ZZ",
+        "KGM",
+        "NIU",
+        "NIU",
+        "NIU",
+        "NIU",
+        "NIU",
+        "ZZ",
     ]
 
 
@@ -82,9 +88,7 @@ def test_descripcion_y_codigo_del_producto() -> None:
 
 def test_una_linea_sin_codigo_no_lleva_identificacion_de_vendedor() -> None:
     xml = f.arbol(f.armar(f.TipoComprobante.FACTURA, "F001", (f.linea(1, codigo=None),)))
-    assert not xml.xpath(
-        f"{LINEAS}/cac:Item/cac:SellersItemIdentification", namespaces=f.NS
-    )
+    assert not xml.xpath(f"{LINEAS}/cac:Item/cac:SellersItemIdentification", namespaces=f.NS)
 
 
 def test_orden_de_los_elementos_de_la_linea_segun_el_xsd() -> None:
@@ -123,8 +127,12 @@ def test_el_descuento_por_item_se_declara_con_allowance_charge() -> None:
     from src.domain.comprobante import Linea
 
     con_descuento = Linea.calcular(
-        numero=1, descripcion="SACO DE ARROZ 50KG", unidad=f.UnidadMedida.KILOGRAMO,
-        cantidad="2", precio_unitario="59.00", descuento="10.00",
+        numero=1,
+        descripcion="SACO DE ARROZ 50KG",
+        unidad=f.UnidadMedida.KILOGRAMO,
+        cantidad="2",
+        precio_unitario="59.00",
+        descuento="10.00",
     )
     xml = f.arbol(f.armar(f.TipoComprobante.FACTURA, "F001", (con_descuento,)))
     assert f.texto(xml, f"{LINEAS}/cbc:LineExtensionAmount") == "90.00"

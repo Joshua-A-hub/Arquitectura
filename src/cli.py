@@ -71,8 +71,7 @@ def construir(datos: dict) -> Comprobante:
     forma_pago = None
     if datos.get("forma_pago"):
         cuotas = tuple(
-            Cuota(Decimal(c["monto"]), date.fromisoformat(c["fecha_vencimiento"]))
-            for c in datos.get("cuotas", [])
+            Cuota(Decimal(c["monto"]), date.fromisoformat(c["fecha_vencimiento"])) for c in datos.get("cuotas", [])
         )
         forma_pago = FormaPago(TipoFormaPago(datos["forma_pago"]), cuotas)
 
@@ -84,9 +83,7 @@ def construir(datos: dict) -> Comprobante:
         hora_emision=time.fromisoformat(datos.get("hora_emision", "09:00:00")),
         emisor=emisor,
         cliente=Cliente(
-            DocumentoIdentidad(
-                TipoDocumentoIdentidad(cliente["tipo_documento"]), cliente["numero_documento"]
-            ),
+            DocumentoIdentidad(TipoDocumentoIdentidad(cliente["tipo_documento"]), cliente["numero_documento"]),
             cliente["razon_social"],
             direccion=cliente.get("direccion", ""),
             ubigeo=cliente.get("ubigeo", ""),

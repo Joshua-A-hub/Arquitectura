@@ -51,14 +51,15 @@ def test_el_ampersand_de_la_razon_social_se_escapa() -> None:
 
 def test_el_cliente_sin_direccion_no_genera_direccion() -> None:
     xml = f.arbol(f.boleta())
-    assert not xml.xpath(
-        f"{CLIENTE}/cac:PartyLegalEntity/cac:RegistrationAddress", namespaces=f.NS
-    )
+    assert not xml.xpath(f"{CLIENTE}/cac:PartyLegalEntity/cac:RegistrationAddress", namespaces=f.NS)
 
 
 def test_la_direccion_del_cliente_se_omite_si_esta_vacia() -> None:
     xml = f.arbol(f.factura_contado())
-    assert f.texto(xml, f"{CLIENTE}/cac:PartyLegalEntity/cac:RegistrationAddress/cbc:StreetName") == "JR. COMERCIO 123, LIMA"
+    assert (
+        f.texto(xml, f"{CLIENTE}/cac:PartyLegalEntity/cac:RegistrationAddress/cbc:StreetName")
+        == "JR. COMERCIO 123, LIMA"
+    )
 
 
 @pytest.mark.parametrize(
@@ -95,9 +96,7 @@ def test_boleta_a_consumidor_final() -> None:
     from src.domain.comprobante import Cliente as ClienteDominio
     from src.domain.valores import DocumentoIdentidad
 
-    cliente = ClienteDominio(
-        DocumentoIdentidad(f.TipoDocumentoIdentidad.NO_DOMICILIADO, "0"), "CLIENTES VARIOS"
-    )
+    cliente = ClienteDominio(DocumentoIdentidad(f.TipoDocumentoIdentidad.NO_DOMICILIADO, "0"), "CLIENTES VARIOS")
     xml = f.arbol(f.armar(f.TipoComprobante.BOLETA, "B001", (f.linea(1),), cliente=cliente))
     assert f.texto(xml, f"{CLIENTE}/cac:PartyIdentification/cbc:ID") == "0"
     assert f.texto(xml, f"{CLIENTE}/cac:PartyIdentification/cbc:ID/@schemeID") == "0"

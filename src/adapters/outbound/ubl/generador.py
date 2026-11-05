@@ -54,9 +54,7 @@ class GeneradorUblXsdata:
     """Implementa el puerto `IXmlBuilder`."""
 
     def __init__(self) -> None:
-        self._serializador = XmlSerializer(
-            config=SerializerConfig(xml_declaration=True, encoding="UTF-8")
-        )
+        self._serializador = XmlSerializer(config=SerializerConfig(xml_declaration=True, encoding="UTF-8"))
 
     # ------------------------------------------------------------------ público
     def generar(self, comprobante: Comprobante) -> bytes:
@@ -196,9 +194,7 @@ class GeneradorUblXsdata:
         direccion = (
             cac.RegistrationAddress(
                 id=(
-                    cbc.Id(value=cl.ubigeo, scheme_name="Ubigeos", scheme_agency_name="PE:INEI")
-                    if cl.ubigeo
-                    else None
+                    cbc.Id(value=cl.ubigeo, scheme_name="Ubigeos", scheme_agency_name="PE:INEI") if cl.ubigeo else None
                 ),
                 street_name=cbc.StreetName(value=cl.direccion) if cl.direccion else None,
             )
@@ -207,9 +203,7 @@ class GeneradorUblXsdata:
         )
         return cac.AccountingCustomerParty(
             party=cac.Party(
-                party_identification=[
-                    self._identificacion(cl.documento.tipo.value, cl.documento.numero)
-                ],
+                party_identification=[self._identificacion(cl.documento.tipo.value, cl.documento.numero)],
                 party_legal_entity=[
                     cac.PartyLegalEntity(
                         registration_name=cbc.RegistrationName(value=cl.razon_social),
@@ -269,20 +263,14 @@ class GeneradorUblXsdata:
                 else None
             ),
             tier_range=cbc.TierRange(value=tier_range) if tier_range is not None else None,
-            per_unit_amount=(
-                cbc.PerUnitAmount(value=per_unit, currency_id=moneda) if per_unit is not None else None
-            ),
+            per_unit_amount=(cbc.PerUnitAmount(value=per_unit, currency_id=moneda) if per_unit is not None else None),
             tax_scheme=self._esquema(tributo),
         )
         return cac.TaxSubtotal(
-            taxable_amount=(
-                cbc.TaxableAmount(value=base, currency_id=moneda) if base is not None else None
-            ),
+            taxable_amount=(cbc.TaxableAmount(value=base, currency_id=moneda) if base is not None else None),
             tax_amount=cbc.TaxAmount(value=monto, currency_id=moneda),
             base_unit_measure=(
-                cbc.BaseUnitMeasure(value=base_medida[0], unit_code=base_medida[1])
-                if base_medida is not None
-                else None
+                cbc.BaseUnitMeasure(value=base_medida[0], unit_code=base_medida[1]) if base_medida is not None else None
             ),
             tax_category=categoria,
         )
@@ -296,7 +284,10 @@ class GeneradorUblXsdata:
             # Regla 3277: la base global del IGV es el valor de venta SIN el ISC.
             subtotales.append(
                 self._subtotal(
-                    Tributo.IGV, moneda, t.op_gravada, t.total_igv,
+                    Tributo.IGV,
+                    moneda,
+                    t.op_gravada,
+                    t.total_igv,
                     porcentaje=Decimal("18.00") if t.total_igv else Decimal("0.00"),
                     afectacion="10" if t.total_igv else None,
                 )
@@ -313,7 +304,9 @@ class GeneradorUblXsdata:
         if t.total_icbper:
             subtotales.append(self._subtotal(Tributo.ICBPER, moneda, None, t.total_icbper))
 
-        return [cac.TaxTotal(tax_amount=cbc.TaxAmount(value=t.total_impuestos, currency_id=moneda), tax_subtotal=subtotales)]
+        return [
+            cac.TaxTotal(tax_amount=cbc.TaxAmount(value=t.total_impuestos, currency_id=moneda), tax_subtotal=subtotales)
+        ]
 
     # ------------------------------------------------------------------ totales
     def _total_monetario(self, c: Comprobante) -> cac.LegalMonetaryTotal:
@@ -334,11 +327,7 @@ class GeneradorUblXsdata:
             cac.PaymentTerms(
                 id=cbc.Id(value="FormaPago"),
                 payment_means_id=[cbc.PaymentMeansId(value=fp.tipo.value)],
-                amount=(
-                    cbc.Amount(value=_d(c.totales.importe_total), currency_id=moneda)
-                    if fp.cuotas
-                    else None
-                ),
+                amount=(cbc.Amount(value=_d(c.totales.importe_total), currency_id=moneda) if fp.cuotas else None),
             )
         ]
         terminos.extend(
@@ -396,7 +385,10 @@ class GeneradorUblXsdata:
         if ln.isc is not None:
             subtotales.append(
                 self._subtotal(
-                    Tributo.ISC, moneda, t.valor_venta, t.isc,
+                    Tributo.ISC,
+                    moneda,
+                    t.valor_venta,
+                    t.isc,
                     porcentaje=ln.isc.tasa_porcentual,
                     tier_range=ln.isc.sistema.value,
                     per_unit=ln.isc.monto_fijo,
@@ -406,7 +398,10 @@ class GeneradorUblXsdata:
         # declara el tributo 9997, no el 1000.
         subtotales.append(
             self._subtotal(
-                ln.afectacion.tributo, moneda, t.base_igv, t.igv,
+                ln.afectacion.tributo,
+                moneda,
+                t.base_igv,
+                t.igv,
                 porcentaje=Decimal("18.00") if ln.afectacion.es_gravada else Decimal("0.00"),
                 afectacion=ln.afectacion.value,
             )
@@ -415,7 +410,10 @@ class GeneradorUblXsdata:
         if ln.aplica_icbper:
             subtotales.append(
                 self._subtotal(
-                    Tributo.ICBPER, moneda, None, t.icbper,
+                    Tributo.ICBPER,
+                    moneda,
+                    None,
+                    t.icbper,
                     per_unit=Decimal("0.50"),
                     base_medida=(ln.cantidad, ln.unidad.value),
                 )
@@ -429,7 +427,9 @@ class GeneradorUblXsdata:
                     cac.AlternativeConditionPrice(
                         price_amount=cbc.PriceAmount(value=_d(ln.precio_unitario), currency_id=moneda),
                         price_type_code=cbc.PriceTypeCode(
-                            value="01", list_agency_name=SUNAT, list_name="Tipo de Precio",
+                            value="01",
+                            list_agency_name=SUNAT,
+                            list_name="Tipo de Precio",
                             list_uri=catalogo("16"),
                         ),
                     )
@@ -444,9 +444,7 @@ class GeneradorUblXsdata:
             item=cac.Item(
                 description=[cbc.Description(value=ln.descripcion)],
                 sellers_item_identification=(
-                    cac.SellersItemIdentification(id=cbc.Id(value=ln.codigo_producto))
-                    if ln.codigo_producto
-                    else None
+                    cac.SellersItemIdentification(id=cbc.Id(value=ln.codigo_producto)) if ln.codigo_producto else None
                 ),
             ),
             price=cac.Price(price_amount=cbc.PriceAmount(value=_valor_unitario(ln.valor_unitario), currency_id=moneda)),
@@ -465,8 +463,6 @@ class GeneradorUblXsdata:
             cac.AllowanceCharge(
                 charge_indicator=False,
                 amount=cbc.Amount(value=_d(ln.descuento), currency_id=moneda),
-                base_amount=cbc.BaseAmount(
-                    value=_d(ln.tributos.valor_venta + ln.descuento), currency_id=moneda
-                ),
+                base_amount=cbc.BaseAmount(value=_d(ln.tributos.valor_venta + ln.descuento), currency_id=moneda),
             )
         ]

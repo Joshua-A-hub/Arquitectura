@@ -19,7 +19,6 @@ from __future__ import annotations
 from datetime import date
 from typing import Protocol, runtime_checkable
 
-
 # --------------------------------------------------------------------------- #
 # Tipos de apoyo (contratos de datos, sin comportamiento)
 # --------------------------------------------------------------------------- #
@@ -64,8 +63,7 @@ class IEmisionService(Protocol):
 class INotaService(Protocol):
     """Caso de uso: emitir nota de crédito o débito sobre un comprobante aceptado."""
 
-    def emitir_nota(self, id_comprobante: str, comando: dict) -> dict:
-        ...
+    def emitir_nota(self, id_comprobante: str, comando: dict) -> dict: ...
 
 
 @runtime_checkable
@@ -90,14 +88,11 @@ class IComprobanteRepository(Protocol):
         """Asigna el correlativo de forma atómica. Devuelve (serie_numero, correlativo)."""
         ...
 
-    def guardar(self, comprobante: dict) -> None:
-        ...
+    def guardar(self, comprobante: dict) -> None: ...
 
-    def obtener(self, numero: str) -> dict | None:
-        ...
+    def obtener(self, numero: str) -> dict | None: ...
 
-    def listar(self, filtro: FiltroComprobantes) -> list[dict]:
-        ...
+    def listar(self, filtro: FiltroComprobantes) -> list[dict]: ...
 
 
 @runtime_checkable
