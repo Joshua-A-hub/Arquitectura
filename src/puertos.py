@@ -112,7 +112,10 @@ class IXmlBuilder(Protocol):
 
 @runtime_checkable
 class IFirmaDigital(Protocol):
-    """Firma el XML con el certificado del emisor (XMLDSig)."""
+    """Firma el XML con el certificado del emisor (XMLDSig).
+
+    Implementado por `src/adaptadores/salida/firma/xmldsig.py`.
+    """
 
     def firmar(self, xml: bytes) -> bytes:
         """Devuelve el XML firmado. El certificado nunca sale del servidor."""

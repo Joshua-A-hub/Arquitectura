@@ -121,6 +121,18 @@ def generar_xml(entrada: Path, salida: Path) -> int:
     return 0
 
 
+def firmar_xml(entrada: Path, clave: Path, certificado: Path, salida: Path | None = None) -> int:
+    """Firma un XML ya generado y validado (RN-18: validar antes de firmar)."""
+    from src.adaptadores.salida.firma.xmldsig import FirmadorXmlDsig
+
+    firmado = FirmadorXmlDsig(clave, certificado).firmar(entrada.read_bytes())
+    destino = salida or entrada.with_name(f"{entrada.stem}-firmado.xml")
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    destino.write_bytes(firmado)
+    print(f"OK  {destino}  (XMLDSig rsa-sha256)")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="src.cli", description="Herramientas de ABC Software Corp")
     sub = parser.add_subparsers(dest="comando", required=True)
@@ -129,10 +141,18 @@ def main(argv: list[str] | None = None) -> int:
     generar.add_argument("entrada", type=Path, help="archivo JSON con la solicitud de emisión")
     generar.add_argument("--salida", type=Path, default=RAIZ / "out", help="carpeta de salida")
 
+    firmar = sub.add_parser("firmar", help="firma un XML UBL con XMLDSig")
+    firmar.add_argument("xml", type=Path, help="XML generado y validado")
+    firmar.add_argument("--clave", type=Path, required=True, help="clave privada PEM")
+    firmar.add_argument("--certificado", type=Path, required=True, help="certificado PEM")
+    firmar.add_argument("--salida", type=Path, default=None, help="archivo de salida")
+
     args = parser.parse_args(argv)
     try:
         if args.comando == "generar-xml":
             return generar_xml(args.entrada, args.salida)
+        if args.comando == "firmar":
+            return firmar_xml(args.xml, args.clave, args.certificado, args.salida)
     except (ErrorDominio, ValueError) as e:
         print(f"Error: {e}", file=sys.stderr)
         return 2

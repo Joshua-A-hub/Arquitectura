@@ -22,8 +22,8 @@
 Este repositorio contiene la **especificación completa** del sistema (reglas, contratos, validaciones y
 arquitectura definidos antes del código) **y la implementación de la generación del XML UBL 2.1**
 (Taller 2): el dominio ejecuta las 25 reglas y un adaptador traduce el agregado a los esquemas
-oficiales de OASIS. No incluye interfaz de usuario, API HTTP, firma digital ni envío a la OSE: eso
-está declarado como alcance siguiente.
+oficiales de OASIS. No incluye interfaz de usuario, API HTTP, un certificado real ni el envío a la
+OSE: eso está declarado como alcance siguiente.
 
 ---
 
@@ -87,7 +87,7 @@ dominio y evaluada con **pruebas unitarias de generación**. Detalle completo en
 
 ```bash
 pip install -r requirements-dev.txt
-pytest tests/unit -q                 # 152 pruebas (119 por regla + 28 de estructura y regresión)
+pytest tests/unit -q                 # 159 pruebas (119 por regla + 28 de estructura y regresión)
 python -m src.cli generar-xml specs/ejemplos/emision-cli.json --salida out
 ```
 
@@ -96,6 +96,7 @@ python -m src.cli generar-xml specs/ejemplos/emision-cli.json --salida out
 | Clases generadas del XSD oficial (`xsdata`) | [`src/adaptadores/salida/ubl/generated/`](src/adaptadores/salida/ubl/generated/) |
 | Adaptador dominio → UBL → XML | [`generador.py`](src/adaptadores/salida/ubl/generador.py) |
 | Validador contra el esquema oficial | [`validador.py`](src/adaptadores/salida/ubl/validador.py) |
+| **Firma XMLDSig** (certificado de prueba) | [`xmldsig.py`](src/adaptadores/salida/firma/xmldsig.py) |
 | Dominio ejecutable (catálogos, tributos, letras) | [`src/dominio/`](src/dominio/) |
 | Pruebas de generación + XML de referencia | [`tests/unit/generacion_xml/`](tests/unit/generacion_xml/) |
 | Regenerar clases | `scripts/generar_clases_ubl.ps1` |
@@ -142,17 +143,18 @@ examen/
 │   ├── features/                 casos de uso (Gherkin)
 │   └── templates/                plantillas de spec, ADR y contrato
 ├── src/
-│   ├── domain/                   dominio ejecutable: catálogos, tributos, letras, comprobante
-│   ├── adapters/outbound/ubl/    generador (xsdata) + validador + clases del XSD oficial
-│   ├── cli.py                    segundo adaptador de entrada (generar-xml)
+│   ├── dominio/                  dominio ejecutable: catálogos, tributos, letras, comprobante
+│   ├── adaptadores/salida/ubl/   generador (xsdata), validador y clases del XSD oficial
+│   ├── adaptadores/salida/firma/ firmador XMLDSig (puerto IFirmaDigital)
+│   ├── cli.py                    adaptadores de entrada: generar-xml y firmar
 │   └── puertos.py                interfaces del hexágono
 ├── tests/
-│   ├── unit/generacion_xml/      115 pruebas de generación + esperados/*.xml
-│   ├── unit/test_dominio.py      44 pruebas de dominio
-│   └── mocks/mock_db.py          datos de prueba
-├── scripts/                      regeneración de las clases desde el XSD
+│   ├── unit/reglas/              119 pruebas, una regla RN-xx por archivo
+│   ├── unit/generacion_xml/      estructura del UBL + 6 XML de referencia
+│   └── unit/test_firma.py        firma XMLDSig (7 pruebas)
+├── scripts/                      clases desde el XSD y certificado de prueba
 ├── validacion/                   los tres validadores
-└── requirements-dev.txt          pytest + xsdata + lxml (Taller 2)
+└── requirements-dev.txt          pytest + xsdata + lxml + signxml
 ```
 
 </details>
@@ -187,9 +189,9 @@ examen/
 |---|---|
 | Especificación completa (E1–E4) | Interfaz de usuario (pantallas o wireframes) |
 | Dominio ejecutable: 25 reglas, IGV/ISC/ICBPER, RUC, letras | API HTTP implementada |
-| **Generación del XML** con clases del XSD oficial (Taller 2) | Firma digital XMLDSig |
-| Validador contra el esquema oficial y CLI | Envío real a SUNAT/OSE y CDR |
-| 6 ADR, 152 pruebas unitarias y CI | Libros PLE en formato Anexo 2 |
+| **Generación del XML** y **firma XMLDSig** (Taller 2) | Certificado real (el de prueba no sirve para SUNAT) |
+| Validador oficial + CLI (`generar-xml`, `firmar`) | Envío real a SUNAT/OSE y CDR |
+| 6 ADR, 159 pruebas unitarias y CI | Exportador TXT del PLE (Anexo 2) |
 | Matriz normativa y tabla de match | Empaquetado MSI/APK (decisión documentada) |
 
 > La **interfaz de usuario no forma parte de la entrega**: el contrato API es un contrato de servicio y

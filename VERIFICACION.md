@@ -92,7 +92,7 @@ evidencia:
 |---|---|
 | **Esquemas SUNAT** | se validó contra OASIS; los esquemas del SEE no se descargaron: la conformidad UBL está probada, la validación SUNAT real no |
 | **Notas de crédito/débito** | se generan y validan contra sus XSD oficiales en la suite; no se enviaron a SUNAT |
-| **Firma criptográfica** | no se firma ni se verifica una firma real: es fase 2 |
+| **Firma criptográfica** | se firma con XMLDSig y **se verifica después de firmar** (7 pruebas), pero con certificado de prueba autofirmado; no hay certificado real de producción |
 | **DOCX** | no se inspeccionó visualmente (entorno sin renderizador); validado en estructura |
 | **Código** | dominio y generación del XML implementados; API HTTP, firma y envío a la OSE quedan pendientes |
 | **Topología, numeración y outbox** | decisiones de diseño pendientes, documentadas en §4.1 de la revisión anterior |
@@ -129,7 +129,8 @@ Los 32 puntos que descontó la rúbrica tienen corrección y prueba. Lo que qued
 | Pruebas por regla (`tests/unit/reglas`) | **119** (RN-01 a RN-25) |
 | Estructura y regresión | **28** (`test_estructura_xml.py`, `test_regresion_golden.py`) |
 | Puertos del hexágono | **5** (`test_puertos.py`) |
-| **Total de la suite** | **152 pruebas, 0 fallos** |
+| Firma XMLDSig | **7** (`test_firma.py`: firma, estructura, conformidad y manipulación) |
+| **Total de la suite** | **159 pruebas, 0 fallos** |
 | Conformidad | los **6 escenarios propios** validan contra UBL-Invoice-2.1.xsd (NC/ND contra sus XSD) |
 | Prueba de mutación | romper la versión UBL, la numeración de líneas o la tasa de IGV rompe la conformidad y la regresión |
 | CLI (segundo adaptador de entrada) | python -m src.cli generar-xml genera, valida y escribe el XML |

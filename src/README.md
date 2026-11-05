@@ -17,8 +17,9 @@ src/
 ├── adapters/outbound/ubl/
 │   ├── generated/             clases producidas por xsdata desde el XSD oficial (NO se editan)
 │   ├── generador.py           GeneradorUblXsdata: dominio → clases → XML (puerto IXmlBuilder)
-│   └── validador.py           ValidadorXsd: XML contra el esquema oficial (puerto IValidadorXsd)
-├── cli.py                     segundo adaptador de entrada (misma lógica, sin HTTP)
+│   ├── validador.py           ValidadorXsd: XML contra el esquema oficial (puerto IValidadorXsd)
+│   └── firma/xmldsig.py       FirmadorXmlDsig: XMLDSig dentro de ext:UBLExtensions (puerto IFirmaDigital)
+├── cli.py                     adaptadores de entrada (generar-xml y firmar), sin HTTP
 └── puertos.py                 interfaz del hexágono
 ```
 

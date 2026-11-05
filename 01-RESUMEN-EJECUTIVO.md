@@ -107,10 +107,10 @@ implementa la generación del XML desde los esquemas oficiales.
 | Ya implementado | Queda para la fase siguiente |
 |---|---|
 | Dominio: 25 reglas, IGV/ISC/ICBPER, RUC, importe en letras | API HTTP contra el contrato OpenAPI |
-| Generación del XML con clases del XSD oficial | Firma digital XMLDSig |
+| Generación del XML y **firma XMLDSig** (certificado de prueba) | Certificado real de producción |
 | Validador contra el esquema oficial y CLI | Envío a la OSE/SUNAT y procesamiento del CDR |
-| 152 pruebas unitarias + CI y 6 ADR | Libros PLE en formato Anexo 2 y empaquetado |
-| Flujo de firma, validación XSD y envío | Firma XMLDSig real y cliente OSE |
+| 159 pruebas unitarias + CI y 6 ADR | Libros PLE en formato Anexo 2 y empaquetado |
+| Flujo de firma, validación del XSD y verificación posterior | Cliente OSE y envío real |
 | Arquitectura MVC y plan de migración | Empaquetado MSI/APK |
 
 **Fuera de alcance total** (declarado): certificación como emisor electrónico ante SUNAT, resumen

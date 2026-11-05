@@ -77,11 +77,11 @@ regla → fila de la matriz → prueba.
 | Identificación | `test_rn01_ruc.py`, `test_rn02_documento_receptor.py`, `test_rn03_integridad_partes.py` | RUC (módulo 11), documento del receptor según catálogo 06, razón social y ubigeo |
 | Impuestos | `test_rn04_valor_unitario.py`, `test_rn05_igv.py`, `test_rn06_isc_catalogo_08.py`, `test_rn07_icbper.py`, `test_rn08_redondeo.py`, `test_rn09_totales.py` | valor sin IGV, IGV 18 %, **ISC de los tres sistemas** (cuadre base × tasa), ICBPER, redondeo, totales |
 | Numeración y emisión | `test_rn10_serie.py`, `test_rn11_correlativo.py`, `test_rn13_fecha_emision.py`, `test_rn14_detalle.py`, `test_rn16_notas_y_cuotas.py`, `test_rn25_forma_pago.py` | serie alfanumérica, `serie_numero`, fecha, detalle, notas y cuotas, forma de pago obligatoria |
-| Integración SUNAT | `test_rn18_conformidad_esquema.py`, `test_rn23_documento_legado.py`, `test_descuento_item.py`, `test_leyenda_1000.py` | conformidad con el XSD oficial, documento del legado, descuento por ítem, importe en letras |
+| Integración SUNAT | `test_rn18_conformidad_esquema.py`, `test_rn23_documento_legado.py`, `test_descuento_item.py`, `test_leyenda_1000.py`, `test_firma.py` | conformidad con el XSD oficial, documento del legado, descuento por ítem, importe en letras y firma XMLDSig |
 | Forma del documento | [`test_estructura_xml.py`](../tests/unit/generacion_xml/test_estructura_xml.py) | raíz según el tipo, namespaces, catálogos 01/02/03/51, moneda en cada importe, orden del XSD, determinismo |
 | Regresión | [`test_regresion_golden.py`](../tests/unit/generacion_xml/test_regresion_golden.py) | el XML no cambia sin querer (comparación byte a byte con `esperados/`) |
 
-**152 pruebas** en total. Los escenarios del dominio se construyen en
+**159 pruebas** en total. Los escenarios del dominio se construyen en
 [`escenarios.py`](../tests/unit/generacion_xml/escenarios.py), sin HTTP ni base de datos.
 
 Los escenarios son **propios**: factura del contrato (F001-00000123, S/ 530.00), factura con
@@ -116,13 +116,19 @@ pip install -r requirements-dev.txt
 pytest tests/unit -q
 
 # Generar el XML desde una CLI (segundo adaptador de entrada):
-python -m src.cli generar-xml specs/contracts/dto/ejemplo-comprobante.json --salida out
+python -m src.cli generar-xml specs/ejemplos/emision-cli.json --salida out
+
+# Firmarlo (certificado de PRUEBA, no válido para SUNAT):
+python scripts/generar_certificado_prueba.py --salida out/cert
+python -m src.cli firmar out/F001-00000123.xml --clave out/cert/clave-prueba.pem --certificado out/cert/certificado-prueba.pem
 ```
 
 ## 5. Límites declarados
 
-- **No se firma**: el tallar evalúa generación; el adaptador de firma (`IFirmaDigital`) agrega
-  `ext:UBLExtensions` en la fase 2. El orden queda fijado: generar → validar → firmar → enviar.
+- **Firma**: implementada con `signxml` (`src/adaptadores/salida/firma/xmldsig.py`): la firma se
+  inserta en `ext:UBLExtensions` y se **verifica después de firmar**; una alteración posterior rompe
+  la firma. Se usa un **certificado de prueba autofirmado**: el certificado real de producción es un
+  secreto del servidor y queda fuera de esta entrega.
 - **No se envía a SUNAT**: la OSE es un puerto (`ISunatGateway`) sin adaptador todavía.
 - Las notas de crédito/débito se generan y validan contra sus XSD oficiales, pero las pruebas se
   centran en `Invoice`, que es el alcance del taller.
