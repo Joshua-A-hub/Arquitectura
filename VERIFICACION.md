@@ -126,9 +126,9 @@ Los 32 puntos que descontó la rúbrica tienen corrección y prueba. Lo que qued
 | Comprobación | Resultado |
 |---|---|
 | Clases generadas desde los XSD oficiales (xsdata) | 15 módulos, 3.1 MB, regenerables con scripts/generar_clases_ubl.ps1 |
-| Pruebas unitarias de generación | **115** (cabecera, partes, líneas, tributos, totales, conformidad, regresión) |
-| Pruebas unitarias de dominio | **44** (RUC, serie, IGV, ISC 01/02/03, ICBPER, letras, cuotas) |
-| **Total de la suite** | **159 pruebas, 0 fallos** |
+| Pruebas por regla (`tests/unit/reglas`) | **121** (RN-01 a RN-25) |
+| Estructura y regresión | **30** (`test_estructura_xml.py`, `test_regresion_golden.py`) |
+| **Total de la suite** | **151 pruebas, 0 fallos** |
 | Conformidad | los **8 escenarios** validan contra UBL-Invoice-2.1.xsd (NC/ND contra sus XSD) |
 | Prueba de mutación | romper versión UBL, numeración de líneas o tasa de IGV hace fallar **21 pruebas** |
 | CLI (segundo adaptador de entrada) | python -m src.cli generar-xml genera, valida y escribe el XML |

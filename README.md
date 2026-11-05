@@ -85,7 +85,7 @@ dominio y evaluada con **pruebas unitarias de generación**. Detalle completo en
 
 ```bash
 pip install -r requirements-dev.txt
-pytest tests/unit -q                 # 159 pruebas (115 de generación + 44 de dominio)
+pytest tests/unit -q                 # 151 pruebas (121 por regla + 30 de estructura y regresión)
 python -m src.cli generar-xml specs/ejemplos/emision-cli.json --salida out
 ```
 

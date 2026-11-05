@@ -67,19 +67,22 @@ generador implementa el puerto `IXmlBuilder` de [`src/puertos.py`](../src/puerto
 
 ## 3. Pruebas unitarias de generación
 
-Están en [`tests/unit/generacion_xml/`](../tests/unit/generacion_xml). Todas parten de objetos del
-dominio construidos por [`fabrica.py`](../tests/unit/generacion_xml/fabrica.py), sin HTTP ni base
-de datos.
+Las pruebas están organizadas **por regla de negocio**: cada archivo de
+[`tests/unit/reglas/`](../tests/unit/reglas) implementa una regla `RN-xx` y cita en su docstring
+la fila de la matriz de trazabilidad que verifica. Así la suite es trazable de punta a punta:
+regla → fila de la matriz → prueba.
 
-| Archivo | Qué verifica | Pruebas |
-|---|---|:--:|
-| [`test_cabecera.py`](../tests/unit/generacion_xml/test_cabecera.py) | Raíz según el tipo, `UBLVersionID` 2.1, `CustomizationID` 2.0, `cbc:ID` = `serie_numero`, fecha/hora, `InvoiceTypeCode` + catálogo 51, moneda en el documento **y en cada importe**, leyenda 1000 | 17 |
-| [`test_partes.py`](../tests/unit/generacion_xml/test_partes.py) | RUC, razón social, ubigeo, dirección y **establecimiento** del emisor; cliente con RUC, DNI, consumidor final y no domiciliado (catálogo 06); escape de `&` | 14 |
-| [`test_lineas.py`](../tests/unit/generacion_xml/test_lineas.py) | Una línea por línea del dominio, `unitCode` del catálogo 03, valor y precio unitario, descripción y código, **orden del XSD**, `LineCountNumeric`, **descuento con `AllowanceCharge`** | 19 |
-| [`test_tributos.py`](../tests/unit/generacion_xml/test_tributos.py) | IGV 18 %, exonerado (`9997`), inafecto (`9998`), exportación (`9995`), **ISC de los tres sistemas del catálogo 08** (`TierRange`), ICBPER, base del IGV de la línea y global (**reglas SUNAT 3108 y 3277**), cuadre de subtotales y 2 decimales | 15 |
-| [`test_totales_pago_referencias.py`](../tests/unit/generacion_xml/test_totales_pago_referencias.py) | Total monetario, `PayableAmount` = total con impuestos, forma de pago contado y crédito con cuotas, discrepancia y referencia de las notas, `RequestedMonetaryTotal` en ND, documento del legado | 12 |
-| [`test_conformidad_regresion.py`](../tests/unit/generacion_xml/test_conformidad_regresion.py) | Los 8 escenarios **validan contra el XSD oficial**, determinismo, caracteres especiales, **regresión byte a byte** contra XML de referencia | 21 |
-| [`test_dominio.py`](../tests/unit/test_dominio.py) | RUC (módulo 11), serie alfanumérica, valor unitario, IGV, ISC de los tres sistemas, **redondeo sobre la base exacta**, ICBPER, importe en letras, cuotas, reglas RN-02/RN-14 | 44 |
+| Grupo | Archivos | Qué verifica |
+|---|---|---|
+| Identificación | `test_rn01_ruc.py`, `test_rn02_documento_receptor.py`, `test_rn03_integridad_partes.py` | RUC (módulo 11), documento del receptor según catálogo 06, razón social y ubigeo |
+| Impuestos | `test_rn04_valor_unitario.py`, `test_rn05_igv.py`, `test_rn06_isc_catalogo_08.py`, `test_rn07_icbper.py`, `test_rn08_redondeo.py`, `test_rn09_totales.py` | valor sin IGV, IGV 18 %, **ISC de los tres sistemas** (cuadre base × tasa), ICBPER, redondeo, totales |
+| Numeración y emisión | `test_rn10_serie.py`, `test_rn11_correlativo.py`, `test_rn13_fecha_emision.py`, `test_rn14_detalle.py`, `test_rn16_notas_y_cuotas.py`, `test_rn25_forma_pago.py` | serie alfanumérica, `serie_numero`, fecha, detalle, notas y cuotas, forma de pago obligatoria |
+| Integración SUNAT | `test_rn18_conformidad_esquema.py`, `test_rn23_documento_legado.py`, `test_descuento_item.py`, `test_leyenda_1000.py` | conformidad con el XSD oficial, documento del legado, descuento por ítem, importe en letras |
+| Forma del documento | [`test_estructura_xml.py`](../tests/unit/generacion_xml/test_estructura_xml.py) | raíz según el tipo, namespaces, catálogos 01/02/03/51, moneda en cada importe, orden del XSD, determinismo |
+| Regresión | [`test_regresion_golden.py`](../tests/unit/generacion_xml/test_regresion_golden.py) | el XML no cambia sin querer (comparación byte a byte con `esperados/`) |
+
+**151 pruebas** en total. Los escenarios del dominio se construyen en
+[`fabrica.py`](../tests/unit/generacion_xml/fabrica.py), sin HTTP ni base de datos.
 
 ### XML de referencia («golden files»)
 
